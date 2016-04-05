@@ -1,0 +1,10 @@
+//
+// Prefix header for all source files of the 'BitTorrentANE' target in the 'BitTorrentANE' project.
+//
+#ifdef __OBJC__
+#define __ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES 0
+#define BOOST_ASIO_SEPARATE_COMPILATION 0
+#define TORRENT_USE_I2P 1
+#define TORRENT_USE_OPENSSL 1
+#import <Cocoa/Cocoa.h>
+#endif
