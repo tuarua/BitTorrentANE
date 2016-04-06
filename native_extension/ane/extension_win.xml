@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension xmlns="http://ns.adobe.com/air/extension/21.0">
+	<id>com.tuarua.BitTorrentANE</id>
+	<name>LibTorrent ANE</name>
+	<copyright>This work is licensed under Mozilla Public License Version 1.1, Copyright 2015</copyright>
+	<versionNumber>1.2.1</versionNumber>
+	<platforms>
+	<platform name="Windows-x86">
+		<applicationDeployment>
+			<nativeLibrary>BitTorrentANE.dll</nativeLibrary>
+			<initializer>TRLTAExtInizer</initializer>
+			<finalizer>TRLTAExtFinizer</finalizer>
+		</applicationDeployment>
+	</platform>
+	</platforms>
+</extension>

@@ -1,7 +1,6 @@
 #pragma once
 #include <stdint.h>
 #include <string>
-//enum def is better?
 
 typedef struct {
 	std::string TORRENT_CREATED_FROM_META = "Torrent.Create.CreatedFromMeta";
@@ -22,40 +21,38 @@ typedef struct {
 }TorrentInfoEvent;
 TorrentInfoEvent torrentInfoEvent;
 
-
 class EncyptionConstants {
 public:
-				enum Constants {
-								DISABLED = 0,
-								ENABLED = 1,
-								REQUIRED = 2
-				};
+	enum Constants {
+		DISABLED = 0,
+		ENABLED = 1,
+		REQUIRED = 2
+	};
 };
-
 class LogLevelConstants {
 public:
-				enum Constants {
-								QUIET = 0,
-								INFO = 1,
-								DBG = 2
-				};
+	enum Constants {
+		QUIET = 0,
+		INFO = 1,
+		DBG = 2
+	};
 };
 class ProxyTypeConstants {
 public:
-				enum Constants {
-								DISABLED = 0,
-								SOCKS4 = 1,
-								SOCKS5 = 2,
-								HTTP = 3,
-								I2P = 4
-				};
+	enum Constants {
+		DISABLED = 0,
+		SOCKS4 = 1,
+		SOCKS5 = 2,
+		HTTP = 3,
+		I2P = 4
+	};
 };
 class QueuePositionConstants {
 public:
-				enum Constants {
-								UP = 0,
-								DOWN = 1,
-								TOP = 2,
-								BOTTOM = 3
-				};
+	enum Constants {
+		UP = 0,
+		DOWN = 1,
+		TOP = 2,
+		BOTTOM = 3
+	};
 };

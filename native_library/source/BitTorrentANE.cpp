@@ -3,10 +3,10 @@
 //  BitTorrentANE
 //
 //  Created by Mini on 02/10/2015.
-//  Copyright � 2015 Tua Rua. All rights reserved.
+//  Copyright 2015 Tua Rua. All rights reserved.
 //
 #ifdef _WIN32
-#include "win/LibTorrentANE.h"
+#include "win/BitTorrentANE.h"
 #else
 #include "mac/BitTorrentANE.h"
 #define __ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES 0
@@ -95,7 +95,6 @@ std::string pathSlash = "/";
 
 libtorrent::session* ltsession = nullptr;
 bool getPeers = true;
-
 
 struct addedTorrentId{};
 struct addedTorrentHash{};
@@ -252,20 +251,19 @@ FREObject readTorrentInfo(std::string const& filename) {
 			FRESetArrayElementAt(vecTorrents, i, meta);
 		}
 		FRESetObjectProperty(torrentMeta, (const uint8_t*)"files", vecTorrents, NULL);
-
 		
 		FREObject vecUrlSeeds = NULL;
 		FRENewObject((const uint8_t*)"Vector.<String>", 0, NULL, &vecUrlSeeds, NULL);
 					
-	std::vector<web_seed_entry> webSeeds;
-	webSeeds = ti.web_seeds();
+		std::vector<web_seed_entry> webSeeds;
+		webSeeds = ti.web_seeds();
 	 
 		FRESetArrayLength(vecUrlSeeds, uint32_t(webSeeds.size()));
-					int cnt = 0;
-					for (std::vector<web_seed_entry>::const_iterator i = webSeeds.begin(); i != webSeeds.end(); ++i) {
-									FRESetArrayElementAt(vecUrlSeeds, cnt, getFREObjectFromString(i->url));
-									cnt++;
-					}
+		int cnt = 0;
+		for (std::vector<web_seed_entry>::const_iterator i = webSeeds.begin(); i != webSeeds.end(); ++i) {
+			FRESetArrayElementAt(vecUrlSeeds, cnt, getFREObjectFromString(i->url));
+			cnt++;
+		}
 		FRESetObjectProperty(torrentMeta, (const uint8_t*)"urlSeeds", vecUrlSeeds, NULL);
 		
 	}
@@ -276,7 +274,7 @@ libtorrent::session_settings getDefaultSessionSettings() {
 	using namespace libtorrent;
 	session_settings ss;
 
-	ss.user_agent = "LibTorrentANE/1.2.1";
+	ss.user_agent = "BitTorrentANE/1.2.1";
 	
 	ss.apply_ip_filter_to_trackers = (!settingsContext.filters.filename.empty() && settingsContext.filters.applyToTrackers);
 	ss.upnp_ignore_nonrouters = true;
@@ -842,7 +840,7 @@ extern "C" {
 		//Proxy Settings
 		proxy_settings proxySettings;
 
-			if (settingsContext.proxy.type > ProxyTypeConstants::DISABLED) {
+		if (settingsContext.proxy.type > ProxyTypeConstants::DISABLED) {
 			logInfo("Proxy is enabled");
 			proxySettings.hostname = settingsContext.proxy.host;
 			proxySettings.port = settingsContext.proxy.port;
@@ -851,26 +849,26 @@ extern "C" {
 				proxySettings.password = settingsContext.proxy.password;
 			}
 			switch (settingsContext.proxy.type) {
-					case ProxyTypeConstants::DISABLED:
+				case ProxyTypeConstants::DISABLED:
 					proxySettings.type = proxy_settings::none;
 					break;
-					case ProxyTypeConstants::SOCKS4:
+				case ProxyTypeConstants::SOCKS4:
 					proxySettings.type = proxy_settings::socks4;
 					break;
-					case ProxyTypeConstants::SOCKS5:
+				case ProxyTypeConstants::SOCKS5:
 					if(settingsContext.proxy.useAuth)
 						proxySettings.type = proxy_settings::socks5;
 					else
 						proxySettings.type = proxy_settings::socks5_pw;
 					break;
-					case ProxyTypeConstants::HTTP:
+				case ProxyTypeConstants::HTTP:
 					if(settingsContext.proxy.useAuth)
 						proxySettings.type = proxy_settings::http;
 					else
 						proxySettings.type = proxy_settings::http_pw;
 					break;
 #if TORRENT_USE_I2P
-					case ProxyTypeConstants::I2P:
+				case ProxyTypeConstants::I2P:
 					proxySettings.port = 7656; // default SAM port
 					proxySettings.type = proxy_settings::i2p_proxy;
 					ltsession->set_i2p_proxy(proxySettings);
@@ -1180,22 +1178,6 @@ extern "C" {
 		return vecTorrentPeers;
 	}
 
-	/*
-	SORT by queuePosition
-	bool compareByLength(const data &a, const data &b)
-{
-    return a.word.size() < b.word.size();
-}
-
-and then use std::sort in the header #include <algorithm>:
-std::sort(info.begin(), info.end(), compareByLength);
-
-	*/
-
-	//bool compareByQueuePosition(libtorrent::torrent_handle &a, libtorrent::torrent_handle &b) {
-		//return a.status().queue_position < b.status().queue_position;
-	//}
-
 	FREObject getTorrentStatus(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
 		using namespace libtorrent;
 		std::vector<torrent_status> temp;
@@ -1203,9 +1185,6 @@ std::sort(info.begin(), info.end(), compareByLength);
 		std::vector<torrent_handle> tv;
 		tv = ltsession->get_torrents();
 		
-		//sort
-		//std::sort(tv.begin(), tv.end(), compareByQueuePosition);
-
 		FREObject vecTorrents = NULL;
 		FRENewObject((const uint8_t*)"Vector.<com.tuarua.torrent.TorrentStatus>", 0, NULL, &vecTorrents, NULL);
 
@@ -1404,19 +1383,19 @@ std::sort(info.begin(), info.end(), compareByLength);
 		if (foundN > -1) {
 			h = tv[foundN];
 			switch (dir) {
-					case QueuePositionConstants::UP:
+				case QueuePositionConstants::UP:
 					logInfo("we have found the torrent - moving it up the queue");
 					h.queue_position_up();
 					break;
-					case QueuePositionConstants::DOWN:
+				case QueuePositionConstants::DOWN:
 					logInfo("we have found the torrent - moving it down the queue");
 					h.queue_position_down();
 					break;
-					case QueuePositionConstants::TOP:
+				case QueuePositionConstants::TOP:
 					logInfo("we have found the torrent - moving it to top of queue");
 					h.queue_position_top();
 					break;
-					case QueuePositionConstants::BOTTOM:
+				case QueuePositionConstants::BOTTOM:
 					logInfo("we have found the torrent - moving it to bottom queue");
 					h.queue_position_bottom();
 					break;
@@ -1550,8 +1529,6 @@ std::sort(info.begin(), info.end(), compareByLength);
 		return getReturnTrue();
 	}
 	
-
-
 	FREObject updateSettings(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
 		FREObject settingsProps = argv[0];
 		
@@ -1786,7 +1763,7 @@ std::sort(info.begin(), info.end(), compareByLength);
 		createTorrentContext.pieceSize = getUInt32FromFREObject(argv[4]) * 1024;
 		createTorrentContext.isPrivate = getBoolFromFREObject(argv[5]);
 		createTorrentContext.comment = getStringFromFREObject(argv[6]);
-		createTorrentContext.creator = "LibTorrentANE";
+		createTorrentContext.creator = "BitTorrentANE";
 		createTorrentContext.rootCert = getStringFromFREObject(argv[7]);
 		threads[0] = boost::move(createThread(&threadCreateTorrent, 1));
 		return getReturnTrue();
