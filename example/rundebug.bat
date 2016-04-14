@@ -1,1 +1,0 @@
-adl -profile extendedDesktop -extdir D:\dev\flash\FFprobeANELib\ane\debug\ D:\dev\flash\FFprobeConsumer\bin-debug\FFprobeConsumer-app.xml
