@@ -36,6 +36,7 @@ package views.client {
 		
 		private var rightClickMenus:Dictionary = new Dictionary();
 		private var rightClickMenusData:Dictionary = new Dictionary();
+		private var itemSpriteDictionary:Dictionary = new Dictionary();
 		
 		///private var rightClickMenu:RightClickMenu;
 
@@ -156,14 +157,12 @@ package views.client {
 				panelsVec[j].visible = (j==0);
 				holder.addChild(panelsVec[j]);
 			}
-			//itmHolder.flatten();
+			
 			holder.addChild(itmHolder);
 			holder.addChild(headingHolder);
 			holder.addChild(menuItemHolder);
 			
-			
 			addChild(holder);
-			
 			
 			Starling.current.nativeStage.addEventListener(flash.events.MouseEvent.RIGHT_CLICK, onRightClick);
 		}
@@ -209,7 +208,7 @@ package views.client {
 			var ti:TorrentItem;
 			for (var i:int=0, l:int=itmHolder.numChildren; i<l; ++i){
 				ti = itmHolder.getChildAt(i) as TorrentItem;
-				if(mousePoint.y > (i*20) && mousePoint.y < ((i+1)*20)){
+				if(mousePoint.y > ti.y && mousePoint.y < (ti.y+20)){
 					selectedId = ti.id;
 					itemSelect();
 					rightClickMenus[ti.id].visible = true;
@@ -220,6 +219,7 @@ package views.client {
 					rightClickMenus[ti.id].close();
 				}
 			}
+				
 		}
 		public function resize(_screenW:int,_screenH:int):void {
 			holder.x = (_screenW - w)/2;
@@ -307,46 +307,37 @@ package views.client {
 		}
 		
 		public function updateStatus():void {
-			var numCurrent:int = itmHolder.numChildren;
-			var numItems:int = 0;
-			var cnt:int = 0;
-			
-			var dictionary:Dictionary = TorrentsLibrary.meta;
-			
-			for (var key1:String in TorrentsLibrary.meta)
-				numItems++;
-			
 			var itm:TorrentItem;
 			var tm:TorrentMeta;
 			var ts:TorrentStatus;
+			var numNonSeeding:int=0;
+			var arrSeeding:Array = new Array();
 			for (var key:String in TorrentsLibrary.meta) {
 				tm = TorrentsLibrary.meta[key] as TorrentMeta;
 				ts = TorrentsLibrary.status[key];
 				if(tm && ts){
-					if(cnt > (numCurrent-1)){
+					if(itemSpriteDictionary[key] == undefined){
 						itm = new TorrentItem();
 						itm.addEventListener(InteractionEvent.ON_TORRENT_ITEM_SELECT,onItemSelect);
 						itmHolder.addChild(itm);
+						itemSpriteDictionary[key] = itm;
 					}else{
-						itm = itmHolder.getChildAt(cnt) as TorrentItem;
+						itm = itemSpriteDictionary[key] as TorrentItem;
 					}
-					itm.y = cnt*20;
-					//won't work for seeding items - put them at end YES? or loop through and count
 					
-					//itm.y = ts.queuePosition*20;
-					//
-					//set the y based on queuePosition
-					//trace("update Status");
-					//trace(ts.id,"position",ts.queuePosition);
-					//trace("-----------");
+					if(ts.queuePosition > -1) {
+						numNonSeeding++;
+						itm.y = ts.queuePosition*20;
+					}else{
+						arrSeeding.push(key);
+					}
 					itm.update(tm,ts,(selectedId == key));
-					//itmHolder.setChildIndex(itm,ts.queuePosition); //should work but doesn't
-					cnt++;
 				}
 			}
-			
-			//can I set the childIndex here instead
-			//sortChildrenByY(itmHolder);
+			for (var i:int;i<arrSeeding.length;i++){
+				itm = itemSpriteDictionary[arrSeeding[i]] as TorrentItem;
+				itm.y = (i*20)+(numNonSeeding*20);
+			}
 			if(selectedId)
 				(panelsVec[0] as InfoPanel).updateStatus(TorrentsLibrary.status[selectedId]);
 		}

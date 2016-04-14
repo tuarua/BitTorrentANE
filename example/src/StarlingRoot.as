@@ -64,8 +64,6 @@ package {
 
 			
 			//TO DO
-			//queue move up / down
-			//item order
 			//on resize, advanced textfields x not right
 			
 			
@@ -136,7 +134,7 @@ package {
 				
 				libTorrentANE.initSession();
 				
-				//libTorrentANE.addFilterList(File.applicationDirectory.resolvePath("peerGuardian.p2p").nativePath);
+				libTorrentANE.addFilterList(File.applicationDirectory.resolvePath("filters").resolvePath("peerGuardianSample.p2p").nativePath,model.SettingsLocalStore.settings.filters.applyToTrackers);
 				
 				
 			
@@ -279,9 +277,9 @@ package {
 				//magnet:?xt=urn:btih:f3bf22593bd8c5b318c9fa41c7d507215ea67adc&dn=Cosmos%20Laundromat%20-%20Blender-short-movie&tr=udp%3a%2f%2fopen.demonii.com%3a1337%2fannounce&tr=udp%3a%2f%2ftracker.publicbt.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.openbittorrent.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.istole.it%3a80%2fannounce&tr=udp%3a%2f%2ftorrent.gresille.org%3a80%2fannounce&tr=udp%3a%2f%2ftracker.opentrackr.org%3a1337%2fannounce&tr=http%3a%2f%2ftracker.aletorrenty.pl%3a2710%2fannounce&tr=http%3a%2f%2fopen.acgtracker.com%3a1096%2fannounce&tr=udp%3a%2f%2ftracker4.piratux.com%3a6969%2fannounce&tr=udp%3a%2f%2f9.rarbg.me%3a2710%2fannounce
 				
 				var rightClickMenuDataList:Vector.<Object> = new Vector.<Object>();
-				rightClickMenuDataList.push({value:0,label:"Pause"});//Resume
+				rightClickMenuDataList.push({value:0,label:"Pause"});
 				rightClickMenuDataList.push({value:1,label:"Delete"});
-				rightClickMenuDataList.push({value:(downloadAsSequential) ? 2 : 9,label:(downloadAsSequential) ? "Sequential Off": "Sequential On"}); //Sequential Off
+				rightClickMenuDataList.push({value:(downloadAsSequential) ? 2 : 9,label:(downloadAsSequential) ? "Sequential Off": "Sequential On"});
 				rightClickMenuDataList.push({value:7,label:"Copy magnet link"});
 				torrentClientPanel.addRightClickMenu("cosmos",rightClickMenuDataList);
 				torrentClientPanel.addPriorityToRightClick((TorrentsLibrary.length(TorrentsLibrary.meta) > 0));

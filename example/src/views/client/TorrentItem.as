@@ -42,7 +42,6 @@ package views.client {
 					txt = new TextField(divArr[i+1] - divArr[i] - 24,32,txtArr[i], "Fira Sans Regular 13", 13, /*(i == 4)  ? 0x5CB601 : */0xD8D8D8);
 					txt.hAlign = txtAligns[i];
 					txt.x = divArr[i] + 12;
-					//txt.y = 5;
 					txt.batchable = true;
 					txt.touchable = false;
 					txtHolder.addChild(txt);
@@ -50,7 +49,6 @@ package views.client {
 			}
 			highlight.y = 5;
 			highlight.useHandCursor = false;
-			//highlight.visible = false; // need invisible tuch area
 			highlight.addEventListener(TouchEvent.TOUCH,onHighlightClick);
 			addChild(highlight);
 			addChild(txtHolder);	
@@ -96,8 +94,7 @@ package views.client {
 		
 
 		public function clear():void {
-			// TODO Auto Generated method stub
-			
+	
 		}
 	}
 }
