@@ -1192,7 +1192,8 @@ extern "C" {
 		for (std::vector<torrent_handle>::const_iterator i = tv.begin(); i != tv.end(); ++i) {
 			
 			if (!i->torrent_file()) {
-				logError("status doesn't have a  torrent-file");
+				//but can I still read status, eg queued
+				//logError("status doesn't have a  torrent-file");
 				continue;
 			}
 				
@@ -1266,6 +1267,27 @@ extern "C" {
 		}
 
 		return vecTorrents;
+	}
+
+	FREObject getMagnetURI(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
+		using namespace libtorrent;
+		using namespace std;
+		string id = getStringFromFREObject(argv[0]);
+		string hash = getHashFromId(id);
+		string ret = "";
+		vector<torrent_status> temp;
+		ltsession->get_torrent_status(&temp, &yes, 0);
+		vector<torrent_handle> tv;
+		tv = ltsession->get_torrents();
+		int foundN = findHandle(tv, hash);
+		torrent_handle fh;
+		if (foundN > -1) {
+			fh = tv[foundN];
+			if(fh.is_valid())
+				ret = make_magnet_uri(fh);
+		}
+			
+		return getFREObjectFromString(ret);
 	}
 	
 	FREObject pauseTorrent(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
@@ -1827,6 +1849,7 @@ extern "C" {
 			,{ (const uint8_t*) "createTorrent",NULL, &createTorrent }
 			,{ (const uint8_t*) "addRSS",NULL, &addRSS }
 			,{ (const uint8_t*) "saveSessionState",NULL, &saveSessionState }
+			,{ (const uint8_t*) "getMagnetURI",NULL, &getMagnetURI }
 		};
 
 		*numFunctionsToSet = sizeof(extensionFunctions) / sizeof(FRENamedFunction);

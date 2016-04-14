@@ -30,9 +30,14 @@ package com.tuarua.torrent {
 		public static function updatePeers(_name:String,_tp:TorrentPeers):void {
 			peers[_name] = _tp;
 		}
-		
 		public static function updateTrackers(_name:String,_tp:TorrentTrackers):void{
 			trackers[_name] = _tp;
+		}
+		public static function length(dictionary:Dictionary):int {
+			var n:int = 0;
+			for (var key:* in dictionary)
+				n++;
+			return n;
 		}
 	}
 }

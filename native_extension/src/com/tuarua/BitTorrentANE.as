@@ -10,6 +10,7 @@ package com.tuarua {
 	import com.tuarua.torrent.TorrentWebSeed;
 	import com.tuarua.torrent.TorrentsLibrary;
 	import com.tuarua.torrent.events.TorrentInfoEvent;
+	import com.tuarua.torrent.utils.MagnetParser;
 	
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
@@ -47,12 +48,14 @@ package com.tuarua {
 					trace("INFO:",event.code);
 					break;
 				case TorrentInfoEvent.ON_ERROR:
+					trace(event.code);
 					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.ON_ERROR,{message:event.code}));
 					break;
 				case TorrentInfoEvent.TORRENT_PIECE:
 					pObj = JSON.parse(event.code);
 					tp = TorrentsLibrary.pieces[pObj.id] as TorrentPieces;
-					tp.setDownloaded(pObj.index);
+					if(tp)
+						tp.setDownloaded(pObj.index);
 					break;
 				case TorrentInfoEvent.TORRENT_CREATED_FROM_META:
 					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.TORRENT_CREATED_FROM_META,JSON.parse(event.code)));
@@ -140,13 +143,20 @@ package com.tuarua {
 			if(extensionContext)
 				extensionContext.call("pauseTorrent",(id) ? id : "");
 		}
+		public function getMagnetURI(id:String):String{
+			var ret:String;
+			if(extensionContext)
+				ret = extensionContext.call("getMagnetURI",id) as String;
+			return ret;
+		}
+		
 		public function resumeTorrent(id:String=null):void {
 			if(extensionContext)
 				extensionContext.call("resumeTorrent",(id) ? id : "");
 		}
-		public function setQueuePosition(id:String,directory:int):void {
+		public function setQueuePosition(id:String,direction:int):void {
 			if(extensionContext)
-				extensionContext.call("setQueuePosition",id,directory);
+				extensionContext.call("setQueuePosition",id,direction);
 		}
 		public function removeTorrent(id:String):void {
 			TorrentsLibrary.remove(id);
@@ -168,23 +178,26 @@ package com.tuarua {
 			for (var i:int=0, l:int=vecTrackers.length; i<l; ++i)
 				TorrentsLibrary.updateTrackers(vecTrackers[i].id,vecTrackers[i]);
 		}
-		public function torrentFromMagnet(uri:String,id:String,hash:String,name:String,sequential:Boolean,toQueue:Boolean=false,trackers:Vector.<TorrentTracker>=null):void {
+		public function torrentFromHash(id:String,hash:String,name:String,sequential:Boolean=false,toQueue:Boolean=false,trackers:Vector.<TorrentTracker>=null):void {
 			var torrentFile:File = File.applicationDirectory.resolvePath(TorrentSettings.storage.torrentPath).resolvePath(id+".torrent");
-			if(torrentFile.exists){
+			if(torrentFile.exists)
 				addTorrent(torrentFile.nativePath,id,hash,sequential,toQueue,trackers);
-			}else if(!_inited){
+			else if(!_inited)
 				this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.TORRENT_UNAVAILABLE));
-			}else{
-				var magnetURI:String;
-				if(uri == "" || uri == null)
-					magnetURI = "magnet:?xt=urn:btih:"+encodeURIComponent(hash)+"&dn="+encodeURIComponent(name);
-				else
-					magnetURI = uri
-				extensionContext.call("torrentFromMagnet",magnetURI,id,hash,sequential,toQueue,trackers);
-			}
+			else
+				extensionContext.call("torrentFromMagnet","magnet:?xt=urn:btih:"+encodeURIComponent(hash)+"&dn="+encodeURIComponent(name),id,hash,sequential,toQueue,trackers);
+		}
+		public function torrentFromMagnet(uri:String,id:String,sequential:Boolean=false,toQueue:Boolean=false,trackers:Vector.<TorrentTracker>=null):void {
+			var torrentFile:File = File.applicationDirectory.resolvePath(TorrentSettings.storage.torrentPath).resolvePath(id+".torrent");
+			if(torrentFile.exists)
+				addTorrent(torrentFile.nativePath,id,MagnetParser.parse(uri).hash,sequential,toQueue,trackers);
+			else if(!_inited)
+				this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.TORRENT_UNAVAILABLE));
+			else
+				extensionContext.call("torrentFromMagnet",uri,id,MagnetParser.parse(uri).hash,sequential,toQueue,trackers);
 		}
 		//pieceSize is in KiB
-		public function createTorrent(input:String,output:String,trackers:Vector.<TorrentTracker>,webSeeds:Vector.<TorrentWebSeed>,pieceSize:int,isPrivate:Boolean=false,comment:String=null,rootCert:String=null):void {
+		public function createTorrent(input:String,output:String,pieceSize:int,trackers:Vector.<TorrentTracker>,webSeeds:Vector.<TorrentWebSeed>,isPrivate:Boolean=false,comment:String=null,rootCert:String=null):void {
 			//input file exists
 			if(pieceSize % 16 > 0) throw new Error("pieceSize must be a miltiple of 16");
 			extensionContext.call("createTorrent",input,output,trackers,webSeeds,pieceSize,isPrivate,comment,rootCert);

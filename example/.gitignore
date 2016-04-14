@@ -21,3 +21,6 @@ bin-release/
 .FlexUnitSettings
 .externalToolBuilders
 .model
+
+# textures
+.tps
