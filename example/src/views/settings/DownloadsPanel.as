@@ -37,6 +37,7 @@ package views.settings {
 			
 			appRootInput = new Input(500,model.SettingsLocalStore.settings.outputPath);
 			appRootInput.type = TextFieldType.DYNAMIC;
+			
 			var storageGroupLbl:TextField = new TextField(50,32,"Storage", "Fira Sans Regular 13", 13, 0xD8D8D8);
 			
 			storageGroupLbl.x = 15;

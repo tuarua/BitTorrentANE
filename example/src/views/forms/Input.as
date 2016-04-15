@@ -24,6 +24,8 @@ package views.forms {
 		private var isEnabled:Boolean = true;
 		private var _password:Boolean = false;
 		private var _type:String = TextFieldType.INPUT;
+		private var _multiline:Boolean = false;
+		private var _height:int = 24;
 		public function Input(_w:int,_txt:String) {
 			super();
 			this.addEventListener(starling.events.Event.ADDED_TO_STAGE,onAddedToStage);
@@ -36,7 +38,6 @@ package views.forms {
 			//trace("creating input with type",_type);
 			
 			nti = new NativeTextInput(w-10,_txt,false,0xC0C0C0);
-			
 			
 			addChild(inputBG);
 		}
@@ -62,15 +63,20 @@ package views.forms {
 		}
 
 		public function set password(value:Boolean):void {
-			_password = value;
-			nti.password = _password;
+			nti.password = _password = value;
 		}
 
 		public function set type(value:String):void {
-			_type = value;
-			nti.type = _type;
+			nti.type = _type = value;
 		}
 
+		public function set multiline(value:Boolean):void {
+			nti.multiline = _multiline = value;
+		}
+		public function setHeight(value:int):void {
+			_height = value;
+			nti.setHeight(value);
+		}
 		
 	}
 }

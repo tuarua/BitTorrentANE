@@ -26,6 +26,8 @@ package views.forms {
 		private var _align:String = TextFormatAlign.LEFT;
 		private var _maxChars:uint = 0;
 		private var _restrict:String = null;
+		private var _multiline:Boolean = false;
+		private var _height:int = 24;
 		public function NativeTextInput(_w:int,_txt:String,_clearOnFocus:Boolean=false,_fontColor:uint=0x111111) {
 			super();
 			defaultText = _txt;
@@ -39,8 +41,9 @@ package views.forms {
 			textFormat.color = _fontColor;
 			
 			input.width = _w;
-			input.height = 24;
-			input.multiline = false;
+			input.height = _height;
+			input.multiline = _multiline;
+			input.wordWrap = _multiline;
 			input.selectable = true;
 			input.defaultTextFormat = textFormat;
 			input.embedFonts = true;
@@ -90,36 +93,36 @@ package views.forms {
 		}
 
 		public function set fontSize(value:uint):void {
-			_fontSize = value;
-			textFormat.size = _fontSize;
+			textFormat.size = _fontSize = value;
 			input.setTextFormat(textFormat);
 		}
 		public function set align(value:String):void {
-			_align = value;
-			textFormat.align = _align;
+			textFormat.align = _align = value;
 			input.setTextFormat(textFormat);
 		}
 
 		public function set type(value:String):void {
-			_type = value;
-			originalType = _type;
-			input.type = _type;
+			originalType = input.type = _type = value;
 		}
 		public function set maxChars(value:uint):void {
-			_maxChars = value;
-			if(_maxChars > 0)
-				input.maxChars = _maxChars;
+			input.maxChars = _maxChars = value;
 		}
 		
 		public function set password(value:Boolean):void {
-			_password = value;
-			input.displayAsPassword = _password;
+			input.displayAsPassword = _password = value;
 		}
 		public function set restrict(value:String):void {
-			_restrict = value;
-			if(_restrict)
-				input.restrict = _restrict;
+			input.restrict = _restrict = value;
 		}
+
+		public function set multiline(value:Boolean):void {
+			input.wordWrap = input.multiline = _multiline = value;
+		}
+
+		public function setHeight(value:int):void {
+			input.height = _height = value;
+		}
+		
 
 	}
 }

@@ -142,7 +142,6 @@ package views.settings {
 			chkOScache.x = 0;
 			chkOScache.y = 5;
 			
-			
 			chkRecheckTorrents = new CheckBox(model.SettingsLocalStore.settings.advanced.recheckTorrentsOnCompletion);
 			chkRecheckTorrents.addEventListener(FormEvent.CHANGE,onFormChange);
 			chkRecheckTorrents.x = 0;
