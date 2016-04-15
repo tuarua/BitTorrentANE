@@ -25,8 +25,8 @@ package views.client {
 		private var bg:QuadBatch = new QuadBatch();
 		private var headingHolder:Sprite = new Sprite();
 		
-		private var itmHolder:Sprite = new Sprite(); //=EpisodeContainer
-		private var holder:Sprite = new Sprite(); //=holder
+		private var itmHolder:Sprite = new Sprite();
+		private var holder:Sprite = new Sprite();
 		
 		private var txtHolder:Sprite = new Sprite();
 		private var imgHolder:Sprite = new Sprite();
@@ -188,7 +188,6 @@ package views.client {
 			
 			fullHeight = (_tp.length*20)+12;
 
-			//scrollBar.y = nScrollbarOffset;
 			scrollBar.scaleY = h/fullHeight;
 			scrollBar.visible = !(fullHeight < h);
 			

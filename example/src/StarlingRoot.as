@@ -10,6 +10,7 @@ package {
 	import com.tuarua.torrent.constants.LogLevel;
 	import com.tuarua.torrent.constants.QueuePosition;
 	import com.tuarua.torrent.events.TorrentInfoEvent;
+	import com.tuarua.torrent.TorrentStateCodes;
 	
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
@@ -22,9 +23,13 @@ package {
 	
 	import model.SettingsLocalStore;
 	
+	import starling.animation.Transitions;
+	import starling.animation.Tween;
+	import starling.core.Starling;
 	import starling.display.Button;
 	import starling.display.Quad;
 	import starling.display.Sprite;
+	import starling.events.KeyboardEvent;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
@@ -32,6 +37,7 @@ package {
 	import starling.textures.Texture;
 	
 	import views.client.MainPanel;
+	import views.settings.SettingsPanel;
 	
 	public class StarlingRoot extends Sprite {
 		private var starlingVideo:StarlingVideo = new StarlingVideo();
@@ -41,14 +47,16 @@ package {
 		private var currentPieces:TorrentPieces;
 		private var currentPeers:TorrentPeers;
 		private var currentVideoFile:TorrentFileMeta;
-		private var bVideoPlaying:Boolean = false;
+		private var isVideoPlaying:Boolean = false;
+		private var numRequiredPieces:int = 5;
 		private var buttonBG:Quad = new Quad(100,40,0xF3F3F3);
 		private var magnetButton:Button = new Button(Texture.fromColor(100,40,0xFF000000),"load magnet",Texture.fromColor(100,40,0xFF000000),Texture.fromColor(100,40,0xFF000000),Texture.fromColor(100,40,0xFF000000));
 		private var torrentButton:Button = new Button(Texture.fromColor(100,40,0xFF000000),"load torrent",Texture.fromColor(100,40,0xFF000000),Texture.fromColor(100,40,0xFF000000),Texture.fromColor(100,40,0xFF000000));
 		private var endButton:Button = new Button(Texture.fromColor(100,40,0xFF000000),"end session",Texture.fromColor(100,40,0xFF000000),Texture.fromColor(100,40,0xFF000000),Texture.fromColor(100,40,0xFF000000));
 		private var torrentId:String;
 		
-		private var torrentClientPanel:MainPanel = new MainPanel();
+		private var torrentClientPanel:MainPanel;
+		private var settingsPanel:SettingsPanel;
 		
 		private var downloadAsSequential:Boolean = true;
 		public function StarlingRoot() {
@@ -57,18 +65,26 @@ package {
 		}
 		public function start():void {
 			
-			//Cosmos laundromat
-			//magnet:?xt=urn:btih:f3bf22593bd8c5b318c9fa41c7d507215ea67adc&dn=Cosmos%20Laundromat%20-%20Blender-short-movie&tr=udp%3a%2f%2fopen.demonii.com%3a1337%2fannounce&tr=udp%3a%2f%2ftracker.publicbt.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.openbittorrent.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.istole.it%3a80%2fannounce&tr=udp%3a%2f%2ftorrent.gresille.org%3a80%2fannounce&tr=udp%3a%2f%2ftracker.opentrackr.org%3a1337%2fannounce&tr=http%3a%2f%2ftracker.aletorrenty.pl%3a2710%2fannounce&tr=http%3a%2f%2fopen.acgtracker.com%3a1096%2fannounce&tr=udp%3a%2f%2ftracker4.piratux.com%3a6969%2fannounce&tr=udp%3a%2f%2f9.rarbg.me%3a2710%2fannounce
-			
-			//Sintel
-
-			
 			//TO DO
-			//on resize, advanced textfields x not right
+			// on resize, advanced textfields x not right
+			// add magnet button
+			// menu screen
+			// ok cancel buttons
+			// power button
+			// settings screen
+			// add torrent button
+			// ANE error bubble
 			
 			
 			model.SettingsLocalStore.load(model.SettingsLocalStore == null || model.SettingsLocalStore.settings == null);
 			model.SettingsLocalStore.load(true);
+			
+			
+			//create dropdown with some magnets and torrents setup
+			
+			settingsPanel = new SettingsPanel();
+			torrentClientPanel = new MainPanel();
+			
 			endButton.fontColor = magnetButton.fontColor = torrentButton.fontColor = 0xFFFFFF;
 			
 			magnetButton.addEventListener(TouchEvent.TOUCH,onMagnetClicked);
@@ -84,9 +100,9 @@ package {
 			starlingVideo.y = 60;
 			
 			torrentClientPanel.addEventListener(InteractionEvent.ON_MENU_ITEM_RIGHT,onRightClick);
-			torrentClientPanel.x = 0;
+			settingsPanel.x = torrentClientPanel.x = 0;
 			torrentClientPanel.y = 60;
-			
+			settingsPanel.y = 86;
 			
 			addChild(magnetButton);
 			
@@ -96,6 +112,8 @@ package {
 			addChild(starlingVideo);
 			addChild(torrentClientPanel);
 			
+			settingsPanel.visible = false;
+			addChild(settingsPanel);
 
 			if(libTorrentANE.isSupported()){
 				
@@ -110,15 +128,6 @@ package {
 				updateTorrentSettings();
 				libTorrentANE.updateSettings();
 				
-				//these trackers are used if no magneturi is passed ("" for the _uri param), ie only a hash is sent into torrentFromMagnet method
-				
-				//
-				//to have a trackerless torrent 
-				//A) don't add trackers via addTracker()
-				//B) only provide a hash into torrentFromMagnet() method
-				//C) add DHT routers using addDHTRouter()
-				//D) set TorrentSettings.useDHT = true
-				//
 				libTorrentANE.addDHTRouter("router.bittorrent.com");
 				libTorrentANE.addDHTRouter("router.utorrent.com");
 				libTorrentANE.addDHTRouter("router.bitcomet.com");
@@ -131,19 +140,34 @@ package {
 				libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_UNAVAILABLE,onTorrentUnavailable);
 				libTorrentANE.addEventListener(TorrentInfoEvent.FILTERLIST_ADDED,onFilterListAdded);
 				libTorrentANE.addEventListener(TorrentInfoEvent.RSS_ITEM,onRSSitem);
-				
 				libTorrentANE.initSession();
 				
-				libTorrentANE.addFilterList(File.applicationDirectory.resolvePath("filters").resolvePath("peerGuardianSample.p2p").nativePath,model.SettingsLocalStore.settings.filters.applyToTrackers);
-				
-				
+				if(model.SettingsLocalStore.settings.filters.enabled)
+					libTorrentANE.addFilterList(model.SettingsLocalStore.settings.filters.fileName,model.SettingsLocalStore.settings.filters.applyToTrackers);
 			
 			}else{
 				trace("This ANE is not supported");
 			}
 			
+			this.addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
 		}
-		
+		private function onKeyDown(event:KeyboardEvent):void {
+			if(String.fromCharCode(event.charCode) == "s" && Starling.current.nativeOverlay.stage.focus == null) {
+				showSettings();
+			}
+		}
+		private function showSettings(event:InteractionEvent=null):void {
+			if(settingsPanel){
+				settingsPanel.visible = !settingsPanel.visible;
+				settingsPanel.showDefault();
+				if(!settingsPanel.visible) settingsPanel.hideAllFields();
+				this.setChildIndex(settingsPanel,this.numChildren-1);
+				var targetAlphaSettings:Number = (settingsPanel.visible) ? 1 : 0;
+				var tweenTCPSettings:Tween = new Tween(settingsPanel, 0.1, Transitions.LINEAR);
+				tweenTCPSettings.animate("alpha",targetAlphaSettings);
+				Starling.juggler.add(tweenTCPSettings);
+			}
+		}
 		private function onRightClick(event:InteractionEvent):void {
 			var meta:TorrentMeta = TorrentsLibrary.meta[event.params.id];
 			switch(event.params.value){
@@ -271,11 +295,6 @@ package {
 			var touch:Touch = event.getTouch(magnetButton);
 			if(touch != null && touch.phase == TouchPhase.ENDED) {
 				torrentId = "f3bf22593bd8c5b318c9fa41c7d507215ea67adc";
-				
-				//magnet:?xt=urn:btih:6a9759bffd5c0af65319979fb7832189f4f3c35d&dn=sintel.mp4&tr=udp%3A%2F%2Fexodus.desync.com%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&tr=wss%3A%2F%2Ftracker.webtorrent.io&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel-1024-surround.mp4
-				
-				//magnet:?xt=urn:btih:f3bf22593bd8c5b318c9fa41c7d507215ea67adc&dn=Cosmos%20Laundromat%20-%20Blender-short-movie&tr=udp%3a%2f%2fopen.demonii.com%3a1337%2fannounce&tr=udp%3a%2f%2ftracker.publicbt.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.openbittorrent.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.istole.it%3a80%2fannounce&tr=udp%3a%2f%2ftorrent.gresille.org%3a80%2fannounce&tr=udp%3a%2f%2ftracker.opentrackr.org%3a1337%2fannounce&tr=http%3a%2f%2ftracker.aletorrenty.pl%3a2710%2fannounce&tr=http%3a%2f%2fopen.acgtracker.com%3a1096%2fannounce&tr=udp%3a%2f%2ftracker4.piratux.com%3a6969%2fannounce&tr=udp%3a%2f%2f9.rarbg.me%3a2710%2fannounce
-				
 				var rightClickMenuDataList:Vector.<Object> = new Vector.<Object>();
 				rightClickMenuDataList.push({value:0,label:"Pause"});
 				rightClickMenuDataList.push({value:1,label:"Delete"});
@@ -287,20 +306,14 @@ package {
 				
 				libTorrentANE.torrentFromMagnet(uri,"cosmos",downloadAsSequential);
 				
-				//libTorrentANE.torrentFromMagnet("magnet:?xt=urn:btih:"+hash+"&dn=bbb_sunflower_1080p_60fps_normal.mp4&tr=udp%3a%2f%2ftracker.openbittorrent.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.publicbt.com%3a80%2fannounce&ws=http%3a%2f%2fdistribution.bbb3d.renderfarming.net%2fvideo%2fmp4%2fbbb_sunflower_1080p_60fps_normal.mp4",torrentId,hash,"bbb_sunflower_1080p_60fps_normal.mp4",downloadAsSequential);
 			}
 		}
 		private function onTorrentClicked(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(torrentButton);
 			if(touch != null && touch.phase == TouchPhase.ENDED){
-				// load via .torrent file of Big Buck Bunny
-				// torrent file is available here
-				// http://distribution.bbb3d.renderfarming.net/video/mp4/bbb_sunflower_1080p_30fps_normal.mp4.torrent
 				var meta:TorrentMeta = libTorrentANE.getTorrentMeta(File.applicationDirectory.resolvePath("torrents").resolvePath("bbb_sunflower_1080p_30fps_normal.mp4.torrent").nativePath);
 				if(meta.status == "ok"){
-					
 					torrentId = meta.infoHash; //it's a good idea to use the hash as the id
-					
 					var dict:Dictionary = TorrentsLibrary.status;
 					var rightClickMenuDataList:Vector.<Object> = new Vector.<Object>();
 					rightClickMenuDataList.push({value:0,label:"Pause"});//Resume
@@ -315,9 +328,7 @@ package {
 				}
 				
 			}
-		}	
-		
-		
+		}
 		
 		private function onEndClicked(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(endButton);
@@ -391,23 +402,27 @@ package {
 			
 			currentStatus = TorrentsLibrary.status[torrentId] as TorrentStatus; //The dictionary contains all the torrents we've added. Use key to retrieve the status of that torrent. You can of course add multiple torrents, and check their status individually
 			currentPieces = TorrentsLibrary.pieces[torrentId] as TorrentPieces;
+			if(TorrentsLibrary.meta[torrentId]) currentVideoFile = TorrentsLibrary.meta[torrentId].getFileByExtension(["mp4","mkv","avi"]);
 			
-
-			if(currentStatus && TorrentsLibrary.meta[torrentId]){
-				currentVideoFile = TorrentsLibrary.meta[torrentId].getFileByExtension(["mp4","mkv","avi"]);
+			if(currentVideoFile && currentStatus && currentPieces){
 				
-				//trace("--------------");     				//trace("torrentId",torrentId);
-				//trace("bVideoPlaying",bVideoPlaying);
-				//trace("currentVideoFile",currentVideoFile);
-				//trace("currentStatus.last_piece",currentStatus.last_piece);
-			//	trace("currentStatus.numSequential",currentStatus.numSequential);
-				//trace("currentStatus.isFinished",currentStatus.is_finished);
-				
-				//if(!bVideoPlaying && currentVideoFile && currentStatus.hasLastPiece && (currentStatus.numSequential >= 10 || currentStatus.isFinished)){ //play the video when we have the last piece and at least 10 pieces
-					//bVideoPlaying = true;
-					//BUG resumed torrents are having trouble with this, ownership issue
-					//starlingVideo.loadVideo(File.applicationDirectory.resolvePath("output").resolvePath(currentVideoFile.uri).nativePath);
-				//}
+				if(isVideoPlaying){
+					
+				}else{
+					numRequiredPieces = Math.ceil((currentVideoFile.lastPiece - currentVideoFile.firstPiece)/1000)*5;
+					var initialPieces:Number = 0;
+					if(currentPieces && currentPieces.pieces.length > 0){
+						initialPieces = currentPieces.numSequential - currentVideoFile.firstPiece;
+						if (currentPieces.pieces[currentVideoFile.lastPiece] == 1) initialPieces++;
+					}
+					if((initialPieces >= numRequiredPieces) || currentStatus.state == TorrentStateCodes.SEEDING || currentStatus.isFinished) {
+						isVideoPlaying = true;
+						torrentClientPanel.showMask(false);
+						settingsPanel.showMask(false);
+						starlingVideo.loadVideo(File.applicationDirectory.resolvePath("output").resolvePath(currentVideoFile.path).nativePath);
+						
+					}
+				}
 			}
 			
 		}

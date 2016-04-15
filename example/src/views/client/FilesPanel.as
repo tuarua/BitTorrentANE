@@ -3,19 +3,25 @@ package views.client {
 	import com.tuarua.torrent.TorrentSettings;
 	
 	import flash.filesystem.File;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
+	import starling.animation.Transitions;
+	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.QuadBatch;
 	import starling.display.Sprite;
+	import starling.events.Touch;
+	import starling.events.TouchEvent;
+	import starling.events.TouchPhase;
 	import starling.text.TextField;
 	import starling.utils.HAlign;
 	
 	import utils.TextUtils;
 	
 	public class FilesPanel extends Sprite {
-		private static var divArr:Array = new Array(0,800,900,1000,1200);
+		private static var divArr:Array = new Array(0,800,900,1000,1100);
 		private static var headingArr:Array = new Array("Name", "Size", "Progress","Priority","");
 		private static var headingAligns:Array = new Array(HAlign.LEFT,HAlign.LEFT,HAlign.CENTER,HAlign.LEFT,HAlign.LEFT);
 		private var bg:QuadBatch = new QuadBatch();
@@ -23,8 +29,13 @@ package views.client {
 		private var itmHolder:Sprite = new Sprite();
 		private var txtHolder:Sprite = new Sprite();
 		private var imgHolder:Sprite = new Sprite();
+		private var holder:Sprite = new Sprite();
 		private var w:int = 1200;
+		private var scrollBar:Quad;
+		private var nScrollbarOffset:int = 40;
+		private var scrollBeganY:int;
 		private var h:int = 255;
+		private var fullHeight:uint;
 		public function FilesPanel() {
 			super();
 			
@@ -48,8 +59,36 @@ package views.client {
 			//itmHolder.mask = new Quad(w,h);
 			addChild(bg);
 			addChild(headingHolder);
-			itmHolder.addChild(txtHolder);
-			addChild(itmHolder);
+			
+			
+			
+		}
+		private function setupScrollBar():void {
+			if(scrollBar && this.contains(scrollBar)) removeChild(scrollBar);
+			scrollBar = new Quad(8,h,0xCC8D1E);
+			scrollBar.alpha = 1;
+			scrollBar.visible = false;
+			scrollBar.y = nScrollbarOffset;
+			scrollBar.x = 1200 - 12;
+			scrollBar.addEventListener(TouchEvent.TOUCH,onScrollBarTouch);
+			addChild(scrollBar);
+		}
+		private function onScrollBarTouch(event:TouchEvent):void {
+			var touch:Touch = event.getTouch(scrollBar);
+			if(touch && touch.phase == TouchPhase.BEGAN) scrollBeganY = globalToLocal(new Point(0,touch.globalY)).y-scrollBar.y;
+			if(touch && touch.phase == TouchPhase.ENDED) scrollBeganY = -1;
+			if(touch && touch.phase == TouchPhase.HOVER) Starling.juggler.tween(scrollBar, 0.2, {transition: Transitions.LINEAR,alpha: 1});
+			if(touch == null) Starling.juggler.tween(scrollBar, 0.2, {transition: Transitions.LINEAR,alpha: 0});
+			
+			if(touch && touch.phase == TouchPhase.MOVED){
+				var y:int = globalToLocal(new Point(touch.globalX,touch.globalY-(scrollBeganY))).y;
+				if(y < itmHolder.y) y = itmHolder.y;
+				if(y > (itmHolder.y + 255 - scrollBar.height))
+					y = itmHolder.y + 255 - scrollBar.height;
+				scrollBar.y = y;	
+				var percentage:Number = (y - nScrollbarOffset) / (h-scrollBar.height);
+				holder.y = -((fullHeight - h)*percentage);
+			}
 		}
 		public function populate(_files:Vector.<TorrentFileMeta>):void {
 			var k:int = txtHolder.numChildren;
@@ -136,11 +175,18 @@ package views.client {
 				
 			}
 
-			itmHolder.addChild(txtHolder);
-			itmHolder.addChild(imgHolder);
+			fullHeight = (cnt*22)+12;
+			
+			
+			
+			holder.addChild(txtHolder);
+			holder.addChild(imgHolder);
+			itmHolder.addChild(holder);
 			
 			addChild(itmHolder);
-			
+			setupScrollBar();
+			scrollBar.scaleY = h/fullHeight;
+			scrollBar.visible = !(fullHeight < h);
 		}
 		
 		public function clear():void {
