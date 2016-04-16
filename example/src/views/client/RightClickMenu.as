@@ -1,4 +1,5 @@
 package views.client {
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
@@ -7,7 +8,6 @@ package views.client {
 	import feathers.display.Scale9Image;
 	import feathers.textures.Scale9Textures;
 	
-	import starling.animation.Transitions;
 	import starling.animation.Tween;
 	import starling.core.Starling;
 	import starling.display.BlendMode;
@@ -31,6 +31,7 @@ package views.client {
 		private var listOuterContainer:Sprite = new Sprite();
 		private var tween:Tween;
 		private var id:String;
+		
 		public function RightClickMenu(_id:String,_w:int,_items:Vector.<Object>) {
 			super();
 			id = _id;
@@ -75,18 +76,6 @@ package views.client {
 			addChild(listOuterContainer);
 		}
 		
-		/*
-		private function close():void {
-			tween = new Tween(listContainer, 0.15, Transitions.EASE_IN);
-			tween.animate("y",25-h);
-			Starling.juggler.add(tween);
-			tween.onComplete = function():void {
-				listOuterContainer.visible = false;
-			}
-			this.dispatchEvent(new FormEvent(FormEvent.FOCUS_OUT,null));
-		}
-		*/
-		
 		public function update(_items:Vector.<Object>):void {
 			items = _items;
 			h = (items.length*20) + 5;
@@ -109,11 +98,12 @@ package views.client {
 		}
 		
 		public function open():void {
-			tween = new Tween(listContainer, 0.15, Transitions.EASE_OUT);
-			//tween.animate("y",0);
 			listOuterContainer.visible = true;
-			//Starling.juggler.add(tween);
-			//this.dispatchEvent(new FormEvent(FormEvent.FOCUS_IN,null));
+			Starling.current.nativeStage.addEventListener(MouseEvent.CLICK,onClick);
+		}
+		private function onClick(event:MouseEvent):void {
+			Starling.current.nativeStage.removeEventListener(MouseEvent.CLICK,onClick);
+			close();
 		}
 		public function close():void {
 			hover.visible = false;
@@ -126,15 +116,13 @@ package views.client {
 				hover.visible = true;
 				var p:Point = hoverTouch.getLocation(listContainer,p);
 				var proposedHover:int = Math.floor((p.y)/20);
-				if(proposedHover > -1 && proposedHover < items.length/* && tween.isComplete*/)
+				if(proposedHover > -1 && proposedHover < items.length)
 					hover.y = (proposedHover*20)+2;
 			}else if(clickTouch){
 				var pClick:Point = clickTouch.getLocation(listContainer,pClick);
 				var proposedSelected:int = Math.floor((pClick.y)/20);
-				if(proposedSelected > -1 && proposedSelected < items.length){
+				if(proposedSelected > -1 && proposedSelected < items.length)
 					this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_MENU_ITEM_RIGHT,{value:items[proposedSelected].value,id:id},true));
-					close();
-				}
 			}else{
 				
 			}
