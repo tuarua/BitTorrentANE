@@ -1050,7 +1050,7 @@ extern "C" {
 				std::vector<peer_info> peers;
 				i->get_peer_info(peers);
 				if (!peers.empty()) {
-					FRESetArrayLength(vecPeers, peers.size());
+					FRESetArrayLength(vecPeers, (uint32_t)peers.size());
 					int peercnt = 0;
 					for (std::vector<peer_info>::const_iterator p = peers.begin(); p != peers.end(); ++p) {
 						if (p->flags & (peer_info::handshake | peer_info::connecting | peer_info::queued))

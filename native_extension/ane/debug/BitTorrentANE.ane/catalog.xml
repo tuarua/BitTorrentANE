@@ -1,0 +1,293 @@
+<?xml version="1.0" ?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+    <versions>
+        <swc version="1.2"/>
+        <flex version="4.7.0" build="354174" minimumSupportedVersion="3.0.0"/>
+        <compiler name="ActionScript Compiler" version="2.0.0" build="354174"/>
+    </versions>
+    <features>
+        <feature-script-deps/>
+    </features>
+    <libraries>
+        <library path="library.swf">
+            <script name="com/tuarua/BitTorrentANE" mod="1460588042208">
+                <def id="com.tuarua:BitTorrentANE"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Error" type="e"/>
+                <dep id="Function" type="s"/>
+                <dep id="JSON" type="e"/>
+                <dep id="Object" type="e"/>
+                <dep id="String" type="s"/>
+                <dep id="__AS3__.vec:Vector" type="s"/>
+                <dep id="com.tuarua.torrent:TorrentDownloader" type="e"/>
+                <dep id="com.tuarua.torrent:TorrentMeta" type="e"/>
+                <dep id="com.tuarua.torrent:TorrentPeers" type="e"/>
+                <dep id="com.tuarua.torrent:TorrentPieces" type="e"/>
+                <dep id="com.tuarua.torrent:TorrentSettings" type="e"/>
+                <dep id="com.tuarua.torrent:TorrentStatus" type="e"/>
+                <dep id="com.tuarua.torrent:TorrentTracker" type="s"/>
+                <dep id="com.tuarua.torrent:TorrentTrackers" type="e"/>
+                <dep id="com.tuarua.torrent:TorrentWebSeed" type="s"/>
+                <dep id="com.tuarua.torrent:TorrentsLibrary" type="e"/>
+                <dep id="com.tuarua.torrent.events:TorrentInfoEvent" type="e"/>
+                <dep id="com.tuarua.torrent.utils:MagnetParser" type="e"/>
+                <dep id="encodeURIComponent" type="e"/>
+                <dep id="flash.events:EventDispatcher" type="i"/>
+                <dep id="flash.events:IEventDispatcher" type="s"/>
+                <dep id="flash.events:StatusEvent" type="e"/>
+                <dep id="flash.events:TimerEvent" type="e"/>
+                <dep id="flash.external:ExtensionContext" type="s"/>
+                <dep id="flash.filesystem:File" type="e"/>
+                <dep id="flash.utils:Timer" type="s"/>
+                <dep id="int" type="s"/>
+                <dep id="trace" type="e"/>
+            </script>
+            <script name="com/tuarua/torrent/PeerFlags" mod="1456861612260">
+                <def id="com.tuarua.torrent:PeerFlags"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="i"/>
+            </script>
+            <script name="com/tuarua/torrent/PeerInfo" mod="1456680691715">
+                <def id="com.tuarua.torrent:PeerInfo"/>
+                <dep id="Number" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="com.tuarua.torrent:PeerFlags" type="s"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/TorrentDownloader" mod="1458861734505">
+                <def id="com.tuarua.torrent:TorrentDownloader"/>
+                <dep id="Array" type="e"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Function" type="s"/>
+                <dep id="Object" type="e"/>
+                <dep id="String" type="s"/>
+                <dep id="__AS3__.vec:Vector" type="s"/>
+                <dep id="com.tuarua.torrent:TorrentSettings" type="e"/>
+                <dep id="com.tuarua.torrent:TorrentTracker" type="s"/>
+                <dep id="com.tuarua.torrent.events:TorrentInfoEvent" type="e"/>
+                <dep id="flash.events:Event" type="s"/>
+                <dep id="flash.events:EventDispatcher" type="i"/>
+                <dep id="flash.events:IOErrorEvent" type="s"/>
+                <dep id="flash.filesystem:File" type="e"/>
+                <dep id="flash.filesystem:FileMode" type="e"/>
+                <dep id="flash.filesystem:FileStream" type="e"/>
+                <dep id="flash.net:URLRequest" type="e"/>
+                <dep id="flash.net:URLStream" type="e"/>
+                <dep id="flash.utils:ByteArray" type="e"/>
+                <dep id="trace" type="e"/>
+            </script>
+            <script name="com/tuarua/torrent/TorrentFileMeta" mod="1457802341748">
+                <def id="com.tuarua.torrent:TorrentFileMeta"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="uint" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/TorrentMeta" mod="1457803974973">
+                <def id="com.tuarua.torrent:TorrentMeta"/>
+                <dep id="Array" type="s"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="__AS3__.vec:Vector" type="e"/>
+                <dep id="com.tuarua.torrent:TorrentFileMeta" type="e"/>
+                <dep id="int" type="e"/>
+                <dep id="uint" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/TorrentPeers" mod="1456869611645">
+                <def id="com.tuarua.torrent:TorrentPeers"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="__AS3__.vec:Vector" type="e"/>
+                <dep id="com.tuarua.torrent:PeerInfo" type="e"/>
+            </script>
+            <script name="com/tuarua/torrent/TorrentPieces" mod="1456788495837">
+                <def id="com.tuarua.torrent:TorrentPieces"/>
+                <dep id="Array" type="e"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="__AS3__.vec:Vector" type="e"/>
+                <dep id="int" type="e"/>
+                <dep id="parseInt" type="e"/>
+            </script>
+            <script name="com/tuarua/torrent/TorrentSettings" mod="1458425614440">
+                <def id="com.tuarua.torrent:TorrentSettings"/>
+                <dep id="Array" type="e"/>
+                <dep id="Object" type="i"/>
+                <dep id="com.tuarua.torrent.constants:LogLevel" type="e"/>
+                <dep id="com.tuarua.torrent.settings:Advanced" type="e"/>
+                <dep id="com.tuarua.torrent.settings:Connections" type="e"/>
+                <dep id="com.tuarua.torrent.settings:Listening" type="e"/>
+                <dep id="com.tuarua.torrent.settings:Privacy" type="e"/>
+                <dep id="com.tuarua.torrent.settings:Proxy" type="e"/>
+                <dep id="com.tuarua.torrent.settings:Queueing" type="e"/>
+                <dep id="com.tuarua.torrent.settings:Speed" type="e"/>
+                <dep id="com.tuarua.torrent.settings:Storage" type="e"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/TorrentStateCodes" mod="1456271322181">
+                <def id="com.tuarua.torrent:TorrentStateCodes"/>
+                <dep id="Array" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/TorrentStatus" mod="1457984383241">
+                <def id="com.tuarua.torrent:TorrentStatus"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Number" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="int" type="s"/>
+                <dep id="uint" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/TorrentTracker" mod="1456064315339">
+                <def id="com.tuarua.torrent:TorrentTracker"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/TorrentTrackers" mod="1456868758723">
+                <def id="com.tuarua.torrent:TorrentTrackers"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="__AS3__.vec:Vector" type="e"/>
+                <dep id="com.tuarua.torrent:TrackerInfo" type="e"/>
+            </script>
+            <script name="com/tuarua/torrent/TorrentWebSeed" mod="1458429620411">
+                <def id="com.tuarua.torrent:TorrentWebSeed"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/TorrentsLibrary" mod="1460416532546">
+                <def id="com.tuarua.torrent:TorrentsLibrary"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="com.tuarua.torrent:TorrentMeta" type="s"/>
+                <dep id="com.tuarua.torrent:TorrentPeers" type="s"/>
+                <dep id="com.tuarua.torrent:TorrentPieces" type="s"/>
+                <dep id="com.tuarua.torrent:TorrentStatus" type="s"/>
+                <dep id="com.tuarua.torrent:TorrentTrackers" type="s"/>
+                <dep id="flash.utils:Dictionary" type="s"/>
+                <dep id="int" type="s"/>
+                <dep id="undefined" type="e"/>
+            </script>
+            <script name="com/tuarua/torrent/TrackerInfo" mod="1456869619704">
+                <def id="com.tuarua.torrent:TrackerInfo"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/constants/Encryption" mod="1455662402793">
+                <def id="com.tuarua.torrent.constants:Encryption"/>
+                <dep id="Object" type="i"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/constants/LogLevel" mod="1455578742443">
+                <def id="com.tuarua.torrent.constants:LogLevel"/>
+                <dep id="Object" type="i"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/constants/ProxyType" mod="1458606211433">
+                <def id="com.tuarua.torrent.constants:ProxyType"/>
+                <dep id="Object" type="i"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/constants/QueuePosition" mod="1456095425348">
+                <def id="com.tuarua.torrent.constants:QueuePosition"/>
+                <dep id="Object" type="i"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/constants/RssState" mod="1458778728576">
+                <def id="com.tuarua.torrent.constants:RssState"/>
+                <dep id="Object" type="i"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/events/TorrentInfoEvent" mod="1458840607051">
+                <def id="com.tuarua.torrent.events:TorrentInfoEvent"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="s"/>
+                <dep id="String" type="s"/>
+                <dep id="flash.events:Event" type="i"/>
+            </script>
+            <script name="com/tuarua/torrent/settings/Advanced" mod="1459714626620">
+                <def id="com.tuarua.torrent.settings:Advanced"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/settings/Connections" mod="1458174881789">
+                <def id="com.tuarua.torrent.settings:Connections"/>
+                <dep id="Object" type="i"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/settings/Listening" mod="1458419462736">
+                <def id="com.tuarua.torrent.settings:Listening"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="uint" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/settings/NetworkAddress" mod="1459708039079">
+                <def id="com.tuarua.torrent.settings:NetworkAddress"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/settings/NetworkInterface" mod="1459704545071">
+                <def id="com.tuarua.torrent.settings:NetworkInterface"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="__AS3__.vec:Vector" type="e"/>
+                <dep id="com.tuarua.torrent.settings:NetworkAddress" type="e"/>
+            </script>
+            <script name="com/tuarua/torrent/settings/Privacy" mod="1459470166144">
+                <def id="com.tuarua.torrent.settings:Privacy"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="com.tuarua.torrent.constants:Encryption" type="e"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/settings/Proxy" mod="1458173567137">
+                <def id="com.tuarua.torrent.settings:Proxy"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="com.tuarua.torrent.constants:ProxyType" type="e"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/settings/Queueing" mod="1458174337815">
+                <def id="com.tuarua.torrent.settings:Queueing"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/settings/Speed" mod="1458173691531">
+                <def id="com.tuarua.torrent.settings:Speed"/>
+                <dep id="Boolean" type="s"/>
+                <dep id="Object" type="i"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/settings/Storage" mod="1458817928896">
+                <def id="com.tuarua.torrent.settings:Storage"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/utils/Magnet" mod="1460582777095">
+                <def id="com.tuarua.torrent.utils:Magnet"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/utils/MagnetParser" mod="1460583611710">
+                <def id="com.tuarua.torrent.utils:MagnetParser"/>
+                <dep id="Array" type="e"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
+                <dep id="com.tuarua.torrent.utils:Magnet" type="e"/>
+                <dep id="int" type="e"/>
+            </script>
+            <digests>
+                <digest type="SHA-256" signed="false" value="b41c5ff776279d85ea9a31c5fea870692573bab5576886a8936e30ce29c32c61"/>
+            </digests>
+        </library>
+    </libraries>
+</swc>

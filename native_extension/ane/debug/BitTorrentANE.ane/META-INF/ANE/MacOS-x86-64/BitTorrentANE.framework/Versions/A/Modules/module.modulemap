@@ -1,0 +1,6 @@
+framework module BitTorrentANE {
+  umbrella header "BitTorrentANE.h"
+
+  export *
+  module * { export * }
+}
