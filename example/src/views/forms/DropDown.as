@@ -1,4 +1,5 @@
 package views.forms {
+	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	
@@ -12,6 +13,7 @@ package views.forms {
 	import starling.animation.Transitions;
 	import starling.animation.Tween;
 	import starling.core.Starling;
+	import starling.display.BlendMode;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Touch;
@@ -20,7 +22,6 @@ package views.forms {
 	import starling.text.TextField;
 	import starling.utils.HAlign;
 	import starling.utils.VAlign;
-	import starling.display.BlendMode;
 	
 	public class DropDown extends Sprite { //5 draw calls - not nice
 		private var w:int;
@@ -104,7 +105,13 @@ package views.forms {
 			tween.animate("y",25);
 			listOuterContainer.visible = true;
 			Starling.juggler.add(tween);
+			Starling.current.nativeStage.addEventListener(MouseEvent.CLICK,onClick);
+			Starling.current.nativeStage.addEventListener(MouseEvent.RIGHT_CLICK,onClick);
 			this.dispatchEvent(new FormEvent(FormEvent.FOCUS_IN,null));
+		}
+		private function onClick(event:MouseEvent):void {
+			Starling.current.nativeStage.removeEventListener(MouseEvent.CLICK,onClick);
+			close();
 		}
 		private function close():void {
 			tween = new Tween(listContainer, 0.15, Transitions.EASE_IN);
@@ -129,18 +136,10 @@ package views.forms {
 				var proposedSelected:int = Math.floor((pClick.y)/20);
 				if(proposedSelected > -1 && proposedSelected < items.length){
 					selected = proposedSelected;
-					//hover.y = (proposedHover*20)+2;
 					txt.text = items[selected].label;
 					this.dispatchEvent(new FormEvent(FormEvent.CHANGE,{value:items[selected].value},false));
-					//close 
-					
-					close();
-					
 				}
-			}else{
-				
 			}
-
 		}
 		
 	}
