@@ -2,8 +2,6 @@
 
 Adobe Air Native Extension written in ActionScript 3 and C++ for working with .torrent files and magnet uris.
 
-### Incomplete update, check back soon
-
 
 ### Version
 - 1.0 OSX version only
@@ -47,9 +45,6 @@ You will need
  - run brew install boost libtorrent-rasterbar --with-geoip
 
 ### Win Preconfiguration
-- to modify the ANE code:
-- 
-- 
 
 ### Todos
 
