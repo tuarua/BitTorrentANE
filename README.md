@@ -28,6 +28,7 @@ LibTorrentANE uses the following libraries:
 
 * [http://www.libtorrent.org] - C++ bittorrent implementation
 * [http://www.boost.org] - C++ portable libraries
+* [https://www.openssl.org] - OpenSSL
 
 ### Prerequisites
 
