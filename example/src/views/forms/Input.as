@@ -1,13 +1,14 @@
 package views.forms {
 	import flash.events.Event;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.text.TextFieldType;
 	import flash.text.TextFormatAlign;
 	
 	import events.FormEvent;
 	
-	import feathers.display.Scale3Image;
-	import feathers.textures.Scale3Textures;
+	import feathers.display.Scale9Image;
+	import feathers.textures.Scale9Textures;
 	
 	import starling.core.Starling;
 	import starling.display.BlendMode;
@@ -17,27 +18,30 @@ package views.forms {
 	import views.forms.NativeTextInput;
 	
 	public class Input extends Sprite {
-		private var txtures:Scale3Textures = new Scale3Textures(Assets.getAtlas().getTexture("input-bg"),4,16);
-		private var inputBG:Scale3Image = new Scale3Image(txtures);
-		private var w:int;
+		private var txtures:Scale9Textures;
+		private var inputBG:Scale9Image;
+		//private var w:int;
 		public var nti:NativeTextInput;
 		private var isEnabled:Boolean = true;
 		private var _password:Boolean = false;
 		private var _type:String = TextFieldType.INPUT;
 		private var _multiline:Boolean = false;
-		private var _height:int = 24;
-		public function Input(_w:int,_txt:String) {
+		public function Input(_w:int,_txt:String,_h:int=24) {
 			super();
 			this.addEventListener(starling.events.Event.ADDED_TO_STAGE,onAddedToStage);
-			w = _w;
-			inputBG.width = w;
+			//w = _w;
+			
+			txtures = new Scale9Textures(Assets.getAtlas().getTexture("input-bg"),new Rectangle(4,4,16,16));
+			inputBG = new Scale9Image(txtures);
+			inputBG.width = _w;
+			inputBG.height = _h;
+			
 			inputBG.blendMode = BlendMode.NONE;
 			inputBG.touchable = false;
 			inputBG.flatten();
-			
-			//trace("creating input with type",_type);
-			
-			nti = new NativeTextInput(w-10,_txt,false,0xC0C0C0);
+
+			nti = new NativeTextInput(_w-10,_txt,false,0xC0C0C0);
+			nti.setHeight(_h);
 			
 			addChild(inputBG);
 		}
@@ -73,10 +77,11 @@ package views.forms {
 		public function set multiline(value:Boolean):void {
 			nti.multiline = _multiline = value;
 		}
+		/*
 		public function setHeight(value:int):void {
 			_height = value;
 			nti.setHeight(value);
 		}
-		
+		*/
 	}
 }

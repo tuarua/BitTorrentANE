@@ -33,17 +33,17 @@ package views.settings {
 		private var slowTorrLbl:TextField;
 		public function BitTorrentPanel() {
 			super();
-			var privacyGroupLbl:TextField = new TextField(50,32,"Privacy", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var dhtLbl:TextField = new TextField(500,32,"Enable DHT (decentralised network) to find more peers", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var pexLbl:TextField = new TextField(500,32,"Enable Peer Exchange (PeX) to find more peers", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var lsdLbl:TextField = new TextField(500,32,"Enable Local Peer Discovery to find more peers", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var encryptionModeLbl:TextField = new TextField(100,32,"Encryption:", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var anonModeLbl:TextField = new TextField(160,32,"Enable anonymous mode", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var queuingLbl:TextField = new TextField(160,32,"Torrent queueing", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			maxActiveDownLbl = new TextField(200,32,"Maximum active downloads", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			maxActiveUpLbl = new TextField(200,32,"Maximum active uploads", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			maxActiveTorrLbl = new TextField(200,32,"Maximum active torrents", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			slowTorrLbl = new TextField(400,32,"Do not count slow torrents in these limits", "Fira Sans Regular 13", 13, 0xD8D8D8);
+			var privacyGroupLbl:TextField = new TextField(50,32,"Privacy", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var dhtLbl:TextField = new TextField(500,32,"Enable DHT (decentralised network) to find more peers", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var pexLbl:TextField = new TextField(500,32,"Enable Peer Exchange (PeX) to find more peers", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var lsdLbl:TextField = new TextField(500,32,"Enable Local Peer Discovery to find more peers", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var encryptionModeLbl:TextField = new TextField(100,32,"Encryption:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var anonModeLbl:TextField = new TextField(160,32,"Enable anonymous mode", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var queuingLbl:TextField = new TextField(160,32,"Torrent queueing", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			maxActiveDownLbl = new TextField(200,32,"Maximum active downloads", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			maxActiveUpLbl = new TextField(200,32,"Maximum active uploads", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			maxActiveTorrLbl = new TextField(200,32,"Maximum active torrents", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			slowTorrLbl = new TextField(400,32,"Do not count slow torrents in these limits", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			
 			encryptionModeLbl.x = privacyGroupLbl.x = 15;
 			privacyGroupLbl.y = -8;

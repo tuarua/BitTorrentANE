@@ -45,7 +45,7 @@ package views.client {
 			for (var i:int=0, l:int=divArr.length; i<l; ++i){
 				divider.x = divArr[i];
 				if(i > 0) bg.addQuad(divider);
-				heading = new TextField(divArr[i+1] - divArr[i] - 24,32,headingArr[i], "Fira Sans Regular 13", 13, 0xD8D8D8);
+				heading = new TextField(divArr[i+1] - divArr[i] - 24,32,headingArr[i], "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 				heading.hAlign = headingAligns[i];
 				heading.x = divArr[i] + 12;
 				heading.batchable = true;
@@ -121,7 +121,7 @@ package views.client {
 					if(folders.indexOf(folder) == -1){
 						folders.push(folder);
 						for(var z:int=0,l3:int=divArr.length-1;z<l3;++z){
-							txt = new TextField(divArr[z+1] - divArr[z] - 24,32,"", "Fira Sans Regular 13", 13, 0xD8D8D8);
+							txt = new TextField(divArr[z+1] - divArr[z] - 24,32,"", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 							txt.hAlign = headingAligns[z];
 							txt.x = divArr[z] + 12;
 							
@@ -152,7 +152,7 @@ package views.client {
 				
 
 				for(var j:int=0,ll:int=divArr.length-1;j<ll;++j){
-					txt = new TextField(divArr[j+1] - divArr[j] - 24,32,"", "Fira Sans Regular 13", 13, 0xD8D8D8);
+					txt = new TextField(divArr[j+1] - divArr[j] - 24,32,"", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 					txt.hAlign = headingAligns[j];
 					txt.x = divArr[j] + 12;
 					if(j == 0) txt.x += ( ((indent+1)*50) - 20 );

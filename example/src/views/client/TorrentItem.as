@@ -39,7 +39,7 @@ package views.client {
 			for (var i:int=0, l:int=divArr.length; i<l; ++i){
 				if(i < l) {
 					//TorrentStateCodes.DOWNLOADING
-					txt = new TextField(divArr[i+1] - divArr[i] - 24,32,txtArr[i], "Fira Sans Regular 13", 13, /*(i == 4)  ? 0x5CB601 : */0xD8D8D8);
+					txt = new TextField(divArr[i+1] - divArr[i] - 24,32,txtArr[i], "Fira Sans Semi-Bold 13", 13, /*(i == 4)  ? 0x5CB601 : */0xD8D8D8);
 					txt.hAlign = txtAligns[i];
 					txt.x = divArr[i] + 12;
 					txt.batchable = true;

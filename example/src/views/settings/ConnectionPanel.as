@@ -74,32 +74,32 @@ package views.settings {
 			
 			selectedFile.addEventListener(Event.SELECT, selectFile); 
 			
-			var privacyGroupLbl:TextField = new TextField(150,32,"Listening Port", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var portLbl:TextField = new TextField(500,32,"Port used for incoming connections", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var upnpLbl:TextField = new TextField(500,32,"Use UPnP / NAT-PMP port forwarding from my router", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var randomLbl:TextField = new TextField(500,32,"Use different port on each startup", "Fira Sans Regular 13", 13, 0xD8D8D8);
+			var privacyGroupLbl:TextField = new TextField(150,32,"Listening Port", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var portLbl:TextField = new TextField(500,32,"Port used for incoming connections", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var upnpLbl:TextField = new TextField(500,32,"Use UPnP / NAT-PMP port forwarding from my router", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var randomLbl:TextField = new TextField(500,32,"Use different port on each startup", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			
-			var limitsGroupLbl:TextField = new TextField(150,32,"Connections Limits", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var proxyGroupLbl:TextField = new TextField(150,32,"Proxy Server", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var filterGroupLbl:TextField = new TextField(150,32,"IP Filtering", "Fira Sans Regular 13", 13, 0xD8D8D8);
+			var limitsGroupLbl:TextField = new TextField(150,32,"Connections Limits", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var proxyGroupLbl:TextField = new TextField(150,32,"Proxy Server", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var filterGroupLbl:TextField = new TextField(150,32,"IP Filtering", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			
-			var proxyTypeLbl:TextField = new TextField(150,32,"Type:", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			proxyHostLbl = new TextField(150,32,"Host:", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			proxyPortLbl = new TextField(150,32,"Port:", "Fira Sans Regular 13", 13, 0xD8D8D8);
+			var proxyTypeLbl:TextField = new TextField(150,32,"Type:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			proxyHostLbl = new TextField(150,32,"Host:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			proxyPortLbl = new TextField(150,32,"Port:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			
-			proxyForPeersLbl = new TextField(500,32,"Use proxy for peer connections", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			proxyDisableConnsLbl = new TextField(500,32,"Disable connections not supported by proxies", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			proxyAuthenticationLbl = new TextField(150,32,"Authentication", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			proxyUsernameLbl = new TextField(150,32,"Username:", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			proxyPasswordLbl = new TextField(150,32,"Password:", "Fira Sans Regular 13", 13, 0xD8D8D8);
+			proxyForPeersLbl = new TextField(500,32,"Use proxy for peer connections", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			proxyDisableConnsLbl = new TextField(500,32,"Disable connections not supported by proxies", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			proxyAuthenticationLbl = new TextField(150,32,"Authentication", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			proxyUsernameLbl = new TextField(150,32,"Username:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			proxyPasswordLbl = new TextField(150,32,"Password:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			
-			var maxConnLbl:TextField = new TextField(500,32,"Global maximum number of connections:", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var maxConnTorrLbl:TextField = new TextField(500,32,"Maximum number of connections per torrent:", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var maxUpLbl:TextField = new TextField(500,32,"Global maximum number of upload slots:", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var maxUpTorrLbl:TextField = new TextField(500,32,"Maximum number of upload slots per torrent:", "Fira Sans Regular 13", 13, 0xD8D8D8);
+			var maxConnLbl:TextField = new TextField(500,32,"Global maximum number of connections:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var maxConnTorrLbl:TextField = new TextField(500,32,"Maximum number of connections per torrent:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var maxUpLbl:TextField = new TextField(500,32,"Global maximum number of upload slots:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var maxUpTorrLbl:TextField = new TextField(500,32,"Maximum number of upload slots per torrent:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			
-			filterPathLbl = new TextField(500,32,"Filter path (.p2p):", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			applyToTrackersLbl = new TextField(500,32,"Apply to trackers", "Fira Sans Regular 13", 13, 0xD8D8D8);
+			filterPathLbl = new TextField(500,32,"Filter path (.p2p):", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			applyToTrackersLbl = new TextField(500,32,"Apply to trackers", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			
 			portStppr = new Stepper(75,String(model.SettingsLocalStore.settings.listening.port),5);
 			portStppr.addEventListener(FormEvent.CHANGE,onFormChange);

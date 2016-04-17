@@ -1,5 +1,4 @@
 package views.client {
-	import com.tuarua.torrent.PeerInfo;
 	import com.tuarua.torrent.TorrentMeta;
 	import com.tuarua.torrent.TorrentPeers;
 	import com.tuarua.torrent.TorrentPieces;
@@ -14,13 +13,19 @@ package views.client {
 	import events.InteractionEvent;
 	
 	import starling.core.Starling;
+	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.QuadBatch;
 	import starling.display.Sprite;
+	import starling.events.Touch;
+	import starling.events.TouchEvent;
+	import starling.events.TouchPhase;
 	import starling.text.TextField;
+	import starling.textures.Texture;
 	import starling.utils.HAlign;
 	
 	import views.client.RightClickMenu;
+
 	public class MainPanel extends Sprite {
 		private var bgMask:Quad = new Quad(1920,1046,0x111414);
 		private var bg:QuadBatch = new QuadBatch();
@@ -31,36 +36,26 @@ package views.client {
 		private var menuItemHolder:Sprite = new Sprite();
 		private var menuItemsVec:Vector.<MenuItem> = new Vector.<MenuItem>();
 		private var panelsVec:Vector.<Sprite> = new Vector.<Sprite>();
+		private var magnetButtonTexture:Texture = Assets.getAtlas().getTexture("add-magnet");
+		private var addButtonTexture:Texture = Assets.getAtlas().getTexture("add-torrent");
+		private var powerOnButtonTexture:Texture = Assets.getAtlas().getTexture("power-on");
+		private var powerOffButtonTexture:Texture = Assets.getAtlas().getTexture("power-off");
+		private var createButtonTexture:Texture = Assets.getAtlas().getTexture("create-torrent");
+		private var magnetButton:Image = new Image(magnetButtonTexture);
+		private var addButton:Image = new Image(addButtonTexture);
+		private var powerButton:Image = new Image(powerOnButtonTexture);
+		private var createButton:Image = new Image(createButtonTexture);
+		private var sampleMagnet:String = "magnet:?xt=urn:btih:f3bf22593bd8c5b318c9fa41c7d507215ea67adc&dn=Cosmos%20Laundromat%20-%20Blender-short-movie&tr=udp%3a%2f%2fopen.demonii.com%3a1337%2fannounce&tr=udp%3a%2f%2ftracker.publicbt.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.openbittorrent.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.istole.it%3a80%2fannounce&tr=udp%3a%2f%2ftorrent.gresille.org%3a80%2fannounce&tr=udp%3a%2f%2ftracker.opentrackr.org%3a1337%2fannounce&tr=http%3a%2f%2ftracker.aletorrenty.pl%3a2710%2fannounce&tr=http%3a%2f%2fopen.acgtracker.com%3a1096%2fannounce&tr=udp%3a%2f%2f9.rarbg.me%3a2710%2fannounce";
+		private var magnetScreen:MagnetScreen = new MagnetScreen(sampleMagnet);
 		private var selectedId:String;
 		private var _selectedMenu:int = 0;
-		
 		private var rightClickMenus:Dictionary = new Dictionary();
-		private var rightClickMenusData:Dictionary = new Dictionary();
+		private var rightClickMenusData:Dictionary = new Dictionary(true);
 		private var itemSpriteDictionary:Dictionary = new Dictionary();
-		
-		///private var rightClickMenu:RightClickMenu;
-
-		//private var menuDataList:Vector.<Object>;
-		private var hasRightClickPriority:Boolean = false;;
-		
+		private var hasRightClickPriority:Boolean = false;
+		private var isPowerOn:Boolean = true;
 		public function MainPanel() {
 			super();
-			
-			
-			
-			//pause / resume
-			//delete
-			//sequential
-			
-			//move to top
-			//move up
-			//move down
-			//move to bottom
-			
-			//copy magnet
-			
-			
-			
 			
 			bg.touchable = false;
 			bg.addQuad(new Quad(w,1,0x0D1012));
@@ -96,7 +91,7 @@ package views.client {
 				divider.x = divArr[i];
 				if(i > 0) bg.addQuad(divider);
 				if(i < l) {
-					heading = new TextField(divArr[i+1] - divArr[i] - 24,32,headingArr[i], "Fira Sans Regular 13", 13, 0xD8D8D8);
+					heading = new TextField(divArr[i+1] - divArr[i] - 24,32,headingArr[i], "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 					heading.hAlign = headingAligns[i];
 					heading.x = divArr[i] + 12;
 					heading.batchable = true;
@@ -158,33 +153,87 @@ package views.client {
 				holder.addChild(panelsVec[j]);
 			}
 			
+			addButton.x = 0;
+			
+			magnetButton.x = 62;
+			createButton.x = 124;
+			powerButton.x = 1200 - 124;
+			createButton.y = powerButton.y = addButton.y = magnetButton.y = -38;
+			
+			magnetButton.addEventListener(TouchEvent.TOUCH,onMagnetAdd);
+			addButton.addEventListener(TouchEvent.TOUCH,onTorrentAdd);
+			powerButton.addEventListener(TouchEvent.TOUCH,onPowerClick);
+			
+			
 			holder.addChild(itmHolder);
 			holder.addChild(headingHolder);
 			holder.addChild(menuItemHolder);
+			holder.addChild(addButton);
+			holder.addChild(magnetButton);
+			holder.addChild(createButton);
+			holder.addChild(powerButton);
+			
+			magnetScreen.x = 300;
+			magnetScreen.y = 90;
+			magnetScreen.showFields(false);
+			magnetScreen.visible = false;
+			
+			holder.addChild(magnetScreen);
 			
 			addChild(holder);
 			
 			Starling.current.nativeStage.addEventListener(flash.events.MouseEvent.RIGHT_CLICK, onRightClick);
 		}
 		
+		private function onMagnetAdd(event:TouchEvent):void {
+			var touch:Touch = event.getTouch(magnetButton);
+			if(touch != null && touch.phase == TouchPhase.ENDED){
+				magnetScreen.show();
+			}
+				//this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_MAGNET_ADD));
+		}
+		private function onTorrentAdd(event:TouchEvent):void {
+			var touch:Touch = event.getTouch(addButton);
+			if(touch != null && touch.phase == TouchPhase.ENDED)
+				this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_TORRENT_ADD));
+		}
+		
+		private function onPowerClick(event:TouchEvent):void {
+			var touch:Touch = event.getTouch(powerButton);
+			if(touch != null && touch.phase == TouchPhase.ENDED){
+				isPowerOn = !isPowerOn;
+				powerButton.texture = (isPowerOn) ? powerOnButtonTexture : powerOffButtonTexture;
+				this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_POWER_CLICK,{on:isPowerOn}));
+			}
+			
+		}
 		public function addPriorityToRightClick(value:Boolean):void {
+			var tmpArr:Array;
 			if(value && !hasRightClickPriority){
-				for (var key:* in rightClickMenusData){
-					(rightClickMenusData[key] as Vector.<Object>).push({value:3,label:"Move to top"});
-					(rightClickMenusData[key] as Vector.<Object>).push({value:4,label:"Move up"});
-					(rightClickMenusData[key] as Vector.<Object>).push({value:5,label:"Move down"});
-					(rightClickMenusData[key] as Vector.<Object>).push({value:6,label:"Move to bottom"});
-					(rightClickMenus[key] as RightClickMenu).update(rightClickMenusData[key] as Vector.<Object>);
+				for (var key:String in rightClickMenusData){
+					tmpArr = new Array();
+					var obj:Object;
+					for each(var thing:Object in rightClickMenusData[key]){
+						obj = new Object();
+						obj.value = thing.value;
+						obj.label = thing.label;
+						tmpArr.push(obj);
+					}
+					tmpArr.push({value:3,label:"Move to top"});
+					tmpArr.push({value:4,label:"Move up"});
+					tmpArr.push({value:5,label:"Move down"});
+					tmpArr.push({value:6,label:"Move to bottom"});
+					rightClickMenusData[key] = tmpArr;
+					(rightClickMenus[key] as RightClickMenu).update(rightClickMenusData[key]);
 				}
 				hasRightClickPriority = true;
 			}else if(!value && hasRightClickPriority){
-				//remove them
 				hasRightClickPriority = false;
 			}
 				
 		}
 		
-		public function addRightClickMenu(_id:String,_menuDataList:Vector.<Object>):void {
+		public function addRightClickMenu(_id:String,_menuDataList:Array):void {
 			var rightClickMenu:RightClickMenu;
 			rightClickMenu = new RightClickMenu(_id,200,_menuDataList);
 			rightClickMenu.visible = false;
@@ -195,7 +244,7 @@ package views.client {
 		}
 		
 		public function updateRightClickMenu(_id:String,index:int,label:String,value:int):void {
-			var vec:Vector.<Object> = rightClickMenusData[_id] as Vector.<Object>;
+			var vec:Array = rightClickMenusData[_id];
 			vec[index].value = value;
 			vec[index].label = label;
 			(rightClickMenus[_id] as RightClickMenu).update(vec);

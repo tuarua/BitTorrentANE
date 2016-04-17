@@ -50,7 +50,7 @@ package views.forms {
 			hover = new Quad(w-6,20,0xCC8D1E);
 			hover.alpha = 0.4;
 			
-			txt = new TextField(w,26,items[selected].label, "Fira Sans Regular 13", 13, 0xD8D8D8);
+			txt = new TextField(w,26,items[selected].label, "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			txt.batchable = true;
 			txt.touchable = false;
 			txt.hAlign = HAlign.LEFT;
@@ -76,7 +76,7 @@ package views.forms {
 			
 			var itmLbl:TextField;
 			for (var i:int=0, l:int=items.length; i<l; ++i){
-				itmLbl = new TextField(w,26,items[i].label, "Fira Sans Regular 13", 13, 0xD8D8D8);
+				itmLbl = new TextField(w,26,items[i].label, "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 				itmLbl.batchable = true;
 				itmLbl.touchable = false;
 				itmLbl.hAlign = HAlign.LEFT;

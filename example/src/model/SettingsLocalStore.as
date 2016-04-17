@@ -1,16 +1,13 @@
 package model {
-	import com.tuarua.torrent.TorrentSettings;
-	
 	import flash.events.EventDispatcher;
 	import flash.net.SharedObject;
-	
 	import events.DataProviderEvent;
-
 	public class SettingsLocalStore {
 		public static var settings:Object;
 		private static var so:SharedObject;
 		public static var dispatcher:EventDispatcher = new EventDispatcher();
 		public static function load(_reset:Boolean=false):void {
+			trace(_reset);
 			so = SharedObject.getLocal("BitTorrentSample");
 			if(so.data["settings"] == undefined || _reset){
 				settings = new Settings();

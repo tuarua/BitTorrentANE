@@ -6,8 +6,6 @@ package views.settings {
 	import flash.net.NetworkInterface;
 	
 	import events.FormEvent;
-	
-	import model.Settings;
 	import model.SettingsLocalStore;
 	
 	import starling.display.Sprite;
@@ -100,29 +98,9 @@ package views.settings {
 			interfacesDataList.push({value:"{Any}",label:"Any Interface"});
 			availableNetworkInterfaces = NetworkInfo.networkInfo.findInterfaces();
 			for (var i:int=0, l:int=availableNetworkInterfaces.length; i<l; ++i){
-				
-				/*
-				Name: {590C3F85-3B3D-4F5C-B645-250A491B7335}
-				DisplayName: Wi-Fi 2
-				Active: true
-				Addr: 2a02:c7d:b915:c600:8845:3e4:dd26:7fe IPVersion: IPv6
-				Addr: fd65:ea8d:4622:0:8845:3e4:dd26:7fe IPVersion: IPv6
-				Addr: 2a02:c7d:b915:c600:785c:1087:8850:fb0c IPVersion: IPv6
-				Addr: fd65:ea8d:4622:0:785c:1087:8850:fb0c IPVersion: IPv6
-				Addr: 192.168.0.10 IPVersion: IPv4
-				*/
-				
-				//trace("Name:",availableNetworkInterfaces[i].name);
-				//trace("DisplayName:",availableNetworkInterfaces[i].displayName);
-				//trace("Active:",availableNetworkInterfaces[i].active);
-				//for (var j:int=0; j<availableNetworkInterfaces[i].addresses.length; j++) {
-					//trace("Addr:",availableNetworkInterfaces[i].addresses[j].address,"IPVersion:",availableNetworkInterfaces[i].addresses[j].ipVersion);
-				//}
 				interfacesDataList.push({value:availableNetworkInterfaces[i].name,label:availableNetworkInterfaces[i].displayName});
 				if(model.SettingsLocalStore.settings.advanced.networkInterface && model.SettingsLocalStore.settings.advanced.networkInterface.name == availableNetworkInterfaces[i].name)
 					selectedInterfaceIndex = i+1;
-				
-				//trace("-------");
 			}
 			
 			interfaces = new DropDown(200,interfacesDataList,selectedInterfaceIndex);
@@ -139,44 +117,38 @@ package views.settings {
 			
 			chkOScache = new CheckBox(model.SettingsLocalStore.settings.advanced.enableOsCache);
 			chkOScache.addEventListener(FormEvent.CHANGE,onFormChange);
-			chkOScache.x = 0;
 			chkOScache.y = 5;
 			
 			chkRecheckTorrents = new CheckBox(model.SettingsLocalStore.settings.advanced.recheckTorrentsOnCompletion);
 			chkRecheckTorrents.addEventListener(FormEvent.CHANGE,onFormChange);
-			chkRecheckTorrents.x = 0;
 			chkRecheckTorrents.y = 35;
 			
 			chkPeerIP = new CheckBox(model.SettingsLocalStore.settings.advanced.resolveCountries);
 			chkPeerIP.addEventListener(FormEvent.CHANGE,onFormChange);
-			chkPeerIP.x = 0;
 			chkPeerIP.y = 65;
 			
 			chkPeerHost = new CheckBox(model.SettingsLocalStore.settings.advanced.resolvePeerHostNames);
 			chkPeerHost.addEventListener(FormEvent.CHANGE,onFormChange);
-			chkPeerHost.x = 0;
 			chkPeerHost.y = 95;
 			
 			
 			chkSeeding = new CheckBox(model.SettingsLocalStore.settings.advanced.isSuperSeedingEnabled);
 			chkSeeding.addEventListener(FormEvent.CHANGE,onFormChange);
-			chkSeeding.x = 0;
 			chkSeeding.y = 125;
 			
 			chkIPv6 = new CheckBox(model.SettingsLocalStore.settings.advanced.listenOnIPv6);
 			chkIPv6.addEventListener(FormEvent.CHANGE,onFormChange);
-			chkIPv6.x = 0;
 			chkIPv6.y = 155;
 			
 			chkTrackerExchange = new CheckBox(model.SettingsLocalStore.settings.advanced.enableTrackerExchange);
 			chkTrackerExchange.addEventListener(FormEvent.CHANGE,onFormChange);
-			chkTrackerExchange.x = 0;
 			chkTrackerExchange.y = 185;
 			
 			chkAnnounceAll = new CheckBox(model.SettingsLocalStore.settings.advanced.announceToAllTrackers);
 			chkAnnounceAll.addEventListener(FormEvent.CHANGE,onFormChange);
-			chkAnnounceAll.x = 0;
 			chkAnnounceAll.y = 215;
+			
+			chkOScache.x = chkAnnounceAll.x = chkTrackerExchange.x = chkIPv6.x = chkSeeding.x = chkPeerHost.x = chkRecheckTorrents.x = chkPeerIP.x = 3;
 			
 			addChild(settings2Group);
 			
@@ -199,16 +171,12 @@ package views.settings {
 			addChild(IPannounceInput);
 			addChild(interfaces);
 			
-			
-			
-			
-			
 			addChild(txtHolder);
 			
 		}
 		
 		private function drawLabel(_s:String,_x:int,_y:int):void {
-			var txt:TextField = new TextField(500,32,_s, "Fira Sans Regular 13", 13, 0xD8D8D8);
+			var txt:TextField = new TextField(500,32,_s, "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			txt.vAlign = VAlign.TOP;
 			txt.hAlign = HAlign.LEFT;
 			txt.touchable = false;
@@ -226,30 +194,8 @@ package views.settings {
 		}
 		private function onFormChange(event:FormEvent):void {
 			var test:int;
-			/*
-			for (var i:int=0, l:int=availableNetworkInterfaces.length; i<l; ++i){
-			
-			
-			
-			trace("Name:",availableNetworkInterfaces[i].name);
-			trace("DisplayName:",availableNetworkInterfaces[i].displayName);
-			trace("Active:",availableNetworkInterfaces[i].active);
-			for (var j:int=0; j<availableNetworkInterfaces[i].addresses.length; j++) {
-			trace("Addr:",availableNetworkInterfaces[i].addresses[j].address,"IPVersion:",availableNetworkInterfaces[i].addresses[j].ipVersion);
-			}
-			
-			
-			
-			interfacesDataList.push({value:availableNetworkInterfaces[i].name,label:availableNetworkInterfaces[i].displayName});
-			if(model.SettingsLocalStore.settings.advanced.networkInterface == availableNetworkInterfaces[i].name)
-			selectedInterfaceIndex = i;
-			
-			trace("-------");
-			}
-			*/
 			switch(event.currentTarget){
 				case interfaces:
-					trace(event.params.value);
 					var networkInterface:Object = new com.tuarua.torrent.settings.NetworkInterface();
 					for (var i:int=0, l:int=availableNetworkInterfaces.length; i<l; ++i){
 						if(availableNetworkInterfaces[i].name == event.params.value){
@@ -260,7 +206,6 @@ package views.settings {
 							break;
 						}
 					}
-					trace();
 					model.SettingsLocalStore.setProp("advanced",networkInterface,"networkInterface");
 					break;
 				case IPannounceInput:
@@ -352,6 +297,12 @@ package views.settings {
 			IPannounceInput.nti.show(_b);
 		}
 		public function positionAllFields():void {
+			diskWriteStppr.updatePosition();
+			diskCacheExpiryStppr.updatePosition();
+			outPortMinStppr.updatePosition();
+			outPortMaxStppr.updatePosition();
+			maxHalfStppr.updatePosition();
+			IPannounceInput.updatePosition();
 		}
 	}
 }

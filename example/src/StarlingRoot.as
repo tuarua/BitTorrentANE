@@ -5,17 +5,21 @@ package {
 	import com.tuarua.torrent.TorrentPeers;
 	import com.tuarua.torrent.TorrentPieces;
 	import com.tuarua.torrent.TorrentSettings;
+	import com.tuarua.torrent.TorrentStateCodes;
 	import com.tuarua.torrent.TorrentStatus;
 	import com.tuarua.torrent.TorrentsLibrary;
 	import com.tuarua.torrent.constants.LogLevel;
 	import com.tuarua.torrent.constants.QueuePosition;
 	import com.tuarua.torrent.events.TorrentInfoEvent;
-	import com.tuarua.torrent.TorrentStateCodes;
+	import com.tuarua.torrent.utils.Magnet;
+	import com.tuarua.torrent.utils.MagnetParser;
 	
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
+	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.filesystem.File;
+	import flash.net.FileFilter;
 	import flash.utils.Dictionary;
 	import flash.utils.Timer;
 	
@@ -23,22 +27,20 @@ package {
 	
 	import model.SettingsLocalStore;
 	
-	import starling.animation.Transitions;
-	import starling.animation.Tween;
-	import starling.core.Starling;
-	import starling.display.Button;
+	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
-	import starling.events.KeyboardEvent;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.text.TextField;
 	import starling.textures.Texture;
 	
+	import utils.TextUtils;
+	
 	import views.client.MainPanel;
 	import views.settings.SettingsPanel;
-	
+
 	public class StarlingRoot extends Sprite {
 		private var starlingVideo:StarlingVideo = new StarlingVideo();
 		private var libTorrentANE:BitTorrentANE = new BitTorrentANE();
@@ -50,75 +52,60 @@ package {
 		private var isVideoPlaying:Boolean = false;
 		private var numRequiredPieces:int = 5;
 		private var buttonBG:Quad = new Quad(100,40,0xF3F3F3);
-		private var magnetButton:Button = new Button(Texture.fromColor(100,40,0xFF000000),"load magnet",Texture.fromColor(100,40,0xFF000000),Texture.fromColor(100,40,0xFF000000),Texture.fromColor(100,40,0xFF000000));
-		private var torrentButton:Button = new Button(Texture.fromColor(100,40,0xFF000000),"load torrent",Texture.fromColor(100,40,0xFF000000),Texture.fromColor(100,40,0xFF000000),Texture.fromColor(100,40,0xFF000000));
-		private var endButton:Button = new Button(Texture.fromColor(100,40,0xFF000000),"end session",Texture.fromColor(100,40,0xFF000000),Texture.fromColor(100,40,0xFF000000),Texture.fromColor(100,40,0xFF000000));
 		private var torrentId:String;
 		
 		private var torrentClientPanel:MainPanel;
 		private var settingsPanel:SettingsPanel;
-		
+		private var settingsButtonTexture:Texture = Assets.getAtlas().getTexture("settings-cog");
+		private var settingsButton:Image = new Image(settingsButtonTexture);
 		private var downloadAsSequential:Boolean = true;
+		private var selectedFile:File = new File();
 		public function StarlingRoot() {
 			super();
-			TextField.registerBitmapFont(Fonts.getFont("fira-regular-13"));
+			TextField.registerBitmapFont(Fonts.getFont("fira-sans-semi-bold-13"));
 		}
 		public function start():void {
 			
 			//TO DO
-			// on resize, advanced textfields x not right
-			// add magnet button
-			// menu screen
-			// ok cancel buttons
-			// power button
-			// settings screen
-			// add torrent button
+			// create torrent screen
 			// ANE error bubble
+			//on settings close - update ANE settings
 			
+			selectedFile.addEventListener(Event.SELECT, selectFile); 
 			
-			model.SettingsLocalStore.load(model.SettingsLocalStore == null || model.SettingsLocalStore.settings == null);
-			model.SettingsLocalStore.load(true);
-			
-			
-			//create dropdown with some magnets and torrents setup
+			model.SettingsLocalStore.load(model.SettingsLocalStore == null);
+			//model.SettingsLocalStore.load(true); //force load
 			
 			settingsPanel = new SettingsPanel();
 			torrentClientPanel = new MainPanel();
-			
-			endButton.fontColor = magnetButton.fontColor = torrentButton.fontColor = 0xFFFFFF;
-			
-			magnetButton.addEventListener(TouchEvent.TOUCH,onMagnetClicked);
-			endButton.y = torrentButton.y = magnetButton.y = 10;
-			magnetButton.x = 10;
-			
-			torrentButton.x = 150;
-			torrentButton.addEventListener(TouchEvent.TOUCH,onTorrentClicked);
-			
-			endButton.x = 730;
-			endButton.addEventListener(TouchEvent.TOUCH,onEndClicked);
+			torrentClientPanel.addEventListener(InteractionEvent.ON_TORRENT_ADD,onTorrentAdd);
+			torrentClientPanel.addEventListener(InteractionEvent.ON_POWER_CLICK,onPowerClick);
 			
 			starlingVideo.y = 60;
 			
 			torrentClientPanel.addEventListener(InteractionEvent.ON_MENU_ITEM_RIGHT,onRightClick);
 			settingsPanel.x = torrentClientPanel.x = 0;
 			torrentClientPanel.y = 60;
-			settingsPanel.y = 86;
+			torrentClientPanel.addEventListener(InteractionEvent.ON_MAGNET_ADD_LIST,onMagnetListAdd);
+			settingsPanel.y = 60;
 			
-			addChild(magnetButton);
-			
-			addChild(torrentButton);
-			addChild(endButton);
 
 			addChild(starlingVideo);
 			addChild(torrentClientPanel);
 			
 			settingsPanel.visible = false;
 			addChild(settingsPanel);
+			
+			settingsButton.x = 1178;
+			settingsButton.y = settingsPanel.y + 38;
+			
+			settingsButton.addEventListener(TouchEvent.TOUCH,onSettingsClick);
+			addChild(settingsButton);
 
 			if(libTorrentANE.isSupported()){
 				
 				TorrentSettings.logLevel = LogLevel.INFO;
-				TorrentSettings.prioritizedFileTypes = new Array("mp4","mkv","avi"); 
+				TorrentSettings.prioritizedFileTypes = new Array("mp4"); 
 				
 				TorrentSettings.storage.torrentPath = File.applicationDirectory.resolvePath("torrents").nativePath;
 				TorrentSettings.storage.resumePath = File.applicationDirectory.resolvePath("torrents").resolvePath("resume").nativePath; //path where we save our "faststart" resume files
@@ -149,23 +136,46 @@ package {
 				trace("This ANE is not supported");
 			}
 			
-			this.addEventListener(KeyboardEvent.KEY_DOWN,onKeyDown);
 		}
-		private function onKeyDown(event:KeyboardEvent):void {
-			if(String.fromCharCode(event.charCode) == "s" && Starling.current.nativeOverlay.stage.focus == null) {
-				showSettings();
+		private function onMagnetListAdd(event:InteractionEvent):void {
+			var lst:Array = TextUtils.trim(event.params.value).split(String.fromCharCode(13));
+			var itm:String;
+			var rightClickMenuDataList:Array = new Array();
+			rightClickMenuDataList.push({value:0,label:"Pause"});
+			rightClickMenuDataList.push({value:1,label:"Delete"});
+			rightClickMenuDataList.push({value:(downloadAsSequential) ? 2 : 9,label:(downloadAsSequential) ? "Sequential Off": "Sequential On"});
+			rightClickMenuDataList.push({value:7,label:"Copy magnet link"});
+			//magnet:?xt=urn:btih:d325ff1239775941019469e835883247c365f324&dn=It%27s%20a%20Wonderful%20Life%20(1946)
+			
+			//var magnet:Magnet;
+			for (var i:int=0, l:int=lst.length; i<l; ++i){
+				itm = lst[i];
+				if(itm.length > 0){
+					if(itm.length > 8 && itm.substr(0,8) == "magnet:?"){
+						torrentId = MagnetParser.parse(itm).hash;
+						torrentClientPanel.addRightClickMenu(torrentId,rightClickMenuDataList);
+						libTorrentANE.torrentFromMagnet(itm,torrentId,downloadAsSequential);
+					}else{
+						torrentId = itm;
+						torrentClientPanel.addRightClickMenu(torrentId,rightClickMenuDataList);
+						libTorrentANE.torrentFromHash(torrentId,torrentId,"",downloadAsSequential);
+					}
+				}
 			}
+			//trace(event.params.value);
+			//trace(lst.length);
+			//trace();
 		}
-		private function showSettings(event:InteractionEvent=null):void {
+		private function showSettings(b:Boolean):void {
 			if(settingsPanel){
 				settingsPanel.visible = !settingsPanel.visible;
-				settingsPanel.showDefault();
-				if(!settingsPanel.visible) settingsPanel.hideAllFields();
-				this.setChildIndex(settingsPanel,this.numChildren-1);
-				var targetAlphaSettings:Number = (settingsPanel.visible) ? 1 : 0;
-				var tweenTCPSettings:Tween = new Tween(settingsPanel, 0.1, Transitions.LINEAR);
-				tweenTCPSettings.animate("alpha",targetAlphaSettings);
-				Starling.juggler.add(tweenTCPSettings);
+				if(b){
+					settingsPanel.showDefault();
+					this.setChildIndex(settingsPanel,this.numChildren-2);
+				}else{
+					libTorrentANE.updateSettings();
+					settingsPanel.hideAllFields();
+				}
 			}
 		}
 		private function onRightClick(event:InteractionEvent):void {
@@ -291,51 +301,42 @@ package {
 			trace("ERROR:",event.params.message);
 		}
 		
-		private function onMagnetClicked(event:TouchEvent):void {
-			var touch:Touch = event.getTouch(magnetButton);
-			if(touch != null && touch.phase == TouchPhase.ENDED) {
-				torrentId = "f3bf22593bd8c5b318c9fa41c7d507215ea67adc";
-				var rightClickMenuDataList:Vector.<Object> = new Vector.<Object>();
-				rightClickMenuDataList.push({value:0,label:"Pause"});
+		protected function selectFile(event:Event):void {
+			var meta:TorrentMeta = libTorrentANE.getTorrentMeta(selectedFile.nativePath);
+			if(meta.status == "ok"){
+				torrentId = meta.infoHash; //it's a good idea to use the hash as the id
+				var dict:Dictionary = TorrentsLibrary.status;
+				var rightClickMenuDataList:Array = new Array();
+				rightClickMenuDataList.push({value:0,label:"Pause"});//Resume
 				rightClickMenuDataList.push({value:1,label:"Delete"});
 				rightClickMenuDataList.push({value:(downloadAsSequential) ? 2 : 9,label:(downloadAsSequential) ? "Sequential Off": "Sequential On"});
 				rightClickMenuDataList.push({value:7,label:"Copy magnet link"});
-				torrentClientPanel.addRightClickMenu("cosmos",rightClickMenuDataList);
-				torrentClientPanel.addPriorityToRightClick((TorrentsLibrary.length(TorrentsLibrary.meta) > 0));
-				var uri:String = "magnet:?xt=urn:btih:f3bf22593bd8c5b318c9fa41c7d507215ea67adc&dn=Cosmos%20Laundromat%20-%20Blender-short-movie&tr=udp%3a%2f%2fopen.demonii.com%3a1337%2fannounce&tr=udp%3a%2f%2ftracker.publicbt.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.openbittorrent.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.istole.it%3a80%2fannounce&tr=udp%3a%2f%2ftorrent.gresille.org%3a80%2fannounce&tr=udp%3a%2f%2ftracker.opentrackr.org%3a1337%2fannounce&tr=http%3a%2f%2ftracker.aletorrenty.pl%3a2710%2fannounce&tr=http%3a%2f%2fopen.acgtracker.com%3a1096%2fannounce&tr=udp%3a%2f%2f9.rarbg.me%3a2710%2fannounce";
-				
-				libTorrentANE.torrentFromMagnet(uri,"cosmos",downloadAsSequential);
-				
+				torrentClientPanel.addRightClickMenu(torrentId,rightClickMenuDataList);
+				libTorrentANE.addTorrent(meta.torrentFile,torrentId,meta.infoHash,downloadAsSequential);
+			}else{
+				trace("failed to load torrent");
 			}
 		}
-		private function onTorrentClicked(event:TouchEvent):void {
-			var touch:Touch = event.getTouch(torrentButton);
-			if(touch != null && touch.phase == TouchPhase.ENDED){
-				var meta:TorrentMeta = libTorrentANE.getTorrentMeta(File.applicationDirectory.resolvePath("torrents").resolvePath("bbb_sunflower_1080p_30fps_normal.mp4.torrent").nativePath);
-				if(meta.status == "ok"){
-					torrentId = meta.infoHash; //it's a good idea to use the hash as the id
-					var dict:Dictionary = TorrentsLibrary.status;
-					var rightClickMenuDataList:Vector.<Object> = new Vector.<Object>();
-					rightClickMenuDataList.push({value:0,label:"Pause"});//Resume
-					rightClickMenuDataList.push({value:1,label:"Delete"});
-					rightClickMenuDataList.push({value:(downloadAsSequential) ? 2 : 9,label:(downloadAsSequential) ? "Sequential Off": "Sequential On"});
-					rightClickMenuDataList.push({value:7,label:"Copy magnet link"});
-					torrentClientPanel.addRightClickMenu(torrentId,rightClickMenuDataList);
-					torrentClientPanel.addPriorityToRightClick((TorrentsLibrary.length(TorrentsLibrary.meta) > 0));
-					libTorrentANE.addTorrent(File.applicationDirectory.resolvePath("torrents").resolvePath("bbb_sunflower_1080p_30fps_normal.mp4.torrent").nativePath,torrentId,meta.infoHash,downloadAsSequential);
-				}else{
-					trace("failed to load torrent");
-				}
-				
-			}
+		private function onTorrentAdd(event:InteractionEvent):void {
+			event.stopPropagation();
+			selectedFile.browseForOpen("Select torrent file...",[new FileFilter("torrent file", "*.torrent;")]);
 		}
 		
-		private function onEndClicked(event:TouchEvent):void {
-			var touch:Touch = event.getTouch(endButton);
-			if(touch != null && touch.phase == TouchPhase.ENDED){
+		private function onPowerClick(event:InteractionEvent):void {
+			if(event.params.on){
+				libTorrentANE.initSession();
+			}else{
 				TorrentsLibrary.remove(torrentId);
 				stopStatusListener();
 				libTorrentANE.endSession();
+			}	
+		}
+		
+		private function onSettingsClick(event:TouchEvent):void {
+			var touch:Touch = event.getTouch(settingsButton);
+			if(touch != null && touch.phase == TouchPhase.ENDED){
+			if(settingsPanel)
+				showSettings(!settingsPanel.visible);
 			}
 		}
 		protected function onTorrentAdded(event:TorrentInfoEvent):void {
@@ -353,6 +354,8 @@ package {
 			}
 			if(meta)
 				TorrentsLibrary.add(event.params.id.toLowerCase(),meta);
+			
+			torrentClientPanel.addPriorityToRightClick((TorrentsLibrary.length(TorrentsLibrary.meta) > 1));
 			
 			startStatusListener();
 			onStatusTimer();
@@ -402,10 +405,10 @@ package {
 			
 			currentStatus = TorrentsLibrary.status[torrentId] as TorrentStatus; //The dictionary contains all the torrents we've added. Use key to retrieve the status of that torrent. You can of course add multiple torrents, and check their status individually
 			currentPieces = TorrentsLibrary.pieces[torrentId] as TorrentPieces;
-			if(TorrentsLibrary.meta[torrentId]) currentVideoFile = TorrentsLibrary.meta[torrentId].getFileByExtension(["mp4","mkv","avi"]);
+			if(TorrentsLibrary.meta[torrentId])
+				currentVideoFile = TorrentsLibrary.meta[torrentId].getFileByExtension(["mp4"]);
 			
 			if(currentVideoFile && currentStatus && currentPieces){
-				
 				if(isVideoPlaying){
 					
 				}else{
@@ -420,11 +423,9 @@ package {
 						torrentClientPanel.showMask(false);
 						settingsPanel.showMask(false);
 						starlingVideo.loadVideo(File.applicationDirectory.resolvePath("output").resolvePath(currentVideoFile.path).nativePath);
-						
 					}
 				}
-			}
-			
+			}	
 		}
 		
 		

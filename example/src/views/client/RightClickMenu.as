@@ -23,7 +23,7 @@ package views.client {
 	public class RightClickMenu extends Sprite {
 		private var w:int;
 		private var h:int;
-		private var items:Vector.<Object>;
+		private var items:Array;
 		private var listBg:Scale9Image;
 		private var listBgTexture:Scale9Textures;
 		private var listContainer:Sprite = new Sprite();
@@ -32,7 +32,7 @@ package views.client {
 		private var tween:Tween;
 		private var id:String;
 		
-		public function RightClickMenu(_id:String,_w:int,_items:Vector.<Object>) {
+		public function RightClickMenu(_id:String,_w:int,_items:Array) {
 			super();
 			id = _id;
 			w = _w;
@@ -43,7 +43,7 @@ package views.client {
 			hover.alpha = 0.4;
 			hover.visible = false;
 			
-			listBgTexture = new Scale9Textures(Assets.getAtlas().getTexture("dropdown-items-bg"),new Rectangle(4,4,41,17));
+			listBgTexture = new Scale9Textures(Assets.getAtlas().getTexture("right-click-bg"),new Rectangle(4,4,41,17));
 			listBg = new Scale9Image(listBgTexture);
 			listBg.blendMode = BlendMode.NONE;
 			listBg.width = w;
@@ -60,7 +60,7 @@ package views.client {
 			
 			var itmLbl:TextField;
 			for (var i:int=0, l:int=items.length; i<l; ++i){
-				itmLbl = new TextField(w,26,items[i].label, "Fira Sans Regular 13", 13, 0xD8D8D8);
+				itmLbl = new TextField(w,26,items[i].label, "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 				itmLbl.batchable = true;
 				itmLbl.touchable = false;
 				itmLbl.hAlign = HAlign.LEFT;
@@ -76,14 +76,17 @@ package views.client {
 			addChild(listOuterContainer);
 		}
 		
-		public function update(_items:Vector.<Object>):void {
+		public function update(_items:Array):void {
+			
+			trace("items updated");
+			
 			items = _items;
 			h = (items.length*20) + 5;
 			listBg.height = h;
 			var itmLbl:TextField;
 			for (var i:int=0, l:int=items.length; i<l; ++i) {
 				if(i+1 > listContainer.numChildren-2){
-					itmLbl = new TextField(w,26,items[i].label, "Fira Sans Regular 13", 13, 0xD8D8D8);
+					itmLbl = new TextField(w,26,items[i].label, "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 					itmLbl.batchable = true;
 					itmLbl.touchable = false;
 					itmLbl.hAlign = HAlign.LEFT;

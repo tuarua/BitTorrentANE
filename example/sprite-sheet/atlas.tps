@@ -72,7 +72,7 @@
             </struct>
         </struct>
         <key>shapePadding</key>
-        <uint>0</uint>
+        <uint>2</uint>
         <key>jpgQuality</key>
         <uint>80</uint>
         <key>pngOptimizationLevel</key>
@@ -194,8 +194,17 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">../../../Nacho_Assets/fonts/fira-regular-13.png</key>
-            <key type="filename">../../../Nacho_Assets/fonts/fira-regular-26.png</key>
+            <key type="filename">../../../Nacho_Assets/fonts/fira-sans-semi-bold-13.png</key>
+            <key type="filename">../../../Nacho_Assets/sprite-sheets/pngs/client/add-magnet.png</key>
+            <key type="filename">../../../Nacho_Assets/sprite-sheets/pngs/client/add-torrent.png</key>
+            <key type="filename">../../../Nacho_Assets/sprite-sheets/pngs/client/cancel-button.png</key>
+            <key type="filename">../../../Nacho_Assets/sprite-sheets/pngs/client/create-torrent.png</key>
+            <key type="filename">../../../Nacho_Assets/sprite-sheets/pngs/client/ok-button.png</key>
+            <key type="filename">../../../Nacho_Assets/sprite-sheets/pngs/client/popmenu-bg.png</key>
+            <key type="filename">../../../Nacho_Assets/sprite-sheets/pngs/client/power-off.png</key>
+            <key type="filename">../../../Nacho_Assets/sprite-sheets/pngs/client/power-on.png</key>
+            <key type="filename">../../../Nacho_Assets/sprite-sheets/pngs/client/right-click-bg.png</key>
+            <key type="filename">../../../Nacho_Assets/sprite-sheets/pngs/client/settings-cog.png</key>
             <key type="filename">../../../Nacho_Assets/sprite-sheets/pngs/forms/checkbox-off.png</key>
             <key type="filename">../../../Nacho_Assets/sprite-sheets/pngs/forms/checkbox-on.png</key>
             <key type="filename">../../../Nacho_Assets/sprite-sheets/pngs/forms/choose-bg.png</key>
@@ -466,12 +475,12 @@
         <key>fileList</key>
         <array>
             <filename>../../../../sdks/geoip/Flags/flags_iso/16-cleaned</filename>
-            <filename>../../../Nacho_Assets/fonts/fira-regular-26.png</filename>
-            <filename>../../../Nacho_Assets/fonts/fira-regular-13.png</filename>
             <filename>../../../Nacho_Assets/sprite-sheets/pngs/misc/placeholder.png</filename>
             <filename>../../../Nacho_Assets/sprite-sheets/pngs/settings/file.png</filename>
             <filename>../../../Nacho_Assets/sprite-sheets/pngs/settings/folder-button-hover.png</filename>
             <filename>../../../Nacho_Assets/sprite-sheets/pngs/forms</filename>
+            <filename>../../../Nacho_Assets/fonts/fira-sans-semi-bold-13.png</filename>
+            <filename>../../../Nacho_Assets/sprite-sheets/pngs/client</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

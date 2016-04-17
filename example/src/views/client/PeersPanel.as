@@ -45,7 +45,7 @@ package views.client {
 			for (var i:int=0, l:int=divArr.length; i<l; ++i){
 				divider.x = divArr[i];
 				if(i > 0) bg.addQuad(divider);
-				heading = new TextField(divArr[i+1] - divArr[i] - 24,32,headingArr[i], "Fira Sans Regular 13", 13, 0xD8D8D8);
+				heading = new TextField(divArr[i+1] - divArr[i] - 24,32,headingArr[i], "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 				heading.hAlign = headingAligns[i];
 				heading.x = divArr[i] + 12;
 				heading.batchable = true;
@@ -138,7 +138,7 @@ package views.client {
 					var txt:TextField;
 					var img:Image;
 					for(var j:int=1,ll:int=divArr.length-1;j<ll;++j){
-						txt = new TextField(divArr[j+1] - divArr[j] - 24,32,"", "Fira Sans Regular 13", 13, /*(j == 4)  ? 0x5CB601 : */0xD8D8D8);
+						txt = new TextField(divArr[j+1] - divArr[j] - 24,32,"", "Fira Sans Semi-Bold 13", 13, /*(j == 4)  ? 0x5CB601 : */0xD8D8D8);
 						txt.hAlign = headingAligns[j];
 						txt.x = divArr[j] + 12;
 						txt.y = i*20;

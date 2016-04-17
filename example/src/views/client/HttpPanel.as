@@ -14,7 +14,7 @@ package views.client {
 				this.removeChildAt(k);
 			var txt:TextField;
 			for(var j:int=0,ll:int=_itms.length;j<ll;++j){
-				txt = new TextField(800,32,_itms[j], "Fira Sans Regular 13", 13, 0xD8D8D8);
+				txt = new TextField(800,32,_itms[j], "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 				txt.hAlign = HAlign.LEFT;
 				txt.x = 24;
 				txt.y = j*20 + 10;

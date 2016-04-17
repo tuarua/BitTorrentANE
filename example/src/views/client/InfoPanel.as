@@ -30,8 +30,8 @@ package views.client {
 			var txt:TextField;
 			txtHolder.y = lblHolder.y = 20;
 			for (var i:int=0, l:int=lblArr.length; i<l; ++i){
-				lbl = new TextField(120,32,lblArr[i], "Fira Sans Regular 13", 13, 0xD8D8D8);
-				txt = new TextField(1000,32,"", "Fira Sans Regular 13", 13, 0xD8D8D8);
+				lbl = new TextField(120,32,lblArr[i], "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+				txt = new TextField(1000,32,"", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 				txt.hAlign = HAlign.LEFT;
 				txt.autoSize = TextFieldAutoSize.HORIZONTAL;
 				lbl.hAlign = HAlign.RIGHT;

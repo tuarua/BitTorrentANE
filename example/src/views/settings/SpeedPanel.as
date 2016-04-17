@@ -28,14 +28,14 @@ package views.settings {
 			super();
 			var rateGroup:FormGroup = new FormGroup(600,120,250);
 			
-			var rateGroupLbl:TextField = new TextField(150,32,"Global Rate Limits", "Fira Sans Regular 13", 13, 0xD8D8D8);
+			var rateGroupLbl:TextField = new TextField(150,32,"Global Rate Limits", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			
-			var uploadLbl:TextField = new TextField(150,32,"Upload", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var downloadLbl:TextField = new TextField(150,32,"Download", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var utpLbl:TextField = new TextField(500,32,"Enable bandwidth management (uTP)", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var rateUTPLbl:TextField = new TextField(500,32,"Apply rate limit to uTP connections", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var rateTransportLbl:TextField = new TextField(500,32,"Apply rate limit to transport overhead", "Fira Sans Regular 13", 13, 0xD8D8D8);
-			var rateLANLbl:TextField = new TextField(500,32,"Apply rate limit to peers on LAN", "Fira Sans Regular 13", 13, 0xD8D8D8);
+			var uploadLbl:TextField = new TextField(150,32,"Upload", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var downloadLbl:TextField = new TextField(150,32,"Download", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var utpLbl:TextField = new TextField(500,32,"Enable bandwidth management (uTP)", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var rateUTPLbl:TextField = new TextField(500,32,"Apply rate limit to uTP connections", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var rateTransportLbl:TextField = new TextField(500,32,"Apply rate limit to transport overhead", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var rateLANLbl:TextField = new TextField(500,32,"Apply rate limit to peers on LAN", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			
 			chkUpload = new CheckBox(model.SettingsLocalStore.settings.speed.uploadRateEnabled);
 			chkUpload.addEventListener(FormEvent.CHANGE,onFormChange);

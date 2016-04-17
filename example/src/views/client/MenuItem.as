@@ -27,7 +27,7 @@ package views.client {
 			bgOff.alpha = 0.25;
 			bgOff.visible = !isSelected;
 			
-			lbl = new TextField(w,32,_lbl, "Fira Sans Regular 13", 13, 0xD8D8D8);
+			lbl = new TextField(w,32,_lbl, "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			lbl.hAlign = HAlign.CENTER;
 			lbl.x = 0;
 			lbl.batchable = true;
