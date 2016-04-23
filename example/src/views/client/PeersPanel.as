@@ -19,7 +19,7 @@ package views.client {
 	import utils.TextUtils;
 	
 	public class PeersPanel extends Sprite {
-		private static var divArr:Array = new Array(0,36,140,220,320,420,600,690,790,890,990,1090,1180);
+		private static var divArr:Array = new Array(0,36,140,220,320,420,600,690,790,880,990,1090,1180);
 		private static var headingArr:Array = new Array("", "IP", "Port","Connection","Flags","Client","Progress","Down Speed","Up Speed","Downloaded","Uploaded","Relevance");
 		private static var headingAligns:Array = new Array(HAlign.CENTER,HAlign.LEFT,HAlign.LEFT,HAlign.LEFT,HAlign.LEFT,HAlign.LEFT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT);
 		private var bg:QuadBatch = new QuadBatch();
