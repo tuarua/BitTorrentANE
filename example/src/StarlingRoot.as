@@ -66,7 +66,7 @@ package {
 		public function start():void {
 			
 			// ANE error bubble
-			// Peers panel scrubbar
+			// Peers panel scrubbar fix
 			// torrent list scrubbar
 			selectedFile.addEventListener(Event.SELECT, selectFile); 
 			

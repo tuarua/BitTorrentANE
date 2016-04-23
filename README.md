@@ -6,8 +6,6 @@ Sample client included
 ![alt tag](https://raw.githubusercontent.com/tuarua/BitTorrentANE/master/screenshots/screen-shot-1.PNG)
 
 ### Version
-- 1.0 OSX version only
-- 1.1 64bit OSX version only
 - 1.2 64bit OSX and Win 32
 
 ### Features
