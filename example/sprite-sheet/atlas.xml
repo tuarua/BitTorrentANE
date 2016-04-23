@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:da3f9cf74c4b368ac35d62276cec64ef:6a5fb731829a99e993ff312d0caab526:cde709370900f12288f3449eded86f07$ -->
+<!-- $TexturePacker:SmartUpdate:3f6e197f6a0a1c0ef068bc1745f2f336:5446be5d07b67344677e3e994d3644a7:cde709370900f12288f3449eded86f07$ -->
 <TextureAtlas imagePath="atlas.png" width="326" height="504">
     <SubTexture name="ad" x="309" y="1" width="16" height="16"/>
     <SubTexture name="add-magnet" x="141" y="43" width="60" height="38"/>

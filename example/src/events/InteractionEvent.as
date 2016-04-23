@@ -9,9 +9,9 @@ package events {
 		public static const ON_MAGNET_ADD_LIST:String = "onMagnetAddList";
 		public static const ON_SETTINGS_CLICK:String = "onSettingsClick";
 		public static const ON_POWER_CLICK:String = "onPowerClick";
+		public static const ON_TORRRENT_CREATE:String = "onTorrentCreateClick";
+		public static const ON_TORRRENT_SEED_NOW:String = "onTorrentSeedNow";
 		public var params:Object;
-		
-		
 		
 		public function InteractionEvent(type:String, _params:Object=null, bubbles:Boolean=false, cancelable:Boolean=false) {
 			super(type, bubbles, cancelable);

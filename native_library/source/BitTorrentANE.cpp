@@ -694,6 +694,8 @@ extern "C" {
 		FREGetObjectAsBool(argv[3], &isSeq);
 		uint32_t toQueue;
 		FREGetObjectAsBool(argv[4], &toQueue);
+		uint32_t seedMode;
+		FREGetObjectAsBool(argv[6], &seedMode);
 
 		std::vector<std::string> trackers = getStringVectorFromFREObject(argv[5], (const uint8_t*)"uri");
 
@@ -729,10 +731,18 @@ extern "C" {
 		}	
 		p.merge_resume_trackers = true;
 
-		p.paused = false;
-		p.auto_managed = true;
+		p.flags &= ~add_torrent_params::flag_paused;
+		p.flags |= add_torrent_params::flag_auto_managed;
+		if (isSeq)
+			p.flags |= add_torrent_params::flag_sequential_download;
+		else
+			p.flags &= ~add_torrent_params::flag_sequential_download;
 
-		if (isSeq) p.flags = add_torrent_params::flag_sequential_download;
+		if (seedMode)
+			p.flags |= add_torrent_params::flag_seed_mode;
+		else
+			p.flags &= ~add_torrent_params::flag_seed_mode;
+
 		ltsession->async_add_torrent(p);
 		return getReturnTrue();
 	}
@@ -1485,10 +1495,15 @@ extern "C" {
 		std::string sUserData = id + "|" + hash + "|" + boost::lexical_cast<string>(toQueue);
 		p.userdata = (void*)strdup(sUserData.c_str());
 
-		if (isSeq) p.flags = add_torrent_params::flag_sequential_download; //this will make torrent NOT auto_managed
-		p.paused = false;
-		p.auto_managed = true;
+		p.flags &= ~add_torrent_params::flag_paused;
+		p.flags |= add_torrent_params::flag_auto_managed;
 
+		if (isSeq)
+			p.flags |= add_torrent_params::flag_sequential_download;//this will make torrent NOT auto_managed
+		else
+			p.flags &= ~add_torrent_params::flag_sequential_download;
+		
+		
 		//only add the tracker if it's not already there
 		for (std::vector<std::string>::const_iterator s = trackers.begin(); s != trackers.end(); ++s) {
 			std::vector<std::string>::iterator it;
@@ -1706,6 +1721,7 @@ extern "C" {
 		using json = nlohmann::json;
 		json j;
 		j["fileName"] = createTorrentContext.outputFile;
+		j["seedNow"] = createTorrentContext.seedNow;
 
 		FREDispatchStatusEventAsync(dllContext, (uint8_t*)j.dump().c_str(), (const uint8_t*)torrentInfoEvent.TORRENT_CREATED.c_str());
 		mutex.unlock();
@@ -1786,7 +1802,8 @@ extern "C" {
 		createTorrentContext.isPrivate = getBoolFromFREObject(argv[5]);
 		createTorrentContext.comment = getStringFromFREObject(argv[6]);
 		createTorrentContext.creator = "BitTorrentANE";
-		createTorrentContext.rootCert = getStringFromFREObject(argv[7]);
+		createTorrentContext.seedNow = getBoolFromFREObject(argv[7]);
+		createTorrentContext.rootCert = getStringFromFREObject(argv[8]);
 		threads[0] = boost::move(createThread(&threadCreateTorrent, 1));
 		return getReturnTrue();
 	}

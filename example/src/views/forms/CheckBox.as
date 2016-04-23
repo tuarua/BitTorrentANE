@@ -10,7 +10,7 @@ package views.forms {
 	import starling.textures.Texture;
 
 	public class CheckBox extends Sprite {
-		private var selected:Boolean = false;
+		private var _selected:Boolean = false;
 		private var id:int;
 		private var txtreOn:Texture = Assets.getAtlas().getTexture("checkbox-on");
 		private var txtreOff:Texture = Assets.getAtlas().getTexture("checkbox-off");
@@ -30,9 +30,9 @@ package views.forms {
 		private function onClick(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(img);
 			if(touch && touch.phase == TouchPhase.ENDED && isEnabled){
-				this.selected = !this.selected ;
+				_selected = !_selected ;
 				render();
-				this.dispatchEvent(new FormEvent(FormEvent.CHANGE,{value:this.selected}));
+				this.dispatchEvent(new FormEvent(FormEvent.CHANGE,{value:_selected}));
 			}
 		}
 		private function render():void {
@@ -45,6 +45,14 @@ package views.forms {
 		public function enable(_b:Boolean):void {
 			isEnabled = _b;
 			img.alpha = (_b) ? 1 : 0.25;
+		}
+
+		public function get selected():Boolean {
+			return _selected;
+		}
+
+		public function set selected(value:Boolean):void {
+			_selected = value;
 		}
 		
 

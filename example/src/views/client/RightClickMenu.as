@@ -49,10 +49,6 @@ package views.client {
 			listBg.width = w;
 			listBg.height = h;
 			
-			
-			//listContainer.y = h;
-			//listOuterContainer.clipRect = new Rectangle(0,0,w,h);
-			
 			listContainer.addChild(listBg);
 			hover.x = 3;
 			hover.y = 2;
@@ -77,9 +73,6 @@ package views.client {
 		}
 		
 		public function update(_items:Array):void {
-			
-			trace("items updated");
-			
 			items = _items;
 			h = (items.length*20) + 5;
 			listBg.height = h;

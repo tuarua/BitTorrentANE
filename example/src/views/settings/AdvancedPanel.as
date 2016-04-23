@@ -103,7 +103,8 @@ package views.settings {
 					selectedInterfaceIndex = i+1;
 			}
 			
-			interfaces = new DropDown(200,interfacesDataList,selectedInterfaceIndex);
+			interfaces = new DropDown(200,interfacesDataList);
+			interfaces.selected = selectedInterfaceIndex;
 			interfaces.addEventListener(FormEvent.CHANGE,onFormChange);
 			interfaces.addEventListener(FormEvent.FOCUS_IN,onInterfaceFocusIn);
 			interfaces.addEventListener(FormEvent.FOCUS_OUT,onInterfaceFocusOut);

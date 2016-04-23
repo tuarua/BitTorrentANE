@@ -26,7 +26,7 @@ package views.client {
 		private static var headingAligns:Array = new Array(HAlign.LEFT,HAlign.LEFT,HAlign.CENTER,HAlign.LEFT,HAlign.LEFT);
 		private var bg:QuadBatch = new QuadBatch();
 		private var headingHolder:Sprite = new Sprite();
-		private var itmHolder:Sprite = new Sprite();
+		private var pane:Sprite = new Sprite();
 		private var txtHolder:Sprite = new Sprite();
 		private var imgHolder:Sprite = new Sprite();
 		private var holder:Sprite = new Sprite();
@@ -54,8 +54,8 @@ package views.client {
 			}
 			bg.y = 10;
 			headingHolder.y = 10;
-			itmHolder.y = 40;
-			itmHolder.clipRect = new Rectangle(0,0,w,h);
+			pane.y = 40;
+			pane.clipRect = new Rectangle(0,0,w,h);
 			//itmHolder.mask = new Quad(w,h);
 			addChild(bg);
 			addChild(headingHolder);
@@ -82,9 +82,9 @@ package views.client {
 			
 			if(touch && touch.phase == TouchPhase.MOVED){
 				var y:int = globalToLocal(new Point(touch.globalX,touch.globalY-(scrollBeganY))).y;
-				if(y < itmHolder.y) y = itmHolder.y;
-				if(y > (itmHolder.y + 255 - scrollBar.height))
-					y = itmHolder.y + 255 - scrollBar.height;
+				if(y < pane.y) y = pane.y;
+				if(y > (pane.y + 255 - scrollBar.height))
+					y = pane.y + 255 - scrollBar.height;
 				scrollBar.y = y;	
 				var percentage:Number = (y - nScrollbarOffset) / (h-scrollBar.height);
 				holder.y = -((fullHeight - h)*percentage);
@@ -95,9 +95,9 @@ package views.client {
 			while(k--)
 				txtHolder.removeChildAt(k);
 			
-			k = itmHolder.numChildren;
+			k = pane.numChildren;
 			while(k--)
-				itmHolder.removeChildAt(k);
+				pane.removeChildAt(k);
 			
 			k = imgHolder.numChildren;
 			while(k--)
@@ -181,9 +181,9 @@ package views.client {
 			
 			holder.addChild(txtHolder);
 			holder.addChild(imgHolder);
-			itmHolder.addChild(holder);
+			pane.addChild(holder);
 			
-			addChild(itmHolder);
+			addChild(pane);
 			setupScrollBar();
 			scrollBar.scaleY = h/fullHeight;
 			scrollBar.visible = !(fullHeight < h);
@@ -193,9 +193,9 @@ package views.client {
 			var k:int = txtHolder.numChildren;
 			while(k--)
 				txtHolder.removeChildAt(k);
-			k = itmHolder.numChildren;
+			k = pane.numChildren;
 			while(k--)
-				itmHolder.removeChildAt(k);
+				pane.removeChildAt(k);
 			k = imgHolder.numChildren;
 			while(k--)
 				imgHolder.removeChildAt(k);

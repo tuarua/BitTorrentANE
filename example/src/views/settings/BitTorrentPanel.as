@@ -87,7 +87,8 @@ package views.settings {
 			encryptionDataList.push({value:Encryption.ENABLED,label:"Enabled"});
 			encryptionDataList.push({value:Encryption.REQUIRED,label:"Required"});
 			
-			encyptionMode = new DropDown(120,encryptionDataList,model.SettingsLocalStore.settings.privacy.encryption);
+			encyptionMode = new DropDown(120,encryptionDataList);
+			encyptionMode.selected = model.SettingsLocalStore.settings.privacy.encryption;
 			encyptionMode.addEventListener(FormEvent.CHANGE,onFormChange);
 			encyptionMode.x = 100;
 			encyptionMode.y = 112;

@@ -242,7 +242,8 @@ package views.settings {
 			proxyDataList.push({value:ProxyType.HTTP,label:"HTTP"});
 			proxyDataList.push({value:ProxyType.I2P,label:"I2P"});
 			
-			proxyType = new DropDown(100,proxyDataList,model.SettingsLocalStore.settings.proxy.type);
+			proxyType = new DropDown(100,proxyDataList);
+			proxyType.selected = model.SettingsLocalStore.settings.proxy.type;
 			proxyType.addEventListener(FormEvent.CHANGE,onFormChange);
 			proxyType.x = 70;
 			proxyType.y = 17;

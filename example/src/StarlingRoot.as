@@ -11,7 +11,6 @@ package {
 	import com.tuarua.torrent.constants.LogLevel;
 	import com.tuarua.torrent.constants.QueuePosition;
 	import com.tuarua.torrent.events.TorrentInfoEvent;
-	import com.tuarua.torrent.utils.Magnet;
 	import com.tuarua.torrent.utils.MagnetParser;
 	
 	import flash.desktop.Clipboard;
@@ -66,11 +65,9 @@ package {
 		}
 		public function start():void {
 			
-			//TO DO
-			// create torrent screen
 			// ANE error bubble
-			//on settings close - update ANE settings
-			
+			// Peers panel scrubbar
+			// torrent list scrubbar
 			selectedFile.addEventListener(Event.SELECT, selectFile); 
 			
 			model.SettingsLocalStore.load(model.SettingsLocalStore == null);
@@ -81,13 +78,15 @@ package {
 			torrentClientPanel.addEventListener(InteractionEvent.ON_TORRENT_ADD,onTorrentAdd);
 			torrentClientPanel.addEventListener(InteractionEvent.ON_POWER_CLICK,onPowerClick);
 			
-			starlingVideo.y = 60;
+			starlingVideo.y = 0;
 			
 			torrentClientPanel.addEventListener(InteractionEvent.ON_MENU_ITEM_RIGHT,onRightClick);
 			settingsPanel.x = torrentClientPanel.x = 0;
-			torrentClientPanel.y = 60;
+			torrentClientPanel.y = 30;
 			torrentClientPanel.addEventListener(InteractionEvent.ON_MAGNET_ADD_LIST,onMagnetListAdd);
-			settingsPanel.y = 60;
+			torrentClientPanel.addEventListener(InteractionEvent.ON_TORRRENT_CREATE,oTorrentCreate);
+			torrentClientPanel.addEventListener(InteractionEvent.ON_TORRRENT_SEED_NOW,oTorrentSeedNow);
+			settingsPanel.y = 30;
 			
 
 			addChild(starlingVideo);
@@ -96,7 +95,7 @@ package {
 			settingsPanel.visible = false;
 			addChild(settingsPanel);
 			
-			settingsButton.x = 1178;
+			settingsButton.x = 1180;
 			settingsButton.y = settingsPanel.y + 38;
 			
 			settingsButton.addEventListener(TouchEvent.TOUCH,onSettingsClick);
@@ -137,6 +136,30 @@ package {
 			}
 			
 		}
+		
+		private function oTorrentCreate(event:InteractionEvent):void {
+			libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATION_PROGRESS,torrentClientPanel.createTorrentScreen.onProgress);
+			libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATED,torrentClientPanel.createTorrentScreen.onCreateComplete);
+			libTorrentANE.createTorrent(event.params.file,event.params.output,event.params.size,event.params.trackers,event.params.webSeeds,event.params.isPrivate,event.params.comments,event.params.seedNow);
+		}
+		
+		private function oTorrentSeedNow(event:InteractionEvent):void {
+			var meta:TorrentMeta = libTorrentANE.getTorrentMeta(event.params.fileName);
+			if(meta.status == "ok"){
+				torrentId = meta.infoHash; //it's a good idea to use the hash as the id
+				var dict:Dictionary = TorrentsLibrary.status;
+				var rightClickMenuDataList:Array = new Array();
+				rightClickMenuDataList.push({value:0,label:"Pause"});//Resume
+				rightClickMenuDataList.push({value:1,label:"Delete"});
+				rightClickMenuDataList.push({value:(downloadAsSequential) ? 2 : 9,label:(downloadAsSequential) ? "Sequential Off": "Sequential On"});
+				rightClickMenuDataList.push({value:7,label:"Copy magnet link"});
+				torrentClientPanel.addRightClickMenu(torrentId,rightClickMenuDataList);
+				libTorrentANE.addTorrent(meta.torrentFile,torrentId,meta.infoHash,downloadAsSequential,false,null,true);
+			}else{
+				trace("failed to load torrent");
+			}
+		}
+		
 		private function onMagnetListAdd(event:InteractionEvent):void {
 			var lst:Array = TextUtils.trim(event.params.value).split(String.fromCharCode(13));
 			var itm:String;
@@ -145,9 +168,7 @@ package {
 			rightClickMenuDataList.push({value:1,label:"Delete"});
 			rightClickMenuDataList.push({value:(downloadAsSequential) ? 2 : 9,label:(downloadAsSequential) ? "Sequential Off": "Sequential On"});
 			rightClickMenuDataList.push({value:7,label:"Copy magnet link"});
-			//magnet:?xt=urn:btih:d325ff1239775941019469e835883247c365f324&dn=It%27s%20a%20Wonderful%20Life%20(1946)
 			
-			//var magnet:Magnet;
 			for (var i:int=0, l:int=lst.length; i<l; ++i){
 				itm = lst[i];
 				if(itm.length > 0){
@@ -162,17 +183,16 @@ package {
 					}
 				}
 			}
-			//trace(event.params.value);
-			//trace(lst.length);
-			//trace();
 		}
 		private function showSettings(b:Boolean):void {
 			if(settingsPanel){
 				settingsPanel.visible = !settingsPanel.visible;
+				torrentClientPanel.visible = !settingsPanel.visible;
 				if(b){
 					settingsPanel.showDefault();
 					this.setChildIndex(settingsPanel,this.numChildren-2);
 				}else{
+					updateTorrentSettings();
 					libTorrentANE.updateSettings();
 					settingsPanel.hideAllFields();
 				}

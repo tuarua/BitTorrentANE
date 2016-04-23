@@ -130,11 +130,11 @@ package com.tuarua {
 			downloader.addEventListener(TorrentInfoEvent.TORRENT_DOWNLOADED,onFileDownloaded);
 		}
 		protected function onFileDownloaded(event:TorrentInfoEvent):void {
-			addTorrent(event.params.filename,event.params.id,getTorrentMeta(event.params.filename).infoHash,event.params.sequential,event.params.toQueue,event.params.trackers);
+			addTorrent(event.params.filename,event.params.id,getTorrentMeta(event.params.filename).infoHash,event.params.sequential,event.params.toQueue,event.params.trackers,false);
 			this.dispatchEvent(event);
 		}
-		public function addTorrent(filename:String,id:String,hash:String,sequential:Boolean,toQueue:Boolean=false,trackers:Vector.<TorrentTracker>=null):void {
-			extensionContext.call("addTorrent",filename,id,hash,sequential,toQueue,trackers);
+		public function addTorrent(filename:String,id:String,hash:String,sequential:Boolean,toQueue:Boolean=false,trackers:Vector.<TorrentTracker>=null,seedMode:Boolean=false):void {
+			extensionContext.call("addTorrent",filename,id,hash,sequential,toQueue,trackers,seedMode);
 		}
 		public function setSequentialDownload(id:String,value:Boolean):void {
 			extensionContext.call("setSequentialDownload",id,value);
@@ -197,10 +197,9 @@ package com.tuarua {
 				extensionContext.call("torrentFromMagnet",uri,id,MagnetParser.parse(uri).hash,sequential,toQueue,trackers);
 		}
 		//pieceSize is in KiB
-		public function createTorrent(input:String,output:String,pieceSize:int,trackers:Vector.<TorrentTracker>,webSeeds:Vector.<TorrentWebSeed>,isPrivate:Boolean=false,comment:String=null,rootCert:String=null):void {
-			//input file exists
+		public function createTorrent(input:String,output:String,pieceSize:int,trackers:Vector.<TorrentTracker>,webSeeds:Vector.<TorrentWebSeed>,isPrivate:Boolean=false,comment:String=null,seedNow:Boolean=false,rootCert:String=null):void {
 			if(pieceSize % 16 > 0) throw new Error("pieceSize must be a miltiple of 16");
-			extensionContext.call("createTorrent",input,output,trackers,webSeeds,pieceSize,isPrivate,comment,rootCert);
+			extensionContext.call("createTorrent",input,output,trackers,webSeeds,pieceSize,isPrivate,comment,seedNow,rootCert);
 		}
 		
 		protected function onAlertListenerTimer(event:TimerEvent):void {

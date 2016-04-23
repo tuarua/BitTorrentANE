@@ -25,7 +25,7 @@ package views.client {
 		private var pieceLength:int = 0
 		public function InfoPanel() {
 			super();
-			var lblArr:Array = new Array("Progress:","Time Active:", "Downloaded:", "Download Speed:", "Download Limit:", "Share Ratio:","Total Size:","Added On:","Torrent Hash:","Save Path:","Comment:","ETA:","Uploaded:","Upload Speed:","Upload Limit:","Reannounce In:","Pieces:","Completed On:","Connections","Seeds","Peers","Wasted","Last Seen Complete","Created By:","Created On:");
+			var lblArr:Array = new Array("Progress:","Time Active:", "Downloaded:", "Download Speed:", "Download Limit:", "Share Ratio:","Total Size:","Added On:","Torrent Hash:","Save Path:","Comment:","ETA:","Uploaded:","Upload Speed:","Upload Limit:","Reannounce In:","Pieces:","Completed On:","Connections:","Seeds:","Peers:","Wasted:","Last Seen Complete:","Created By:","Created On:");
 			var lbl:TextField;
 			var txt:TextField;
 			txtHolder.y = lblHolder.y = 20;

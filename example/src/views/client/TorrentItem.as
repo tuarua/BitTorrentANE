@@ -25,7 +25,7 @@ package views.client {
 	public class TorrentItem extends Sprite {
 		private var txtHolder:Sprite = new Sprite();
 		private var _id:String;
-		private var highlight:Quad = new Quad(1200,20,0xCC8D1E,false);
+		private var highlight:Quad = new Quad(1180,20,0xCC8D1E,false);
 		private var isSelected:Boolean = false;
 		private static const divArr:Array = new Array(0,36,320, 410,474,600,665,724,825,925,1015);
 		private static const txtAligns:Array = new Array(HAlign.CENTER,HAlign.LEFT,HAlign.RIGHT,HAlign.RIGHT,HAlign.LEFT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT);

@@ -32,6 +32,7 @@ package views.client {
 			bgTexture = new Scale9Textures(Assets.getAtlas().getTexture("popmenu-bg"),new Rectangle(4,4,16,16));
 			bg = new Scale9Image(bgTexture);
 			bg.blendMode = BlendMode.NONE;
+			bg.touchable = false;
 			bg.width = 600;
 			bg.height = 318;
 			
@@ -73,9 +74,8 @@ package views.client {
 		}
 		private function onCancel(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(cancelButton);
-			if(touch != null && touch.phase == TouchPhase.ENDED){
+			if(touch != null && touch.phase == TouchPhase.ENDED)
 				hide();
-			}
 		}
 		private function onFormChange(event:FormEvent):void {
 			var test:int;
@@ -92,7 +92,6 @@ package views.client {
 			showFields(true);
 		}
 		public function hide():void {
-			
 			this.visible = false;
 			input.nti.input.text = "";
 			showFields(false);

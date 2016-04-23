@@ -26,7 +26,7 @@ package views.forms {
 	public class DropDown extends Sprite { //5 draw calls - not nice
 		private var w:int;
 		private var h:int;
-		private var selected:int;
+		private var _selected:int = 0;
 		private var items:Vector.<Object>;
 		private var bg:Scale3Image;
 		private var bgTexture:Scale3Textures = new Scale3Textures(Assets.getAtlas().getTexture("dropdown-bg"),4,23);
@@ -37,11 +37,11 @@ package views.forms {
 		private var txt:TextField;
 		private var listOuterContainer:Sprite = new Sprite();
 		private var tween:Tween;
-		public function DropDown(_w:int,_items:Vector.<Object>,_selected:int=0) {
+		private var isEnabled:Boolean = true;
+		public function DropDown(_w:int,_items:Vector.<Object>) {
 			super();
 			w = _w;
 			items = _items;
-			selected = _selected;
 			h = (items.length*20) + 5;
 			bg = new Scale3Image(bgTexture);
 			bg.width = w;
@@ -50,7 +50,7 @@ package views.forms {
 			hover = new Quad(w-6,20,0xCC8D1E);
 			hover.alpha = 0.4;
 			
-			txt = new TextField(w,26,items[selected].label, "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			txt = new TextField(w,26,items[_selected].label, "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			txt.batchable = true;
 			txt.touchable = false;
 			txt.hAlign = HAlign.LEFT;
@@ -71,7 +71,7 @@ package views.forms {
 			
 			listContainer.addChild(listBg);
 			hover.x = 3;
-			hover.y = (selected*20)+2;
+			hover.y = (_selected*20)+2;
 			listContainer.addChild(hover);
 			
 			var itmLbl:TextField;
@@ -96,7 +96,7 @@ package views.forms {
 		protected function onTouch(event:TouchEvent):void{
 			event.stopPropagation();
 			var touch:Touch = event.getTouch(bg, TouchPhase.ENDED);
-			if(touch && touch.phase == TouchPhase.ENDED)
+			if(touch && touch.phase == TouchPhase.ENDED && isEnabled)
 				open();
 		}
 		
@@ -119,27 +119,40 @@ package views.forms {
 			Starling.juggler.add(tween);
 			tween.onComplete = function():void {
 				listOuterContainer.visible = false;
+				hover.y = (_selected*20)+2;
 			}
 			this.dispatchEvent(new FormEvent(FormEvent.FOCUS_OUT,null));
 		}
-		
+		public function enable(_b:Boolean):void {
+			isEnabled = _b;
+			this.alpha = (_b) ? 1 : 0.25;
+		}
 		protected function onListTouch(event:TouchEvent):void {
 			var hoverTouch:Touch = event.getTouch(listContainer, TouchPhase.HOVER);
 			var clickTouch:Touch = event.getTouch(listContainer, TouchPhase.ENDED);
-			if(hoverTouch){
+			if(hoverTouch && isEnabled){
 				var p:Point = hoverTouch.getLocation(listContainer,p);
 				var proposedHover:int = Math.floor((p.y)/20);
 				if(proposedHover > -1 && proposedHover < items.length && tween.isComplete)
 					hover.y = (proposedHover*20)+2;
-			}else if(clickTouch){
+			}else if(clickTouch && isEnabled){
 				var pClick:Point = clickTouch.getLocation(listContainer,pClick);
 				var proposedSelected:int = Math.floor((pClick.y)/20);
 				if(proposedSelected > -1 && proposedSelected < items.length){
-					selected = proposedSelected;
-					txt.text = items[selected].label;
-					this.dispatchEvent(new FormEvent(FormEvent.CHANGE,{value:items[selected].value},false));
+					_selected = proposedSelected;
+					txt.text = items[_selected].label;
+					this.dispatchEvent(new FormEvent(FormEvent.CHANGE,{value:items[_selected].value},false));
 				}
 			}
+		}
+
+		public function get selected():int {
+			return _selected;
+		}
+		public function set selected(value:int):void {
+			_selected = value;
+			txt.text = items[_selected].label;
+			hover.y = (_selected*20)+2;
 		}
 		
 	}

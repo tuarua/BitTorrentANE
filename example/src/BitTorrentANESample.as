@@ -8,7 +8,7 @@ package {
 	import starling.core.Starling;
 	import starling.events.Event;
 
-	[SWF(width = "1280", height = "780", frameRate = "60", backgroundColor = "#121314")]
+	[SWF(width = "1280", height = "720", frameRate = "60", backgroundColor = "#121314")]
 	public class BitTorrentANESample extends Sprite {
 		public var mStarling:Starling;
 		public function BitTorrentANESample() {

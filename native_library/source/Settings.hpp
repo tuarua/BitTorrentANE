@@ -104,6 +104,7 @@ typedef struct {
 	std::vector<std::string> trackers;
 	uint32_t pieceSize;
 	bool isPrivate = false;
+	bool seedNow = false;
 	std::string comment;
 	std::string creator;
 	std::string rootCert;

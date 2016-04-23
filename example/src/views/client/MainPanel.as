@@ -47,6 +47,7 @@ package views.client {
 		private var createButton:Image = new Image(createButtonTexture);
 		private var sampleMagnet:String = "magnet:?xt=urn:btih:f3bf22593bd8c5b318c9fa41c7d507215ea67adc&dn=Cosmos%20Laundromat%20-%20Blender-short-movie&tr=udp%3a%2f%2fopen.demonii.com%3a1337%2fannounce&tr=udp%3a%2f%2ftracker.publicbt.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.openbittorrent.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.istole.it%3a80%2fannounce&tr=udp%3a%2f%2ftorrent.gresille.org%3a80%2fannounce&tr=udp%3a%2f%2ftracker.opentrackr.org%3a1337%2fannounce&tr=http%3a%2f%2ftracker.aletorrenty.pl%3a2710%2fannounce&tr=http%3a%2f%2fopen.acgtracker.com%3a1096%2fannounce&tr=udp%3a%2f%2f9.rarbg.me%3a2710%2fannounce";
 		private var magnetScreen:MagnetScreen = new MagnetScreen(sampleMagnet);
+		public var createTorrentScreen:CreateTorrentScreen = new CreateTorrentScreen();
 		private var selectedId:String;
 		private var _selectedMenu:int = 0;
 		private var rightClickMenus:Dictionary = new Dictionary();
@@ -117,6 +118,7 @@ package views.client {
 			bg.addQuad(blineRight);
 			bg.addQuad(blineBot);
 			
+			
 			itmHolder.y = 25;
 			
 			
@@ -157,12 +159,13 @@ package views.client {
 			
 			magnetButton.x = 62;
 			createButton.x = 124;
-			powerButton.x = 1200 - 124;
+			powerButton.x = 1200 - 122;
 			createButton.y = powerButton.y = addButton.y = magnetButton.y = -38;
 			
 			magnetButton.addEventListener(TouchEvent.TOUCH,onMagnetAdd);
 			addButton.addEventListener(TouchEvent.TOUCH,onTorrentAdd);
 			powerButton.addEventListener(TouchEvent.TOUCH,onPowerClick);
+			createButton.addEventListener(TouchEvent.TOUCH,onCreateClick);
 			
 			
 			holder.addChild(itmHolder);
@@ -178,7 +181,13 @@ package views.client {
 			magnetScreen.showFields(false);
 			magnetScreen.visible = false;
 			
+			createTorrentScreen.x = 300;
+			createTorrentScreen.y = 40;
+			createTorrentScreen.showFields(false);
+			createTorrentScreen.visible = false;
+			
 			holder.addChild(magnetScreen);
+			holder.addChild(createTorrentScreen);
 			
 			addChild(holder);
 			
@@ -187,11 +196,16 @@ package views.client {
 		
 		private function onMagnetAdd(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(magnetButton);
-			if(touch != null && touch.phase == TouchPhase.ENDED){
+			if(touch != null && touch.phase == TouchPhase.ENDED)
 				magnetScreen.show();
-			}
-				//this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_MAGNET_ADD));
 		}
+		
+		private function onCreateClick(event:TouchEvent):void {
+			var touch:Touch = event.getTouch(createButton);
+			if(touch != null && touch.phase == TouchPhase.ENDED)
+				createTorrentScreen.show();
+		}
+		
 		private function onTorrentAdd(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(addButton);
 			if(touch != null && touch.phase == TouchPhase.ENDED)
@@ -205,7 +219,6 @@ package views.client {
 				powerButton.texture = (isPowerOn) ? powerOnButtonTexture : powerOffButtonTexture;
 				this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_POWER_CLICK,{on:isPowerOn}));
 			}
-			
 		}
 		public function addPriorityToRightClick(value:Boolean):void {
 			var tmpArr:Array;
@@ -262,7 +275,7 @@ package views.client {
 					itemSelect();
 					rightClickMenus[ti.id].visible = true;
 					rightClickMenus[ti.id].x = event.stageX;
-					rightClickMenus[ti.id].y = event.stageY-60;
+					rightClickMenus[ti.id].y = event.stageY-30;
 					rightClickMenus[ti.id].open();
 				}else{
 					rightClickMenus[ti.id].close();

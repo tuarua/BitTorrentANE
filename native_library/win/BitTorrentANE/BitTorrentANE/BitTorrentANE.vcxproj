@@ -89,7 +89,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;FFPROBEANE_EXPORTS;_TIMESPEC_DEFINED;BOOST_ASIO_SEPARATE_COMPILATION;BOOST_ASIO_ENABLE_CANCELIO;BOOST_ASIO_HASH_MAP_BUCKETS=1021;BOOST_EXCEPTION_DISABLE;BOOST_SYSTEM_STATIC_LINK=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;BITTORRENTANE_EXPORTS;_TIMESPEC_DEFINED;BOOST_ASIO_SEPARATE_COMPILATION;BOOST_EXCEPTION_DISABLE;BOOST_ASIO_ENABLE_CANCELIO;BOOST_ASIO_HASH_MAP_BUCKETS=1021;BOOST_SYSTEM_STATIC_LINK=1;WIN32_LEAN_AND_MEAN;__USE_W32_SOCKETS;_WIN32_WINNT=0x0600;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_FILE_OFFSET_BITS=64;TORRENT_USE_I2P=1;TORRENT_USE_OPENSSL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include;$(OPEN_SSL_INCLUDEDIR);$(BOOST_ROOT);$(GEOIP_INCLUDEDIR);$(LIBTORRENT_INCLUDEDIR);C:\Program Files\Adobe\Adobe Flash Builder 4.7 %2864 Bit%29\sdks\4.6.0\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -97,7 +97,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OPEN_SSL_LIBRARYDIR);$(BOOST_LIBRARYDIR);$(LIBTORRENT_LIBRARYDIR);$(GEOIP_LIBRARYDIR);C:\Program Files\Adobe\Adobe Flash Builder 4.7 %2864 Bit%29\sdks\4.6.0\lib\win</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcrypto.lib;libssl.lib;libtorrent.lib;FlashRuntimeExtensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcryptod.lib;libssld.lib;libtorrent.lib;FlashRuntimeExtensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>D:\dev\flash\BlurayANELib\ane\build.bat</Command>
@@ -124,7 +124,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBTORRENTANE_EXPORTS;BOOST_ASIO_SEPARATE_COMPILATION;BOOST_EXCEPTION_DISABLE;BOOST_ASIO_ENABLE_CANCELIO;BOOST_ASIO_HASH_MAP_BUCKETS=1021;BOOST_SYSTEM_STATIC_LINK=1;WIN32_LEAN_AND_MEAN;__USE_W32_SOCKETS;_WIN32_WINNT=0x0600;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_FILE_OFFSET_BITS=64;TORRENT_USE_I2P=1;TORRENT_USE_OPENSSL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;BITTORRENTANE_EXPORTS;BOOST_ASIO_SEPARATE_COMPILATION;BOOST_EXCEPTION_DISABLE;BOOST_ASIO_ENABLE_CANCELIO;BOOST_ASIO_HASH_MAP_BUCKETS=1021;BOOST_SYSTEM_STATIC_LINK=1;WIN32_LEAN_AND_MEAN;__USE_W32_SOCKETS;_WIN32_WINNT=0x0600;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_FILE_OFFSET_BITS=64;TORRENT_USE_I2P=1;TORRENT_USE_OPENSSL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include;$(OPEN_SSL_INCLUDEDIR);$(BOOST_ROOT);$(GEOIP_INCLUDEDIR);$(LIBTORRENT_INCLUDEDIR);C:\Program Files\Adobe\Adobe Flash Builder 4.7 %2864 Bit%29\sdks\4.6.0\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
