@@ -2,6 +2,7 @@
 
 Adobe Air Native Extension written in ActionScript 3 and C++ for working with .torrent files and magnet uris.
 
+![alt tag](https://raw.githubusercontent.com/tuarua/BitTorrentANE/master/screenshots/screen-shot-1.PNG)
 
 ### Version
 - 1.0 OSX version only
@@ -54,4 +55,3 @@ You will need
  - Android Version
 
 
-![alt tag](https://raw.githubusercontent.com/tuarua/BitTorrentANE/master/screenshots/screen-shot-1.PNG)
