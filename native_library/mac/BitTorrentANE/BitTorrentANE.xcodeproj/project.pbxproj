@@ -182,7 +182,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "";
+			shellScript = ../../../native_extension/ane/build_multi.sh;
 		};
 /* End PBXShellScriptBuildPhase section */
 
