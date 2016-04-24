@@ -100,7 +100,8 @@
       <AdditionalDependencies>libcryptod.lib;libssld.lib;libtorrent.lib;FlashRuntimeExtensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>D:\dev\flash\BlurayANELib\ane\build.bat</Command>
+      <Command>
+      </Command>
     </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -136,8 +137,8 @@
       <AdditionalDependencies>libcrypto.lib;libssl.lib;libtorrent.lib;FlashRuntimeExtensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
-      <Command>cp D:\dev\cpp\BlurayANE\Debug\BlurayANE.dll D:\dev\flash\BlurayANELib\ane\BlurayANE.dll
-adt.bat -package -target ane D:\dev\flash\BlurayANELib\ane\BlurayANE.ane D:\dev\flash\BlurayANELib\ane\extension.xml -swc D:\dev\flash\BlurayANELib\ane\BlurayANELib.swc -platform Windows-x86 D:\dev\flash\BlurayANELib\ane\library.swf D:\dev\flash\BlurayANELib\ane\BlurayANE.dll</Command>
+      <Command>
+      </Command>
     </CustomBuildStep>
     <PostBuildEvent>
       <Command>$(ProjectDir)..\..\..\..\native_extension\ane\build-release.bat</Command>
