@@ -84,7 +84,7 @@ bool isSupportedInOS = true;
 std::string pathSlash = "\\";
 #else
 #include <Adobe AIR/Adobe AIR.h>
-bool isSupportedInOS = false;
+bool isSupportedInOS = true;
 std::string pathSlash = "/";
 #endif
 
