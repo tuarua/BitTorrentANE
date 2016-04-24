@@ -17,7 +17,6 @@ mkdir "$pathtome/platforms/mac"
 mkdir "$pathtome/platforms/mac/release"
 mkdir "$pathtome/platforms/mac/debug"
 
-mkdir "$pathtome/platforms"
 mkdir "$pathtome/platforms/win"
 mkdir "$pathtome/platforms/win/release"
 
