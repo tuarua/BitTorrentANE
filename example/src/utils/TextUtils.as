@@ -2,12 +2,8 @@ package utils {
 	public class TextUtils {
 		public static function cleanChars(_s:String):String{
 			var pattern1:RegExp = new RegExp(String.fromCharCode(956), "g");
-			var pattern2:RegExp = new RegExp(String.fromCharCode(181), "g");
 			var ret:String = _s;
 			if(ret){
-				ret = ret.replace(pattern1,"u");
-				ret = ret.replace(pattern2,"u");
-				
 			}
 			return ret;
 		}
