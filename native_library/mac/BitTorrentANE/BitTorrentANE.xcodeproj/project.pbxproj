@@ -182,7 +182,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = ../../../native_extension/ane/build_multi.sh;
+			shellScript = ../../../native_extension/ane/build_osx.sh;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -325,6 +325,7 @@
 					/usr/local/opt/openssl/lib/libcrypto.a,
 					/usr/local/opt/openssl/lib/libssl.a,
 					/usr/local/opt/geoip/lib/libGeoIP.a,
+					../../lib/libnfd.a,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tuarua.BitTorrentANE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -370,6 +371,7 @@
 					/usr/local/opt/openssl/lib/libcrypto.a,
 					/usr/local/opt/openssl/lib/libssl.a,
 					/usr/local/opt/geoip/lib/libGeoIP.a,
+					../../lib/libnfd.a,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tuarua.BitTorrentANE;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -121,7 +121,7 @@ extern std::string getHashFromId(std::string const id) {
 extern std::string getIdFromHash(std::string const hash) {
 	using namespace std;
 	string ret = hash;
-	auto search = addedTorrents.by<addedTorrentHash>().find(hash);
+auto search = addedTorrents.by<addedTorrentHash>().find(hash);
 	if (search != addedTorrents.by<addedTorrentHash>().end())
 		ret = search->get<addedTorrentId>();
 	return ret;

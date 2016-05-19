@@ -3,7 +3,8 @@
 ### FlashBuilder ###
 # Build and Release Folders
 bin/
-bin-debug/
+bin-debug/torrents/
+bin-debug/output/
 bin-release/
 .actionScriptProperties
 .flexConfig.xml
