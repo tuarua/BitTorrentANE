@@ -47,7 +47,7 @@ You will need
 
 ### OSX Preconfiguration to modify the ANE code:
  - Install Homebrew
- - from the Terminal run: brew install boost libtorrent-rasterbar --with-geoip
+ - from the Terminal run: brew install boost openssl libtorrent-rasterbar --with-geoip
 
 ### Win Preconfiguration to modify the ANE code:
  - Install Visual Studio 2015
