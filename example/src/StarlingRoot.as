@@ -36,7 +36,6 @@ package {
 	import starling.textures.Texture;
 	
 	import utils.TextUtils;
-	
 	import views.client.MainPanel;
 	import views.settings.SettingsPanel;
 
@@ -59,6 +58,7 @@ package {
 		private var settingsButton:Image = new Image(settingsButtonTexture);
 		private var downloadAsSequential:Boolean = true;
 		private var selectedFile:File = new File();
+
 		public function StarlingRoot() {
 			super();
 			TextField.registerBitmapFont(Fonts.getFont("fira-sans-semi-bold-13"));
@@ -84,7 +84,7 @@ package {
 			settingsPanel.x = torrentClientPanel.x = 0;
 			torrentClientPanel.y = 30;
 			torrentClientPanel.addEventListener(InteractionEvent.ON_MAGNET_ADD_LIST,onMagnetListAdd);
-			torrentClientPanel.addEventListener(InteractionEvent.ON_TORRRENT_CREATE,oTorrentCreate);
+			torrentClientPanel.addEventListener(InteractionEvent.ON_TORRRENT_CREATE,onTorrentCreate);
 			torrentClientPanel.addEventListener(InteractionEvent.ON_TORRRENT_SEED_NOW,oTorrentSeedNow);
 			settingsPanel.y = 30;
 			
@@ -137,10 +137,16 @@ package {
 			
 		}
 		
-		private function oTorrentCreate(event:InteractionEvent):void {
-			libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATION_PROGRESS,torrentClientPanel.createTorrentScreen.onProgress);
-			libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATED,torrentClientPanel.createTorrentScreen.onCreateComplete);
-			libTorrentANE.createTorrent(event.params.file,event.params.output,event.params.size,event.params.trackers,event.params.webSeeds,event.params.isPrivate,event.params.comments,event.params.seedNow);
+		private function onTorrentCreate(event:InteractionEvent):void {
+			var savePath:String = libTorrentANE.saveAs("torrent",TorrentSettings.storage.torrentPath);
+			if(savePath.length == 0){
+				torrentClientPanel.createTorrentScreen.hide();
+			}else{
+				libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATION_PROGRESS,torrentClientPanel.createTorrentScreen.onProgress);
+				libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATED,torrentClientPanel.createTorrentScreen.onCreateComplete);
+				libTorrentANE.createTorrent(event.params.file,savePath,event.params.size,event.params.trackers,event.params.webSeeds,event.params.isPrivate,event.params.comments,event.params.seedNow);
+			}
+			
 		}
 		
 		private function oTorrentSeedNow(event:InteractionEvent):void {

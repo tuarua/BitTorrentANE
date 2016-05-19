@@ -24,6 +24,7 @@ package views.forms {
 	import starling.utils.VAlign;
 	
 	public class DropDown extends Sprite { //5 draw calls - not nice
+		private var _id:String;
 		private var w:int;
 		private var h:int;
 		private var _selected:int = 0;
@@ -42,6 +43,10 @@ package views.forms {
 			super();
 			w = _w;
 			items = _items;
+			render();
+		}
+		
+		private function render():void {
 			h = (items.length*20) + 5;
 			bg = new Scale3Image(bgTexture);
 			bg.width = w;
@@ -65,9 +70,14 @@ package views.forms {
 			listBg.width = w;
 			listBg.height = h;
 			
-			
 			listContainer.y = 25-h;
 			listOuterContainer.clipRect = new Rectangle(0,25,w,h);
+			
+			var k:int = listContainer.numChildren;
+			while(k--){
+				listContainer.getChildAt(k).dispose();
+				listContainer.removeChildAt(k);
+			}
 			
 			listContainer.addChild(listBg);
 			hover.x = 3;
@@ -93,6 +103,7 @@ package views.forms {
 			addChild(bg);
 			addChild(txt);
 		}
+		
 		protected function onTouch(event:TouchEvent):void{
 			event.stopPropagation();
 			var touch:Touch = event.getTouch(bg, TouchPhase.ENDED);
@@ -101,6 +112,7 @@ package views.forms {
 		}
 		
 		private function open():void {
+			Starling.juggler.removeTweens(listContainer);
 			tween = new Tween(listContainer, 0.15, Transitions.EASE_OUT);
 			tween.animate("y",25);
 			listOuterContainer.visible = true;
@@ -114,6 +126,7 @@ package views.forms {
 			close();
 		}
 		private function close():void {
+			Starling.juggler.removeTweens(listContainer);
 			tween = new Tween(listContainer, 0.15, Transitions.EASE_IN);
 			tween.animate("y",25-h);
 			Starling.juggler.add(tween);
@@ -150,10 +163,31 @@ package views.forms {
 			return _selected;
 		}
 		public function set selected(value:int):void {
-			_selected = value;
-			txt.text = items[_selected].label;
-			hover.y = (_selected*20)+2;
+			if(value > -1){
+				_selected = value;
+				txt.text = items[_selected].label;
+				hover.y = (_selected*20)+2;
+			}
+			
 		}
 		
+		public function update(_items:Vector.<Object>):void {
+			items = _items;
+			var k:int = this.numChildren;
+			while(k--){
+				this.getChildAt(k).dispose();
+				this.removeChildAt(k);
+			}
+			render();
+		}
+
+		public function get id():String {
+			return _id;
+		}
+
+		public function set id(value:String):void {
+			_id = value;
+		}
+
 	}
 }

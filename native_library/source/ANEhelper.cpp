@@ -17,6 +17,7 @@ FREObject getFREObjectProperty(FREObject objAS, const uint8_t * propertyName) {
 	FREGetObjectProperty(objAS, propertyName, &result, &thrownException);
 	return result;
 }
+
 FREObject getFREObjectFromString(std::string arg) {
 	FREObject result;
 	FRENewObjectFromUTF8((uint32_t)arg.length(), reinterpret_cast<const uint8_t*>(arg.data()), &result);

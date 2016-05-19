@@ -28,6 +28,7 @@ package views.client {
 	
 	import utils.TextUtils;
 	
+	import views.CircularLoader;
 	import views.forms.CheckBox;
 	import views.forms.DropDown;
 	import views.forms.Input;
@@ -57,8 +58,7 @@ package views.client {
 		private var cancelButton:Image = new Image(Assets.getAtlas().getTexture("cancel-button"));
 
 		private var sizeDataList:Vector.<Object>;
-
-		private var progressLbl:TextField;
+		private var circularLoader:CircularLoader;
 		public function CreateTorrentScreen() {
 			super();
 			bgTexture = new Scale9Textures(Assets.getAtlas().getTexture("popmenu-bg"),new Rectangle(4,4,16,16));
@@ -76,26 +76,18 @@ package views.client {
 			var autoLbl:TextField = new TextField(120,32,"Auto", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			var privateLbl:TextField = new TextField(120,32,"Private", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			var seedNowLbl:TextField = new TextField(120,32,"Seed now", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			progressLbl = new TextField(600,32,"", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			
 			
-			
-			progressLbl.vAlign = seedNowLbl.vAlign = privateLbl.vAlign = autoLbl.vAlign = sizeLbl.vAlign = webLbl.vAlign = commentLbl.vAlign = trackerLbl.vAlign = fileLbl.vAlign = VAlign.TOP;
+			seedNowLbl.vAlign = privateLbl.vAlign = autoLbl.vAlign = sizeLbl.vAlign = webLbl.vAlign = commentLbl.vAlign = trackerLbl.vAlign = fileLbl.vAlign = VAlign.TOP;
 			seedNowLbl.hAlign = privateLbl.hAlign = autoLbl.hAlign = sizeLbl.hAlign = webLbl.hAlign = commentLbl.hAlign = trackerLbl.hAlign = fileLbl.hAlign = HAlign.LEFT;
-			progressLbl.touchable = seedNowLbl.touchable = privateLbl.touchable = autoLbl.touchable = sizeLbl.touchable = webLbl.touchable = commentLbl.touchable = trackerLbl.touchable = fileLbl.touchable = false;
-			progressLbl.batchable = seedNowLbl.batchable = privateLbl.batchable = autoLbl.batchable = sizeLbl.batchable = webLbl.batchable = commentLbl.batchable = trackerLbl.batchable = fileLbl.batchable = true;
-			
-			progressLbl.hAlign = HAlign.CENTER;
+			seedNowLbl.touchable = privateLbl.touchable = autoLbl.touchable = sizeLbl.touchable = webLbl.touchable = commentLbl.touchable = trackerLbl.touchable = fileLbl.touchable = false;
+			seedNowLbl.batchable = privateLbl.batchable = autoLbl.batchable = sizeLbl.batchable = webLbl.batchable = commentLbl.batchable = trackerLbl.batchable = fileLbl.batchable = true;
 
 			commentLbl.x = fileLbl.x = webLbl.x = trackerLbl.x = 12;
 			fileLbl.y = 20;
 			trackerLbl.y = 50;
 			webLbl.y = 140;
 			commentLbl.y = 230;
-			
-			progressLbl.x = 0;
-			progressLbl.y = 200;
-			progressLbl.visible = false;
 			
 			sizeLbl.x = 12;
 			autoLbl.x = 263;
@@ -185,6 +177,12 @@ package views.client {
 			okButton.addEventListener(TouchEvent.TOUCH,onOK);
 			cancelButton.addEventListener(TouchEvent.TOUCH,onCancel);
 			
+			circularLoader = new CircularLoader();
+			circularLoader.x = 300;
+			circularLoader.y = 200;
+			circularLoader.visible = false;
+			
+			
 			addChild(bg);
 			
 			txtHolder.addChild(fileLbl);
@@ -214,7 +212,8 @@ package views.client {
 			
 			addChild(size);
 			
-			addChild(progressLbl);
+			
+			addChild(circularLoader);
 			
 		}
 		private function onFormChange(event:FormEvent):void {
@@ -228,54 +227,59 @@ package views.client {
 		private function onOK(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(okButton);
 			if(touch != null && touch.phase == TouchPhase.ENDED){
-				var outputFile:File = new File();
-				outputFile.addEventListener(Event.SELECT, onOutputSelected); 
-				outputFile.browseForSave("Save torrent as...");
+				
+				event.stopImmediatePropagation();
+				event.stopPropagation();
+				
+				
+				var obj:Object = new Object();
+				obj.file = folderInput.nti.input.text;
+				
+				var trackers:Vector.<TorrentTracker> = new Vector.<TorrentTracker>();
+				var arrTrackers:Array = TextUtils.trim(trackerInput.nti.input.text).split(String.fromCharCode(13));
+				for (var i:int=0, l:int=arrTrackers.length; i<l; ++i)
+					trackers.push(new TorrentTracker(arrTrackers[i]));
+				obj.trackers = trackers;
+				
+				var webSeeds:Vector.<TorrentWebSeed> = new Vector.<TorrentWebSeed>();
+				var arrWebSeeds:Array = TextUtils.trim(webInput.nti.input.text).split(String.fromCharCode(13));
+				for (var i2:int=0, l2:int=arrTrackers.length; i2<l2; ++i2)
+					webSeeds.push(new TorrentWebSeed(arrWebSeeds[i2]));
+				
+				obj.webSeeds = webSeeds;
+				obj.comments = commentInput.nti.input.text;
+				obj.size = (chkAuto.selected) ? 0 : sizeDataList[size.selected].value;
+				obj.isPrivate = chkPrivate.selected;
+				obj.seedNow = chkSeed.selected;
+				//obj.output = (event.target as File).nativePath;
+				
+				showFields(false);
+				txtHolder.visible = folderInput.visible = chooseFile.visible = folderBtn.visible = trackerInput.visible = webInput.visible = commentInput.visible = chkAuto.visible = chkPrivate.visible = chkSeed.visible = okButton.visible = cancelButton.visible = size.visible = false;
+				
+				circularLoader.visible = true;
+				
+				this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_TORRRENT_CREATE,obj,true));
+				
+				
+				
+				//var outputFile:File = new File();
+				//outputFile.addEventListener(Event.SELECT, onOutputSelected);
+				
+				//var savePath:String = avANE.saveAs(containerDataList[containerDrop.selected].value);
+				
+				//outputFile.browseForSave("Save torrent as...");
+				
 			}
 		}
 		
-		
-		private function onOutputSelected(event:Event):void {
-			
-			var obj:Object = new Object();
-			obj.file = folderInput.nti.input.text;
-			
-			var trackers:Vector.<TorrentTracker> = new Vector.<TorrentTracker>();
-			var arrTrackers:Array = TextUtils.trim(trackerInput.nti.input.text).split(String.fromCharCode(13));
-			for (var i:int=0, l:int=arrTrackers.length; i<l; ++i)
-				trackers.push(new TorrentTracker(arrTrackers[i]));
-			obj.trackers = trackers;
-			
-			var webSeeds:Vector.<TorrentWebSeed> = new Vector.<TorrentWebSeed>();
-			var arrWebSeeds:Array = TextUtils.trim(webInput.nti.input.text).split(String.fromCharCode(13));
-			for (var i2:int=0, l2:int=arrTrackers.length; i2<l2; ++i2)
-				webSeeds.push(new TorrentWebSeed(arrWebSeeds[i2]));
-			
-			obj.webSeeds = webSeeds;
-			obj.comments = commentInput.nti.input.text;
-			obj.size = (chkAuto.selected) ? 0 : sizeDataList[size.selected].value;
-			obj.isPrivate = chkPrivate.selected;
-			obj.seedNow = chkSeed.selected;
-			obj.output = (event.target as File).nativePath;
-			
-			showFields(false);
-			txtHolder.visible = folderInput.visible = chooseFile.visible = folderBtn.visible = trackerInput.visible = webInput.visible = commentInput.visible = chkAuto.visible = chkPrivate.visible = chkSeed.visible = okButton.visible = cancelButton.visible = size.visible = false;
-			
-			progressLbl.visible = true;
-			
-			this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_TORRRENT_CREATE,obj,true));
-			
-		}
-		
 		public function onProgress(event:TorrentInfoEvent):void {
-			progressLbl.text = event.params.progress.toString()+"%";
+			circularLoader.update(event.params.progress/100);
 		}
 		public function onCreateComplete(event:TorrentInfoEvent):void {
 			hide();
 			txtHolder.visible = folderInput.visible = chooseFile.visible = folderBtn.visible = trackerInput.visible = webInput.visible = commentInput.visible = chkAuto.visible = chkPrivate.visible = chkSeed.visible = okButton.visible = cancelButton.visible = size.visible = true;
-			progressLbl.text = "";
-			progressLbl.visible = true;
-			
+			circularLoader.visible = false;
+			circularLoader.reset();
 			if(event.params.seedNow)
 				this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_TORRRENT_SEED_NOW,{fileName:event.params.fileName},true))
 		}
@@ -312,6 +316,9 @@ package views.client {
 		public function show():void {
 			this.visible = true;
 			showFields(true);
+			txtHolder.visible = folderInput.visible = chooseFile.visible = folderBtn.visible = trackerInput.visible = webInput.visible = commentInput.visible = chkAuto.visible = chkPrivate.visible = chkSeed.visible = okButton.visible = cancelButton.visible = size.visible = true;
+			circularLoader.visible = false;
+			circularLoader.reset();
 		}
 		public function hide():void {
 			this.visible = false;

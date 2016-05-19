@@ -63,12 +63,12 @@ package views.forms {
 			if(touch && touch.phase == TouchPhase.ENDED && isEnabled)
 				this.dispatchEvent(new FormEvent(FormEvent.CHANGE,{value:-increment}));
 		}
-		public function enable(_b:Boolean):void {
-			isEnabled = _b;
-			downArrow.alpha = upArrow.alpha = inputBG.alpha = inputBG.alpha = (_b) ? 1 : 0.25;
-			nti.enable(_b);
-			nti.enable(_b);
-			nti.enable(_b);
+		public function enable(value:Boolean):void {
+			isEnabled = value;
+			downArrow.alpha = upArrow.alpha = inputBG.alpha = inputBG.alpha = (value) ? 1 : 0.25;
+			nti.enable(value);
+			nti.enable(value);
+			nti.enable(value);
 		}
 		
 		private function onAddedToStage(event:starling.events.Event):void {

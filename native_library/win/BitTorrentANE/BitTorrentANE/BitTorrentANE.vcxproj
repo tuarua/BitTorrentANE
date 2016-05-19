@@ -127,6 +127,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;BITTORRENTANE_EXPORTS;BOOST_ASIO_SEPARATE_COMPILATION;BOOST_EXCEPTION_DISABLE;BOOST_ASIO_ENABLE_CANCELIO;BOOST_ASIO_HASH_MAP_BUCKETS=1021;BOOST_SYSTEM_STATIC_LINK=1;WIN32_LEAN_AND_MEAN;__USE_W32_SOCKETS;_WIN32_WINNT=0x0600;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_FILE_OFFSET_BITS=64;TORRENT_USE_I2P=1;TORRENT_USE_OPENSSL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include;$(OPEN_SSL_INCLUDEDIR);$(BOOST_ROOT);$(GEOIP_INCLUDEDIR);$(LIBTORRENT_INCLUDEDIR);C:\Program Files\Adobe\Adobe Flash Builder 4.7 %2864 Bit%29\sdks\4.6.0\include</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -172,6 +173,8 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\source\ANEhelper.cpp" />
     <ClCompile Include="..\..\..\source\BitTorrentANE.cpp" />
+    <ClCompile Include="..\..\..\source\nfd_common.c" />
+    <ClCompile Include="..\..\..\source\nfd_win.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

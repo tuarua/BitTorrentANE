@@ -11,11 +11,11 @@ package views.forms {
 
 	public class CheckBox extends Sprite {
 		private var _selected:Boolean = false;
-		private var id:int;
 		private var txtreOn:Texture = Assets.getAtlas().getTexture("checkbox-on");
 		private var txtreOff:Texture = Assets.getAtlas().getTexture("checkbox-off");
 		private var img:Image = new Image(txtreOff);
 		private var isEnabled:Boolean = true;
+		private var _id:String;
 		public function CheckBox(_selected:Boolean=false) {	
 			super();
 			selected = _selected;
@@ -53,6 +53,14 @@ package views.forms {
 
 		public function set selected(value:Boolean):void {
 			_selected = value;
+		}
+
+		public function get id():String {
+			return _id;
+		}
+
+		public function set id(value:String):void {
+			_id = value;
 		}
 		
 

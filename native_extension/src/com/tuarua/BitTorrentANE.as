@@ -228,7 +228,12 @@ package com.tuarua {
 			else
 				this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.ON_ERROR,{message:"only .p2p filters are allowed and file must exist"}));
 		}
-		
+		public function saveAs(fileType:String=null,defaultPath:String=null):String {
+			var ret:String = extensionContext.call("saveAs",fileType,defaultPath) as String;
+			if(ret != "" && ret.lastIndexOf("."+fileType) == -1)
+				ret = ret + "." + fileType;
+			return ret;
+		}
 		public function dispose():void {
 			stopAlertListener();
 			if (!extensionContext) {

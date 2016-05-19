@@ -214,6 +214,7 @@ package views.client {
 		
 		private function onPowerClick(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(powerButton);
+			//trace(touch);
 			if(touch != null && touch.phase == TouchPhase.ENDED){
 				isPowerOn = !isPowerOn;
 				powerButton.texture = (isPowerOn) ? powerOnButtonTexture : powerOffButtonTexture;

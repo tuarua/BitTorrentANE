@@ -14,6 +14,11 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+dependencies/SMP
+dependencies/geoip
+dependencies/boost_1_60_0
+dependencies/libtorrent-rasterbar-1.0.9
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

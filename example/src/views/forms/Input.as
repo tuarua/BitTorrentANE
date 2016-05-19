@@ -26,7 +26,7 @@ package views.forms {
 		private var _password:Boolean = false;
 		private var _type:String = TextFieldType.INPUT;
 		private var _multiline:Boolean = false;
-		public function Input(_w:int,_txt:String,_h:int=24) {
+		public function Input(_w:int,_txt:String,_h:int=25) {
 			super();
 			this.addEventListener(starling.events.Event.ADDED_TO_STAGE,onAddedToStage);
 			//w = _w;

@@ -24,6 +24,7 @@ package {
 			mStarling.simulateMultitouch  = false;
 			mStarling.showStatsAt("right","bottom");
 			mStarling.enableErrorChecking = false;
+			mStarling.antiAliasing = 12;
 			
 			mStarling.addEventListener(starling.events.Event.ROOT_CREATED, 
 				function onRootCreated(event:Object, app:StarlingRoot):void {
