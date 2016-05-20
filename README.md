@@ -56,6 +56,9 @@ You will need
  - Run native_library/win/dependencies/RUNME.bat from cmd as Administrator.
 This will download and build the remaining dependencies needed (boost, geoip, libtorrent, openssl)
 
+### Known Issues
+ - The Visual Studio project only builds in Release mode. The Debug build throws errors.
+ 
 ### Todos
  - improve error reporting
  - Add ASDocs
