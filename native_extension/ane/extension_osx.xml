@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension xmlns="http://ns.adobe.com/air/extension/21.0">
 	<id>com.tuarua.BitTorrentANE</id>
-	<name>LibTorrent ANE</name>
-	<copyright>This work is licensed under Mozilla Public License Version 1.1, Copyright 2015</copyright>
+	<name>BitTorrent ANE</name>
+	<copyright>This work is licensed under The MIT License (MIT), Copyright 2016 Tua Rua Ltd.</copyright>
 	<versionNumber>1.2.1</versionNumber>
 	<platforms>
 	<platform name="MacOS-x86-64">

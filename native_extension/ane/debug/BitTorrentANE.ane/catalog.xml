@@ -47,7 +47,7 @@
                 <dep id="Boolean" type="s"/>
                 <dep id="Object" type="i"/>
             </script>
-            <script name="com/tuarua/torrent/PeerInfo" mod="1456680691715">
+            <script name="com/tuarua/torrent/PeerInfo" mod="1463936007616">
                 <def id="com.tuarua.torrent:PeerInfo"/>
                 <dep id="Number" type="s"/>
                 <dep id="Object" type="i"/>
@@ -123,7 +123,7 @@
                 <dep id="com.tuarua.torrent.settings:Proxy" type="e"/>
                 <dep id="com.tuarua.torrent.settings:Queueing" type="e"/>
                 <dep id="com.tuarua.torrent.settings:Speed" type="e"/>
-                <dep id="com.tuarua.torrent.settings:Storage" type="e"/>
+                <dep id="com.tuarua.torrent.settings:Storage" type="s"/>
                 <dep id="int" type="s"/>
             </script>
             <script name="com/tuarua/torrent/TorrentStateCodes" mod="1456271322181">
@@ -286,7 +286,7 @@
                 <dep id="int" type="e"/>
             </script>
             <digests>
-                <digest type="SHA-256" signed="false" value="872e650935178ce4513b52a9d9298eac7320af4b1bfdeb516b41ce3ee5a47be1"/>
+                <digest type="SHA-256" signed="false" value="432da710e1ee938211eb7a1b39f1dd6597c2a1c4dd13733183acd26dc41c2687"/>
             </digests>
         </library>
     </libraries>

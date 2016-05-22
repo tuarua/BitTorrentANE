@@ -1084,6 +1084,7 @@ extern "C" {
 #endif
 						FRESetObjectProperty(frePeer, (const uint8_t*)"client", getFREObjectFromString(p->client), NULL);
 						FRESetObjectProperty(frePeer, (const uint8_t*)"port", getFREObjectFromUint32(p->ip.port()), NULL);
+						FRESetObjectProperty(frePeer, (const uint8_t*)"localPort", getFREObjectFromUint32(p->local_endpoint.port()), NULL);
 
 						if (p->flags & peer_info::utp_socket)
 							FRESetObjectProperty(frePeer, (const uint8_t*)"connection", getFREObjectFromString("uTP"), NULL);

@@ -19,6 +19,7 @@ mkdir "$pathtome/platforms/mac/debug"
 
 mkdir "$pathtome/platforms/win"
 mkdir "$pathtome/platforms/win/release"
+mkdir "$pathtome/platforms/win/debug"
 
 #Copy SWC into place.
 echo "Copying SWC into place."
@@ -33,12 +34,14 @@ echo "Copying library.swf into place."
 cp "$pathtome/library.swf" "$pathtome/platforms/mac/release"
 cp "$pathtome/library.swf" "$pathtome/platforms/mac/debug"
 cp "$pathtome/library.swf" "$pathtome/platforms/win/release"
+cp "$pathtome/library.swf" "$pathtome/platforms/win/debug"
 
 #Copy native libraries into place.
 echo "Copying native libraries into place."
 cp -R -L "$pathtome/../../native_library/mac/BitTorrentANE/Build/Products/Release/BitTorrentANE.framework" "$pathtome/platforms/mac/release"
 cp -R -L "$pathtome/../../native_library/mac/BitTorrentANE/Build/Products/Debug/BitTorrentANE.framework" "$pathtome/platforms/mac/debug"
 cp -R -L "$pathtome/../../native_library/win/BitTorrentANE/Release/BitTorrentANE.dll" "$pathtome/platforms/win/release"
+cp -R -L "$pathtome/../../native_library/win/BitTorrentANE/Release/BitTorrentANE.dll" "$pathtome/platforms/win/debug"
 
 #Run the build command.
 echo "Building Release."
@@ -48,11 +51,12 @@ echo "Building Release."
 -platform MacOS-x86-64 -C "$pathtome/platforms/mac/release" "BitTorrentANE.framework" "library.swf" \
 -platform Windows-x86 -C "$pathtome/platforms/win/release" "BitTorrentANE.dll" "library.swf"
 
-echo "Building Debug. MAC only"
+echo "Building Debug."
 "$AIR_SDK"/bin/adt -package \
--target ane "$pathtome/BitTorrentANE-debug.ane" "$pathtome/extension_osx.xml" \
+-target ane "$pathtome/BitTorrentANE-debug.ane" "$pathtome/extension_multi.xml" \
 -swc "$pathtome/BitTorrentANE.swc" \
--platform MacOS-x86-64 -C "$pathtome/platforms/mac/debug" "BitTorrentANE.framework" "library.swf"
+-platform MacOS-x86-64 -C "$pathtome/platforms/mac/debug" "BitTorrentANE.framework" "library.swf" \
+-platform Windows-x86 -C "$pathtome/platforms/win/debug" "BitTorrentANE.dll" "library.swf"
 
 if [[ -d "$pathtome/debug" ]]
 then

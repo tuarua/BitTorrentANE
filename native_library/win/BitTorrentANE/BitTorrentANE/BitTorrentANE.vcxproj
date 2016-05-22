@@ -142,7 +142,7 @@
       </Command>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>$(ProjectDir)..\..\..\..\native_extension\ane\build-release.bat</Command>
+      <Command>$(ProjectDir)..\..\..\..\native_extension\ane\build-windows.bat</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

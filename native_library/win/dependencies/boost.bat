@@ -1,9 +1,10 @@
 @echo off
 SET pathtome=%~dp0
+SET SZIP="C:\Program Files\7-Zip\7z.exe"
 echo Downloading boost...
 call cscript scripts\wget.js http://freefr.dl.sourceforge.net/project/boost/boost/1.60.0/boost_1_60_0.7z boost_1_60_0.7z
 echo Unzipping boost...
-call "C:\Program Files\7-Zip\7z.exe" x %pathtome%boost_1_60_0.7z -o%pathtome%
+call %SZIP% x %pathtome%boost_1_60_0.7z -o%pathtome%
 echo Bootstrapping boost...
 cd %pathtome%boost_1_60_0
 call bootstrap
