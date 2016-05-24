@@ -97,14 +97,14 @@ package views.client {
 				(txtHolder.getChildAt(1) as TextField).text = TimeUtils.secsToFriendly(_ts.activeTime);
 				(txtHolder.getChildAt(2) as TextField).text = TextUtils.bytesToString(_ts.downloaded) + " (" + TextUtils.bytesToString(_ts.downloadedSession)+" session)";
 				(txtHolder.getChildAt(3) as TextField).text = TextUtils.bytesToString(_ts.downloadRate) + "/s (" + TextUtils.bytesToString(_ts.downloadRateAverage)+"/s avg)";
-				(txtHolder.getChildAt(4) as TextField).text = (_ts.downloadMax > -1) ? TextUtils.bytesToString(_ts.downloadMax) : "Infinity";
+				(txtHolder.getChildAt(4) as TextField).text = (_ts.downloadMax > -1) ? TextUtils.bytesToString(_ts.downloadMax) : "∞";
 				(txtHolder.getChildAt(5) as TextField).text = _ts.shareRatio.toFixed(2);
 				(txtHolder.getChildAt(7) as TextField).text = TimeUtils.unixToDate(_ts.addedOn);
 				(txtHolder.getChildAt(9) as TextField).text = _ts.savePath;
 				(txtHolder.getChildAt(11) as TextField).text = (_ts.ETA > 0) ? TimeUtils.secsToTimeCode(_ts.ETA) : "";
 				(txtHolder.getChildAt(12) as TextField).text = TextUtils.bytesToString(_ts.uploaded) + " (" + TextUtils.bytesToString(_ts.uploadedSession)+" session)";
 				(txtHolder.getChildAt(13) as TextField).text = TextUtils.bytesToString(_ts.uploadRate) + "/s (" + TextUtils.bytesToString(_ts.uploadRateAverage)+"/s avg)";
-				(txtHolder.getChildAt(14) as TextField).text = (_ts.uploadMax > -1) ? TextUtils.bytesToString(_ts.uploadMax) : "Infinity";
+				(txtHolder.getChildAt(14) as TextField).text = (_ts.uploadMax > -1) ? TextUtils.bytesToString(_ts.uploadMax) : "∞";
 				(txtHolder.getChildAt(15) as TextField).text = (_ts.nextAnnounce > 0) ? TimeUtils.secsToTimeCode(_ts.nextAnnounce) : "";
 				(txtHolder.getChildAt(17) as TextField).text = (_ts.completedOn > 0) ? TimeUtils.unixToDate(_ts.completedOn) : "";
 				(txtHolder.getChildAt(18) as TextField).text = _ts.numConnections.toString() + " ("+TorrentSettings.connections.maxNum.toString()+" max)";

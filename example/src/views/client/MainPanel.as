@@ -24,6 +24,7 @@ package views.client {
 	import starling.textures.Texture;
 	import starling.utils.HAlign;
 	
+	import views.SrollableContent;
 	import views.client.RightClickMenu;
 
 	public class MainPanel extends Sprite {
@@ -55,6 +56,9 @@ package views.client {
 		private var itemSpriteDictionary:Dictionary = new Dictionary();
 		private var hasRightClickPriority:Boolean = false;
 		private var isPowerOn:Boolean = true;
+		
+		private var itemsList:SrollableContent;
+		
 		public function MainPanel() {
 			super();
 			
@@ -118,8 +122,12 @@ package views.client {
 			bg.addQuad(blineRight);
 			bg.addQuad(blineBot);
 			
+			itemsList = new SrollableContent(1200,115,itmHolder);
+			//itemsList.y = 40;
+			//itmHolder.y = 25;
 			
-			itmHolder.y = 25;
+			
+			itemsList.y = 30;
 			
 			
 			menuItemsVec.push(new MenuItem("Info",0,true));
@@ -167,8 +175,10 @@ package views.client {
 			powerButton.addEventListener(TouchEvent.TOUCH,onPowerClick);
 			createButton.addEventListener(TouchEvent.TOUCH,onCreateClick);
 			
+			itemsList.fullHeight = 10;
+			itemsList.init();
 			
-			holder.addChild(itmHolder);
+			holder.addChild(itemsList);
 			holder.addChild(headingHolder);
 			holder.addChild(menuItemHolder);
 			holder.addChild(addButton);
@@ -271,7 +281,7 @@ package views.client {
 			var ti:TorrentItem;
 			for (var i:int=0, l:int=itmHolder.numChildren; i<l; ++i){
 				ti = itmHolder.getChildAt(i) as TorrentItem;
-				if(mousePoint.y > ti.y && mousePoint.y < (ti.y+20)){
+				if(mousePoint.y > (ti.y+itmHolder.y) && mousePoint.y < (ti.y+20+itmHolder.y)){//allow for the scrolling content
 					selectedId = ti.id;
 					itemSelect();
 					rightClickMenus[ti.id].visible = true;
@@ -281,8 +291,7 @@ package views.client {
 				}else{
 					rightClickMenus[ti.id].close();
 				}
-			}
-				
+			}	
 		}
 		public function resize(_screenW:int,_screenH:int):void {
 			holder.x = (_screenW - w)/2;
@@ -348,6 +357,7 @@ package views.client {
 					selectedId = "";
 				}
 			}
+			itemsList.recalculate();
 		}
 		
 		private function updateFiles():void {
@@ -403,6 +413,9 @@ package views.client {
 			}
 			if(selectedId)
 				(panelsVec[0] as InfoPanel).updateStatus(TorrentsLibrary.status[selectedId]);
+			
+			itemsList.fullHeight = (itmHolder.numChildren*20)+12;
+			itemsList.recalculate();
 		}
 		
 		private function sortChildrenByY(container:Sprite):void {

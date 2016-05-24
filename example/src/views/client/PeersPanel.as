@@ -1,22 +1,14 @@
 package views.client {
 	import com.tuarua.torrent.PeerInfo;
-	
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	
-	import starling.animation.Transitions;
-	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.QuadBatch;
 	import starling.display.Sprite;
-	import starling.events.Touch;
-	import starling.events.TouchEvent;
-	import starling.events.TouchPhase;
 	import starling.text.TextField;
 	import starling.utils.HAlign;
 	
 	import utils.TextUtils;
+	import views.SrollableContent;
 	
 	public class PeersPanel extends Sprite {
 		private static var divArr:Array = new Array(0,36,140,220,320,420,600,690,790,880,990,1090,1180);
@@ -24,18 +16,11 @@ package views.client {
 		private static var headingAligns:Array = new Array(HAlign.CENTER,HAlign.LEFT,HAlign.LEFT,HAlign.LEFT,HAlign.LEFT,HAlign.LEFT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT);
 		private var bg:QuadBatch = new QuadBatch();
 		private var headingHolder:Sprite = new Sprite();
-		
-		private var pane:Sprite = new Sprite();
 		private var holder:Sprite = new Sprite();
 		
 		private var txtHolder:Sprite = new Sprite();
 		private var imgHolder:Sprite = new Sprite();
-		private var w:int = 1200;
-		private var scrollBar:Quad;
-		private var nScrollbarOffset:int = 40;
-		private var scrollBeganY:int;
-		private var h:int = 255;
-		private var fullHeight:uint;
+		private var peersList:SrollableContent;
 		
 		public function PeersPanel() {
 			super();
@@ -54,48 +39,22 @@ package views.client {
 			}
 			bg.y = 10;
 			headingHolder.y = 10;
-			pane.y = 40;
-			pane.clipRect = new Rectangle(0,0,w,h);
-			//itmHolder.mask = new Quad(w,h);
+			
+			peersList = new SrollableContent(1200,255,holder);
+			peersList.y = 40;
+			
 			addChild(bg);
 			addChild(headingHolder);
 			
 			holder.addChild(txtHolder);
 			holder.addChild(imgHolder);
 			
-			pane.addChild(holder);
+			peersList.fullHeight = 10;
+			peersList.init();
+			addChild(peersList);
 			
-			addChild(pane);
-			setupScrollBar();
-
 		}
-		private function setupScrollBar():void {
-			if(scrollBar && this.contains(scrollBar)) removeChild(scrollBar);
-			scrollBar = new Quad(8,h,0xCC8D1E);
-			scrollBar.alpha = 1;
-			scrollBar.visible = false;
-			scrollBar.y = nScrollbarOffset;
-			scrollBar.x = 1200 - 12;
-			scrollBar.addEventListener(TouchEvent.TOUCH,onScrollBarTouch);
-			addChild(scrollBar);
-		}
-		private function onScrollBarTouch(event:TouchEvent):void {
-			var touch:Touch = event.getTouch(scrollBar);
-			if(touch && touch.phase == TouchPhase.BEGAN) scrollBeganY = globalToLocal(new Point(0,touch.globalY)).y-scrollBar.y;
-			if(touch && touch.phase == TouchPhase.ENDED) scrollBeganY = -1;
-			if(touch && touch.phase == TouchPhase.HOVER) Starling.juggler.tween(scrollBar, 0.2, {transition: Transitions.LINEAR,alpha: 1});
-			if(touch == null) Starling.juggler.tween(scrollBar, 0.2, {transition: Transitions.LINEAR,alpha: 0});
-			
-			if(touch && touch.phase == TouchPhase.MOVED){
-				var y:int = globalToLocal(new Point(touch.globalX,touch.globalY-(scrollBeganY))).y;
-				if(y < pane.y) y = pane.y;
-				if(y > (pane.y + h - scrollBar.height))
-					y = pane.y + h - scrollBar.height;
-				scrollBar.y = y;	
-				var percentage:Number = (y - nScrollbarOffset) / (h-scrollBar.height);
-				holder.y = -((fullHeight - h)*percentage);
-			}
-		}
+		
 		public function destroy():void {
 			var k:int = txtHolder.numChildren;
 			
@@ -118,7 +77,8 @@ package views.client {
 			k = imgHolder.numChildren;
 			while(k--)
 				imgHolder.removeChildAt(k);
-			scrollBar.visible = false;
+			
+			peersList.recalculate();
 		}
 		
 		public function update(_tp:Vector.<PeerInfo>):void {
@@ -129,8 +89,11 @@ package views.client {
 			while(srtArr.length > 0) _tp.push(srtArr.pop());
 			
 			var rowIndex:int;
+			var cnt:int = 0;
 			for (var i:int=0, l:int=_tp.length; i<l; ++i){
+				
 				if(i > 19) break; //limit to 19
+				cnt = i+1;
 				rowIndex = i*(divArr.length-2);
 				//10 cols, i is col, j is row
 				if(rowIndex > (txtHolder.numChildren-1)) {
@@ -177,19 +140,16 @@ package views.client {
 				
 			}
 			
-			if(txtHolder.numChildren/(divArr.length-2) > _tp.length)
-				for(var k:int=txtHolder.numChildren-1;k > (_tp.length*(divArr.length-2)-1);k--){
+			if(txtHolder.numChildren/(divArr.length-2) > cnt)
+				for(var k:int=txtHolder.numChildren-1;k > (cnt*(divArr.length-2)-1);k--){
 					txtHolder.removeChildAt(k);
 				
-				for(var m:int=imgHolder.numChildren-1;m > _tp.length-1;m--)
+				for(var m:int=imgHolder.numChildren-1;m > cnt-1;m--)
 					imgHolder.removeChildAt(m);
 			}
 			
-			fullHeight = (_tp.length*20)+12;
-
-			scrollBar.scaleY = h/fullHeight;
-			scrollBar.visible = !(fullHeight < h);
-			
+			peersList.fullHeight = (cnt*20)+12;
+			peersList.recalculate();
 		}
 		
 	}

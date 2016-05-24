@@ -83,7 +83,7 @@ package views.client {
 				(txtHolder.getChildAt(6) as TextField).text = _ts.numSeeds.toString();
 				(txtHolder.getChildAt(7) as TextField).text = TextUtils.bytesToString(_ts.downloadRate) + "/s";
 				(txtHolder.getChildAt(8) as TextField).text = TextUtils.bytesToString(_ts.uploadRate) + "/s";
-				(txtHolder.getChildAt(9) as TextField).text = (_ts.ETA > 0) ? TimeUtils.secsToTimeCode(_ts.ETA) : "";
+				(txtHolder.getChildAt(9) as TextField).text = (_ts.ETA > 0 && _ts.ETA < (60*60*24*2)) ? TimeUtils.secsToTimeCode(_ts.ETA) : "∞";
 				//select(_isSelected);
 			}
 		}
