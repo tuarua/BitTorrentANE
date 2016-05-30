@@ -99,6 +99,7 @@ package views.forms {
 		public function set align(value:String):void {
 			textFormat.align = _align = value;
 			input.setTextFormat(textFormat);
+			input.defaultTextFormat = textFormat;
 		}
 
 		public function set type(value:String):void {
