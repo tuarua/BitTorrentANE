@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension xmlns="http://ns.adobe.com/air/extension/21.0">
-	<id>com.tuarua.BitTorrentANE</id>
-	<name>BitTorrent ANE</name>
-	<copyright>This work is licensed under The MIT License (MIT), Copyright 2016 Tua Rua Ltd.</copyright>
-	<versionNumber>1.2.1</versionNumber>
-	<platforms>
-	<platform name="Windows-x86">
-		<applicationDeployment>
-			<nativeLibrary>BitTorrentANE.dll</nativeLibrary>
-			<initializer>TRLTAExtInizer</initializer>
-			<finalizer>TRLTAExtFinizer</finalizer>
-		</applicationDeployment>
-	</platform>
-	</platforms>
+    <id>com.tuarua.BitTorrentANE</id>
+    <name>BitTorrent ANE</name>
+    <copyright>This work is licensed under The MIT License (MIT), Copyright 2016 Tua Rua Ltd.</copyright>
+    <versionNumber>1.2.1</versionNumber>
+    <platforms>
+        <platform name="Windows-x86">
+            <applicationDeployment>
+                <nativeLibrary>BitTorrentANE.dll</nativeLibrary>
+                <initializer>TRLTAExtInizer</initializer>
+                <finalizer>TRLTAExtFinizer</finalizer>
+            </applicationDeployment>
+        </platform>
+        <platform name="MacOS-x86-64">
+            <applicationDeployment>
+                <nativeLibrary>BitTorrentANE.framework</nativeLibrary>
+                <initializer>TRLTAExtInizer</initializer>
+                <finalizer>TRLTAExtFinizer</finalizer>
+            </applicationDeployment>
+        </platform>
+    </platforms>
 </extension>
