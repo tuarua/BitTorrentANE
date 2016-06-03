@@ -294,8 +294,6 @@ libtorrent::session_settings getDefaultSessionSettings() {
 	session_settings::io_buffer_mode_t mode = settingsContext.advanced.enableOsCache ? session_settings::enable_os_cache : session_settings::disable_os_cache;
 	ss.disk_io_read_mode = mode;
 	ss.disk_io_write_mode = mode;
-	//resumeDataTimer.setInterval(pref->saveResumeDataInterval() * 60 * 1000);
-	
 	ss.anonymous_mode = settingsContext.privacy.useAnonymousMode;
 	ss.lock_files = false;
 
@@ -462,6 +460,10 @@ extern "C" {
 					last = st.map_file(i, (std::max)(size_type(st.file_size(i)) - 1, size_type(0)), 0).piece;
 					std::cout << st.file_path(i) << std::endl;
 					logInfo("prioritizing " + st.file_path(i));
+					h.file_priority(i, 7);
+					/* 0, 1, 2, 7
+					no download, normal, high, max
+					*/
 					found = true;
 					break;
 				}
@@ -486,12 +488,10 @@ extern "C" {
 		using std::ofstream;
 		using std::ios;
 		using json = nlohmann::json;
-
 			if (logLevel == LogLevelConstants::DBG) {
 			logInfo(a->what());
 			logInfo("alert message: " + a->message());
 		}
-
 		if (torrent_finished_alert* f = alert_cast<torrent_finished_alert>(a)) {
 			torrent_handle h = f->handle;
 			if (h.is_valid()) {
@@ -1056,7 +1056,7 @@ extern "C" {
 			FREObject vecPeers = NULL;
 			FRENewObject((const uint8_t*)"Vector.<com.tuarua.torrent.PeerInfo>", 0, NULL, &vecPeers, NULL);
 
-			if (/*i->status().state != torrent_status::seeding */1 == 1) {
+			if (i->status().state != torrent_status::seeding) {
 				std::vector<peer_info> peers;
 				i->get_peer_info(peers);
 				if (!peers.empty()) {
@@ -1189,12 +1189,19 @@ extern "C" {
 		return vecTorrentPeers;
 	}
 
+	
 	FREObject getTorrentStatus(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
 		using namespace libtorrent;
 		std::vector<torrent_status> temp;
 		ltsession->get_torrent_status(&temp, &yes, 0);
 		std::vector<torrent_handle> tv;
 		tv = ltsession->get_torrents();
+
+		uint32_t ASqueryFileP;
+		bool queryFileProgress = false;
+
+		FREGetObjectAsBool(argv[0], &ASqueryFileP);
+		if (ASqueryFileP) queryFileProgress = true;
 		
 		FREObject vecTorrents = NULL;
 		FRENewObject((const uint8_t*)"Vector.<com.tuarua.torrent.TorrentStatus>", 0, NULL, &vecTorrents, NULL);
@@ -1210,7 +1217,8 @@ extern "C" {
 				
 			torrent_status status = i->status(torrent_handle::query_accurate_download_counters
 				| torrent_handle::query_distributed_copies
-				| torrent_handle::query_pieces | torrent_handle::query_save_path); //need to query pieces ?
+				| torrent_handle::query_pieces
+				| torrent_handle::query_save_path); //need to query pieces ?
 
 			FREObject freStatus;
 			FRENewObject((const uint8_t*)"com.tuarua.torrent.TorrentStatus", 0, NULL, &freStatus, NULL);
@@ -1262,8 +1270,6 @@ extern "C" {
 			FRESetObjectProperty(freStatus, (const uint8_t*)"addedOn", getFREObjectFromInt32((int32_t)status.added_time), NULL);
 			FRESetObjectProperty(freStatus, (const uint8_t*)"savePath", getFREObjectFromString(status.save_path), NULL);
 				
-				
-
 			libtorrent::size_type uploadR = status.all_time_upload;
 			libtorrent::size_type downloadR = (status.all_time_download < status.total_done * 0.01) ? status.total_done : status.all_time_download;
 			if (downloadR == 0){
@@ -1272,11 +1278,37 @@ extern "C" {
 				double ratio = (double)(uploadR / downloadR);
 				FRESetObjectProperty(freStatus, (const uint8_t*)"shareRatio", getFREObjectFromDouble((ratio > 9999.0) ? 9999.0 : ratio), NULL);
 			}
+
+			if (queryFileProgress && status.state != torrent_status::seeding) {
+				std::vector<size_type> fp;
+				//i->file_progress(fp,torrent_handle::piece_granularity); //if too expensive
+				i->file_progress(fp);
+
+				FREObject vecFileProgress = NULL;
+				FRENewObject((const uint8_t*)"Vector.<Number>", 0, NULL, &vecFileProgress, NULL);
+				
+				for (unsigned int k = 0; k < fp.size(); ++k) {
+					FREObject valueAs = NULL;
+					valueAs = getFREObjectFromDouble((double)fp.at(k));
+					FRESetArrayElementAt(vecFileProgress, k, valueAs);
+				}
+				FRESetObjectProperty(freStatus, (const uint8_t*)"fileProgress", vecFileProgress, NULL);
+
+				std::vector<int> fpri;
+				fpri = i->file_priorities();
+				FREObject vecFilePriority = NULL;
+				FRENewObject((const uint8_t*)"Vector.<int>", 0, NULL, &vecFilePriority, NULL);
+				for (unsigned int k = 0; k < fpri.size(); ++k) {
+					FREObject valueAs = NULL;
+					valueAs = getFREObjectFromInt32(fpri.at(k));
+					FRESetArrayElementAt(vecFilePriority, k, valueAs);
+				}
+				FRESetObjectProperty(freStatus, (const uint8_t*)"filePriority", vecFilePriority, NULL);
+			}
 			
 			FRESetArrayElementAt(vecTorrents, cnt, freStatus);
 			cnt++;
 		}
-
 		return vecTorrents;
 	}
 
@@ -1300,7 +1332,30 @@ extern "C" {
 			
 		return getFREObjectFromString(ret);
 	}
-	
+	FREObject setFilePriority(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
+		using namespace libtorrent;
+		using namespace std;
+		string id = getStringFromFREObject(argv[0]);
+		unsigned int index = getUInt32FromFREObject(argv[1]);
+		unsigned int priority = getUInt32FromFREObject(argv[2]);
+		vector<torrent_status> temp;
+		ltsession->get_torrent_status(&temp, &yes, 0);
+		vector<torrent_handle> tv;
+		tv = ltsession->get_torrents();
+		string hash = getHashFromId(id);
+		int foundN = findHandle(tv, hash);
+		torrent_handle fh;
+		if (foundN > -1) {
+			logInfo("we have found the torrent - setting file priority");
+			fh = tv[foundN];
+			if (fh.is_valid() && fh.has_metadata())
+				fh.file_priority(index, priority);
+		} else {
+			logInfo("we didn't find the torrent - can't set file priority");
+		}
+		return getReturnTrue();
+	}
+
 	FREObject pauseTorrent(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
 		using namespace libtorrent;
 		using namespace std;
@@ -1882,6 +1937,7 @@ extern "C" {
 			,{ (const uint8_t*) "addRSS",NULL, &addRSS }
 			,{ (const uint8_t*) "saveSessionState",NULL, &saveSessionState }
 			,{ (const uint8_t*) "getMagnetURI",NULL, &getMagnetURI }
+			,{ (const uint8_t*) "setFilePriority",NULL, &setFilePriority }
 			,{ (const uint8_t*) "saveAs",NULL, &saveAs }
 		};
 

@@ -54,8 +54,8 @@ package views.client {
 			addChild(peersList);
 			
 		}
-		
 		public function destroy():void {
+			peersList.reset();
 			var k:int = txtHolder.numChildren;
 			
 			while(k--)
@@ -74,7 +74,9 @@ package views.client {
 			var k:int = txtHolder.numChildren;
 			while(k--)
 				txtHolder.removeChildAt(k);
+			
 			k = imgHolder.numChildren;
+			
 			while(k--)
 				imgHolder.removeChildAt(k);
 			

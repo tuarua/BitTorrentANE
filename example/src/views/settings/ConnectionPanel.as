@@ -406,7 +406,7 @@ package views.settings {
 		}
 		
 		protected function selectFile(event:Event):void {
-			filterPathInput.nti.input.text = selectedFile.nativePath;
+			filterPathInput.text = selectedFile.nativePath;
 			model.SettingsLocalStore.setProp("filters",selectedFile.nativePath,"fileName");
 		}
 		private function onChooseTouch(event:TouchEvent):void {
@@ -425,16 +425,9 @@ package views.settings {
 					enableProxy(event.params.value);
 					break;
 				case proxyPortStppr:
-					if(event.params)
-						test = (parseInt(proxyPortStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(proxyPortStppr.nti.input.text);
-					if(test > -1){
-						proxyPortStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("proxy",test,"port");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("proxy",event.params.value,"port");
 					break;
-				
 				case chkProxyForPeers:
 					model.SettingsLocalStore.setProp("proxy",event.params.value,"useForPeerConnections");
 					break;
@@ -450,13 +443,13 @@ package views.settings {
 					proxyPasswordInput.enable(event.params.value);
 					break;
 				case proxyHostInput:
-					model.SettingsLocalStore.setProp("proxy",proxyHostInput.nti.input.text,"host");
+					model.SettingsLocalStore.setProp("proxy",proxyHostInput.text,"host");
 					break;
 				case proxyUsernameInput:
-					model.SettingsLocalStore.setProp("proxy",proxyUsernameInput.nti.input.text,"username");
+					model.SettingsLocalStore.setProp("proxy",proxyUsernameInput.text,"username");
 					break;
 				case proxyPasswordInput:
-					model.SettingsLocalStore.setProp("proxy",proxyPasswordInput.nti.input.text,"password");
+					model.SettingsLocalStore.setProp("proxy",proxyPasswordInput.text,"password");
 					break;
 				case chkApplyToTrackers:
 					model.SettingsLocalStore.setProp("filters",event.params.value,"applyToTrackers");
@@ -473,17 +466,9 @@ package views.settings {
 					portStppr.enable(!event.params.value);
 					break;
 				case portStppr:
-					if(event.params)
-						test = (parseInt(portStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(portStppr.nti.input.text);
-					if(test > -1){
-						portStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("listening",test,"port");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("listening",event.params.value,"port");
 					break;
-				
-				
 				case chkMaxConn:
 					model.SettingsLocalStore.setProp("connections",event.params.value,"useMaxConnections");
 					maxConnStppr.enable(event.params.value);
@@ -501,44 +486,20 @@ package views.settings {
 					maxUpTorrStppr.enable(event.params.value);
 					break;
 				case maxConnStppr:
-					if(event.params)
-						test = (parseInt(maxConnStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(maxConnStppr.nti.input.text);
-					if(test > -1){
-						maxConnStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("connections",test,"maxNum");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("connections",event.params.value,"maxNum");
 					break;
 				case maxConnTorrStppr:
-					if(event.params)
-						test = (parseInt(maxConnTorrStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(maxConnTorrStppr.nti.input.text);
-					if(test > -1){
-						maxConnTorrStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("connections",test,"maxNumPerTorrent");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("connections",event.params.value,"maxNumPerTorrent");
 					break;
 				case maxUpStppr:
-					if(event.params)
-						test = (parseInt(maxUpStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(maxUpStppr.nti.input.text);
-					if(test > -1){
-						maxUpStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("connections",test,"maxUploads");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("connections",event.params.value,"maxUploads");
 					break;
 				case maxUpTorrStppr:
-					if(event.params)
-						test = (parseInt(maxUpTorrStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(maxUpTorrStppr.nti.input.text);
-					if(test > -1){
-						maxUpTorrStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("connections",test,"maxUploadsPerTorrent");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("connections",event.params.value,"maxUploadsPerTorrent");
 					break;
 			}
 		}

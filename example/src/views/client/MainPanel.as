@@ -275,15 +275,21 @@ package views.client {
 		}
 		
 		protected function onRightClick(event:MouseEvent):void {
+			event.stopImmediatePropagation();
+			event.stopPropagation();
+			
 			var rightCP:Point = holder.globalToLocal(new Point(event.stageX,event.stageY));
 			var mousePoint:Point = new Point(rightCP.x,rightCP.y - 30);
 			var openMenu:Boolean = false;
 			var ti:TorrentItem;
 			for (var i:int=0, l:int=itmHolder.numChildren; i<l; ++i){
 				ti = itmHolder.getChildAt(i) as TorrentItem;
+				
 				if(mousePoint.y > (ti.y+itmHolder.y) && mousePoint.y < (ti.y+20+itmHolder.y)){//allow for the scrolling content
-					selectedId = ti.id;
-					itemSelect();
+					if(selectedId != ti.id){
+						selectedId = ti.id;
+						itemSelect();
+					}
 					rightClickMenus[ti.id].visible = true;
 					rightClickMenus[ti.id].x = event.stageX;
 					rightClickMenus[ti.id].y = event.stageY-30;
@@ -291,7 +297,10 @@ package views.client {
 				}else{
 					rightClickMenus[ti.id].close();
 				}
+				
 			}	
+			
+			
 		}
 		public function resize(_screenW:int,_screenH:int):void {
 			holder.x = (_screenW - w)/2;
@@ -332,12 +341,14 @@ package views.client {
 			(panelsVec[0] as InfoPanel).init(TorrentsLibrary.meta[selectedId]);
 			(panelsVec[1] as TrackersPanel).destroy();
 			(panelsVec[2] as PeersPanel).destroy();
+			(panelsVec[4] as FilesPanel).destroy();
 			
+			updateFiles();
 			updatePieces();
 			updateStatus();
 			updatePeers();
 			updateTrackers();
-			updateFiles();
+			
 			updateHTTPsources();
 		}
 		
@@ -411,9 +422,18 @@ package views.client {
 				itm = itemSpriteDictionary[arrSeeding[i]] as TorrentItem;
 				itm.y = (i*20)+(numNonSeeding*20);
 			}
-			if(selectedId)
+			if(selectedId){
 				(panelsVec[0] as InfoPanel).updateStatus(TorrentsLibrary.status[selectedId]);
-			
+				if(selectedMenu == 4){
+					if((TorrentsLibrary.status[selectedId] as TorrentStatus).isFinished){
+						if((panelsVec[4] as FilesPanel) && !(panelsVec[4] as FilesPanel).isFinished)
+							(panelsVec[4] as FilesPanel).finishStatus();
+						
+					}else{
+						(panelsVec[4] as FilesPanel).updateStatus(TorrentsLibrary.status[selectedId]);
+					}
+				}
+			}
 			itemsList.fullHeight = (itmHolder.numChildren*20)+12;
 			itemsList.recalculate();
 		}
@@ -445,7 +465,8 @@ package views.client {
 			if(selectedId){
 				var tt:TorrentTrackers = TorrentsLibrary.trackers[selectedId] as TorrentTrackers;
 				var p:TrackersPanel;
-				if (tt) (panelsVec[1] as TrackersPanel).update(tt.trackersInfo);
+				if (tt)
+					(panelsVec[1] as TrackersPanel).update(tt.trackersInfo);
 			}
 			
 		}

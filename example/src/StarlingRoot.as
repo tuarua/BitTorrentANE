@@ -22,10 +22,6 @@ package {
 	import flash.utils.Dictionary;
 	import flash.utils.Timer;
 	
-	import events.InteractionEvent;
-	
-	import model.SettingsLocalStore;
-	
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
@@ -35,6 +31,8 @@ package {
 	import starling.text.TextField;
 	import starling.textures.Texture;
 	
+	import events.InteractionEvent;
+	import model.SettingsLocalStore;
 	import utils.TextUtils;
 	import views.client.MainPanel;
 	import views.settings.SettingsPanel;
@@ -65,7 +63,6 @@ package {
 		}
 		public function start():void {
 			
-			// ANE error bubble
 			selectedFile.addEventListener(Event.SELECT, selectFile); 
 			
 			model.SettingsLocalStore.load(model.SettingsLocalStore == null);
@@ -78,7 +75,7 @@ package {
 			
 			starlingVideo.y = 0;
 			
-			torrentClientPanel.addEventListener(InteractionEvent.ON_MENU_ITEM_RIGHT,onRightClick);
+			torrentClientPanel.addEventListener(InteractionEvent.ON_MENU_ITEM_RIGHT,onRightMenuClick);
 			settingsPanel.x = torrentClientPanel.x = 0;
 			torrentClientPanel.y = 30;
 			torrentClientPanel.addEventListener(InteractionEvent.ON_MAGNET_ADD_LIST,onMagnetListAdd);
@@ -134,7 +131,7 @@ package {
 			}
 			
 		}
-		
+
 		private function onTorrentCreate(event:InteractionEvent):void {
 			var savePath:String = libTorrentANE.saveAs("torrent",TorrentSettings.storage.torrentPath);
 			if(savePath.length == 0){
@@ -202,7 +199,7 @@ package {
 				}
 			}
 		}
-		private function onRightClick(event:InteractionEvent):void {
+		private function onRightMenuClick(event:InteractionEvent):void {
 			var meta:TorrentMeta = TorrentsLibrary.meta[event.params.id];
 			switch(event.params.value){
 				case 0:
@@ -416,7 +413,7 @@ package {
 			}
 		}
 		private function onStatusTimer(event:TimerEvent=null):void {
-			libTorrentANE.getTorrentStatus();
+			libTorrentANE.getTorrentStatus((torrentClientPanel.selectedMenu == 4));
 			libTorrentANE.getTorrentPeers();
 			libTorrentANE.getTorrentTrackers();
 			

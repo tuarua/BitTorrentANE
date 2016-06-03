@@ -180,37 +180,16 @@ package views.settings {
 			var test:int;
 			switch(event.currentTarget){
 				case maxDownStppr:
-					if(event.params)
-						test = (parseInt(maxDownStppr.nti.input.text)+event.params.value)
-					else
-						test = (parseInt(maxDownStppr.nti.input.text))
-					
-					if(test > -1){
-						maxDownStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("queueing",test,"maxActiveDownloads");
-					}	
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("queueing",event.params.value,"maxActiveDownloads");
 					break;
 				case maxUpStppr:
-					if(event.params)
-						test = (parseInt(maxUpStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(maxUpStppr.nti.input.text);
-					
-					if(test > -1){
-						maxUpStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("queueing",test,"maxActiveUploads");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("queueing",event.params.value,"maxActiveUploads");
 					break;
 				case maxTorrStppr:
-					if(event.params)
-						test = (parseInt(maxTorrStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(maxTorrStppr.nti.input.text);
-					
-					if(test > -1){
-						maxTorrStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("queueing",test,"maxActiveTorrents");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("queueing",event.params.value,"maxActiveTorrents");
 					break;
 				case chkQueueing:
 					enableQueueing(event.params.value);
@@ -219,8 +198,6 @@ package views.settings {
 				case slowTorrLbl:
 					model.SettingsLocalStore.setProp("queueing",event.params.value,"ignoreSlow");
 					break;
-				
-				
 				case chkDHT:
 					model.SettingsLocalStore.setProp("privacy",event.params.value,"useDHT");
 					break;

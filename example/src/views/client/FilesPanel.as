@@ -1,5 +1,8 @@
 package views.client {
 	import com.tuarua.torrent.TorrentFileMeta;
+	import com.tuarua.torrent.TorrentStatus;
+	import com.tuarua.torrent.constants.FilePriority;
+	
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.QuadBatch;
@@ -12,18 +15,19 @@ package views.client {
 	import views.SrollableContent;
 	
 	public class FilesPanel extends Sprite {
-		private static var divArr:Array = new Array(0,800,900,1000,1100);
+		private static var divArr:Array = new Array(0,800,900,1000,1200);
 		private static var headingArr:Array = new Array("Name", "Size", "Progress","Priority","");
 		private static var headingAligns:Array = new Array(HAlign.LEFT,HAlign.LEFT,HAlign.CENTER,HAlign.LEFT,HAlign.LEFT);
 		private var bg:QuadBatch = new QuadBatch();
 		private var headingHolder:Sprite = new Sprite();
-		private var pane:Sprite = new Sprite();
 		private var txtHolder:Sprite = new Sprite();
 		private var imgHolder:Sprite = new Sprite();
 		private var holder:Sprite = new Sprite();
 		
 		private var fileList:SrollableContent;
-		
+		private var _files:Vector.<TorrentFileMeta>;
+		private var fileRowIndexes:Array = new Array();
+		private var _isFinished:Boolean = false;
 		public function FilesPanel() {
 			super();
 			
@@ -53,18 +57,10 @@ package views.client {
 			
 		}
 		
-		public function populate(_files:Vector.<TorrentFileMeta>):void {
-			var k:int = txtHolder.numChildren;
-			while(k--)
-				txtHolder.removeChildAt(k);
-			
-			k = pane.numChildren;
-			while(k--)
-				pane.removeChildAt(k);
-			
-			k = imgHolder.numChildren;
-			while(k--)
-				imgHolder.removeChildAt(k);
+		public function populate(files:Vector.<TorrentFileMeta>):void {
+			fileRowIndexes = new Array()
+			_files = files;
+			clear();
 			
 			var rowIndex:int;
 			var indent:int = 0;
@@ -126,7 +122,7 @@ package views.client {
 						img.y = txt.y + 6;
 						imgHolder.addChild(img);
 					}
-						
+					
 					txt.batchable = true;
 					txt.touchable = false;
 					txtHolder.addChild(txt);
@@ -134,6 +130,7 @@ package views.client {
 				
 				(txtHolder.getChildAt(rowIndex+0) as TextField).text = _files[i].name;
 				(txtHolder.getChildAt(rowIndex+1) as TextField).text = TextUtils.bytesToString(_files[i].size);
+				fileRowIndexes.push(cnt);
 				cnt++;
 				
 			}
@@ -145,17 +142,57 @@ package views.client {
 			fileList.init();
 		}
 		
+		public function finishStatus():void {
+			_isFinished = true;
+			var cnt:int=0;
+			var rowCnt:int=0
+			var rowIndex:int;
+			for (var i:int=0, l:int=_files.length; i<l; ++i){
+				rowIndex = fileRowIndexes[rowCnt]*(divArr.length-1);
+				(txtHolder.getChildAt(rowIndex+2) as TextField).text = "100%";
+				rowCnt++;
+			}
+		}
+		public function updateStatus(_ts:TorrentStatus):void {
+			_isFinished = false;
+			if(_files && _ts && _ts.fileProgress && _ts.fileProgress.length == _files.length){
+				var cnt:int=0;
+				var rowCnt:int=0
+				var rowIndex:int;
+				for (var i:int=0, l:int=_files.length; i<l; ++i){
+					rowIndex = fileRowIndexes[rowCnt]*(divArr.length-1);
+					(txtHolder.getChildAt(rowIndex+2) as TextField).text = ((_ts.fileProgress[i]/_files[i].size)*100).toFixed(1)+"%";
+					(txtHolder.getChildAt(rowIndex+3) as TextField).text = FilePriority.getValue(_ts.filePriority[i]);
+					rowCnt++;
+				}
+			}
+		}
+		
+		
 		public function clear():void {
+			fileList.reset();
 			var k:int = txtHolder.numChildren;
 			while(k--)
 				txtHolder.removeChildAt(k);
-			k = pane.numChildren;
-			while(k--)
-				pane.removeChildAt(k);
 			k = imgHolder.numChildren;
 			while(k--)
 				imgHolder.removeChildAt(k);
 		}
+
+		public function destroy():void {
+			fileList.reset();
+			var k:int = txtHolder.numChildren;
+			while(k--)
+				txtHolder.removeChildAt(k);
+			txtHolder.dispose();
+			k = imgHolder.numChildren;
+			while(k--)
+				imgHolder.removeChildAt(k);
+			imgHolder.dispose();
+		}
 		
+		public function get isFinished():Boolean {
+			return _isFinished;
+		}
 	}
 }

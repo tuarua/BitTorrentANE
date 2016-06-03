@@ -2,12 +2,9 @@ package views.forms {
 	import flash.events.Event;
 	import flash.geom.Point;
 	import flash.text.TextFormatAlign;
-	
 	import events.FormEvent;
-	
 	import feathers.display.Scale3Image;
 	import feathers.textures.Scale3Textures;
-	
 	import starling.core.Starling;
 	import starling.display.BlendMode;
 	import starling.display.Image;
@@ -26,6 +23,7 @@ package views.forms {
 		public var nti:NativeTextInput;
 		private var isEnabled:Boolean = true;
 		private var increment:int;
+		private var _maxValue:int = -1;
 		public function Stepper(_w:int,_txt:String,_maxChars:int=3,_increment:int=1) {
 			super();
 			this.addEventListener(starling.events.Event.ADDED_TO_STAGE,onAddedToStage);
@@ -55,14 +53,33 @@ package views.forms {
 		
 		private function onUp(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(upArrow);
-			if(touch && touch.phase == TouchPhase.ENDED && isEnabled)
-				this.dispatchEvent(new FormEvent(FormEvent.CHANGE,{value:increment}));
+			if(touch && touch.phase == TouchPhase.ENDED && isEnabled){
+				var test:int;
+				test = (parseInt(nti.input.text)+increment);
+				if(test > -1 && (test <= _maxValue || _maxValue == -1)){
+					nti.input.text = test.toString();
+					this.dispatchEvent(new FormEvent(FormEvent.CHANGE,{value:test}));
+				}
+			}	
 		}
 		private function onDown(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(downArrow);
-			if(touch && touch.phase == TouchPhase.ENDED && isEnabled)
-				this.dispatchEvent(new FormEvent(FormEvent.CHANGE,{value:-increment}));
+			if(touch && touch.phase == TouchPhase.ENDED && isEnabled){
+				var test:int;
+				test = (parseInt(nti.input.text)-increment);
+				if(test > -1){
+					nti.input.text = test.toString();
+					this.dispatchEvent(new FormEvent(FormEvent.CHANGE,{value:test}));
+				}	
+			}
 		}
+		public function get value():int {
+			return parseInt(nti.input.text);
+		}
+		public function set value(value:int):void {
+			nti.input.text = value.toString();
+		}
+		
 		public function enable(value:Boolean):void {
 			isEnabled = value;
 			downArrow.alpha = upArrow.alpha = inputBG.alpha = inputBG.alpha = (value) ? 1 : 0.25;
@@ -82,8 +99,21 @@ package views.forms {
 			nti.x = pos.x + 3;
 			nti.y = pos.y + offsetY;
 		}
+		
 		protected function changeHandler(event:flash.events.Event):void {
-			this.dispatchEvent(new FormEvent(FormEvent.CHANGE));
+			var test:int;
+			test = parseInt(nti.input.text);
+			this.dispatchEvent(new FormEvent(FormEvent.CHANGE,{value:test}));
 		}
+		
+		public function get maxValue():int {
+			return _maxValue;
+		}
+		
+		public function set maxValue(value:int):void {
+			_maxValue = value;
+		}
+		
 	}
 }
+

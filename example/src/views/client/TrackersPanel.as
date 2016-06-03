@@ -46,6 +46,7 @@ package views.client {
 		}
 		
 		public function destroy():void {
+			trackersList.reset();
 			var k:int = txtHolder.numChildren;
 			while(k--)
 				txtHolder.removeChildAt(k);

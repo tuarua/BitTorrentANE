@@ -163,8 +163,8 @@ package com.tuarua {
 			if(extensionContext)
 				extensionContext.call("removeTorrent",id);
 		}
-		public function getTorrentStatus():void {
-			var vecStatus:Vector.<TorrentStatus> = extensionContext.call("getTorrentStatus") as Vector.<TorrentStatus>;
+		public function getTorrentStatus(queryFileProgress:Boolean=false):void {
+			var vecStatus:Vector.<TorrentStatus> = extensionContext.call("getTorrentStatus",queryFileProgress) as Vector.<TorrentStatus>;
 			for (var i:int=0, l:int=vecStatus.length; i<l; ++i)
 				TorrentsLibrary.updateStatus(vecStatus[i].id,vecStatus[i]);
 		}
@@ -227,6 +227,9 @@ package com.tuarua {
 				extensionContext.call("addFilterList",filename,applyToTrackers);
 			else
 				this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.ON_ERROR,{message:"only .p2p filters are allowed and file must exist"}));
+		}
+		public function setFilePriority(id:String,index:int,priority:int):void {
+			extensionContext.call("setFilePriority",id,index,priority);
 		}
 		public function saveAs(fileType:String=null,defaultPath:String=null):String {
 			var ret:String = extensionContext.call("saveAs",fileType,defaultPath) as String;

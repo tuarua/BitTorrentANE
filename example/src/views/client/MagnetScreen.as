@@ -68,7 +68,7 @@ package views.client {
 		private function onOK(event:TouchEvent):void {
 			var touch:Touch = event.getTouch(okButton);
 			if(touch != null && touch.phase == TouchPhase.ENDED){
-				this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_MAGNET_ADD_LIST,{value:input.nti.input.text},true));
+				this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_MAGNET_ADD_LIST,{value:input.text},true));
 				hide();
 			}
 		}
@@ -93,7 +93,7 @@ package views.client {
 		}
 		public function hide():void {
 			this.visible = false;
-			input.nti.input.text = "";
+			input.text = "";
 			showFields(false);
 		}
 	}

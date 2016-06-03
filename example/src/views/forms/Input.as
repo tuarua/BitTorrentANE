@@ -3,18 +3,13 @@ package views.forms {
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextFieldType;
-	import flash.text.TextFormatAlign;
-	
 	import events.FormEvent;
-	
 	import feathers.display.Scale9Image;
 	import feathers.textures.Scale9Textures;
-	
 	import starling.core.Starling;
 	import starling.display.BlendMode;
 	import starling.display.Sprite;
 	import starling.events.Event;
-	
 	import views.forms.NativeTextInput;
 	
 	public class Input extends Sprite {
@@ -39,7 +34,7 @@ package views.forms {
 			inputBG.blendMode = BlendMode.NONE;
 			inputBG.touchable = false;
 			inputBG.flatten();
-
+			
 			nti = new NativeTextInput(_w-10,_txt,false,0xC0C0C0);
 			nti.setHeight(_h);
 			
@@ -65,23 +60,36 @@ package views.forms {
 			inputBG.alpha = (_b) ? 1 : 0.25;
 			nti.enable(_b);
 		}
-
+		
 		public function set password(value:Boolean):void {
 			nti.password = _password = value;
 		}
-
+		
 		public function set type(value:String):void {
 			nti.type = _type = value;
 		}
-
+		
 		public function set multiline(value:Boolean):void {
 			nti.multiline = _multiline = value;
 		}
+		public function set maxChars(value:uint):void {
+			nti.maxChars = value;
+		}
+		public function set restrict(value:String):void {
+			nti.restrict = value;
+		}
+		public function get text():String{
+			return nti.input.text;
+		}
+		public function set text(value:String):void {
+			nti.input.text = value;
+		}
 		/*
 		public function setHeight(value:int):void {
-			_height = value;
-			nti.setHeight(value);
+		_height = value;
+		nti.setHeight(value);
 		}
 		*/
 	}
 }
+

@@ -34,5 +34,8 @@ package com.tuarua.torrent {
 		public var addedOn:int=-1;
 		public var savePath:String;
 		public var shareRatio:Number;
+		
+		public var fileProgress:Vector.<Number>;
+		public var filePriority:Vector.<int>;
 	}
 }

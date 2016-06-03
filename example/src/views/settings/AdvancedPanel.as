@@ -201,67 +201,35 @@ package views.settings {
 					for (var i:int=0, l:int=availableNetworkInterfaces.length; i<l; ++i){
 						if(availableNetworkInterfaces[i].name == event.params.value){
 							networkInterface.name = event.params.value;
-							for (var j:int=0; j<availableNetworkInterfaces[i].addresses.length; j++) {
+							for (var j:int=0; j<availableNetworkInterfaces[i].addresses.length; j++)
 								networkInterface.addresses.push(new NetworkAddress(availableNetworkInterfaces[i].addresses[j].address,availableNetworkInterfaces[i].addresses[j].ipVersion));
-							}
 							break;
 						}
 					}
 					model.SettingsLocalStore.setProp("advanced",networkInterface,"networkInterface");
 					break;
 				case IPannounceInput:
-					model.SettingsLocalStore.setProp("advanced",IPannounceInput.nti.input.text,"announceIP");
+					model.SettingsLocalStore.setProp("advanced",IPannounceInput.text,"announceIP");
 					break;
 				case diskWriteStppr:
-					if(event.params)
-						test = (parseInt(diskWriteStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(diskWriteStppr.nti.input.text);
-					if(test > -1){
-						diskWriteStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("advanced",test,"diskCacheSize");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("advanced",event.params.value,"diskCacheSize");
 					break;
 				case diskCacheExpiryStppr:
-					if(event.params)
-						test = (parseInt(diskCacheExpiryStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(diskCacheExpiryStppr.nti.input.text);
-					if(test > -1){
-						diskCacheExpiryStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("advanced",test,"diskCacheTTL");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("advanced",event.params.value,"diskCacheTTL");
 					break;
-				
 				case outPortMinStppr:
-					if(event.params)
-						test = (parseInt(outPortMinStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(outPortMinStppr.nti.input.text);
-					if(test > -1){
-						outPortMinStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("advanced",test,"outgoingPortsMin");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("advanced",event.params.value,"outgoingPortsMin");
 					break;
 				case outPortMaxStppr:
-					if(event.params)
-						test = (parseInt(outPortMaxStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(outPortMaxStppr.nti.input.text);
-					if(test > -1){
-						outPortMaxStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("advanced",test,"outgoingPortsMax");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("advanced",event.params.value,"outgoingPortsMax");
 					break;
 				case maxHalfStppr:
-					if(event.params)
-						test = (parseInt(maxHalfStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(maxHalfStppr.nti.input.text);
-					if(test > -1){
-						maxHalfStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("advanced",test,"numMaxHalfOpenConnections");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("advanced",event.params.value,"numMaxHalfOpenConnections");
 					break;
 				case chkPeerHost:
 					model.SettingsLocalStore.setProp("advanced",event.params.value,"resolvePeerHostNames");

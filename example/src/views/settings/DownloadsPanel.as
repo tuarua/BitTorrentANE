@@ -93,7 +93,7 @@ package views.settings {
 		}
 		
 		private function openFolder(event:Event):void{
-			appRootInput.nti.input.text = selectedFolder.nativePath;
+			appRootInput.text = selectedFolder.nativePath;
 			model.SettingsLocalStore.setProp("outputPath",selectedFolder.nativePath);
 			TorrentSettings.storage.outputPath = selectedFolder.nativePath;
 		}

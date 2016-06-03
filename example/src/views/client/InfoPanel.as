@@ -1,8 +1,8 @@
 package views.client {
 	import com.tuarua.torrent.TorrentMeta;
 	import com.tuarua.torrent.TorrentPieces;
-	import com.tuarua.torrent.TorrentStatus;
 	import com.tuarua.torrent.TorrentSettings;
+	import com.tuarua.torrent.TorrentStatus;
 	
 	import starling.display.Quad;
 	import starling.display.QuadBatch;
@@ -22,7 +22,7 @@ package views.client {
 		private var numLastKnownPieces:int = 0;
 		private var pieceFactor:int = 1;
 		private var numPieces:int = 0;
-		private var pieceLength:int = 0
+		private var pieceLength:int = 0;
 		public function InfoPanel() {
 			super();
 			var lblArr:Array = new Array("Progress:","Time Active:", "Downloaded:", "Download Speed:", "Download Limit:", "Share Ratio:","Total Size:","Added On:","Torrent Hash:","Save Path:","Comment:","ETA:","Uploaded:","Upload Speed:","Upload Limit:","Reannounce In:","Pieces:","Completed On:","Connections:","Seeds:","Peers:","Wasted:","Last Seen:","Created By:","Created On:");

@@ -21,15 +21,11 @@ package views.settings {
 		private var chkRateUTP:CheckBox;
 		private var chkRateTransport:CheckBox;
 		private var chkRateLAN:CheckBox;
-		
 		private var txtHolder:Sprite = new Sprite();
-		
 		public function SpeedPanel() {
 			super();
 			var rateGroup:FormGroup = new FormGroup(600,120,250);
-			
 			var rateGroupLbl:TextField = new TextField(150,32,"Global Rate Limits", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			
 			var uploadLbl:TextField = new TextField(150,32,"Upload", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			var downloadLbl:TextField = new TextField(150,32,"Download", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
 			var utpLbl:TextField = new TextField(500,32,"Enable bandwidth management (uTP)", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
@@ -90,15 +86,6 @@ package views.settings {
 			rateTransportLbl.y = 140;
 			rateLANLbl.y = 170;
 			
-			/*
-			privacyGroupLbl
-			uploadLbl
-			downloadLbl
-			utpLbl
-			rateUTPLbl
-			rateTransportLbl:
-			rateLANLbl
-			*/
 			txtHolder.addChild(rateGroupLbl);
 			txtHolder.addChild(uploadLbl);
 			txtHolder.addChild(downloadLbl);
@@ -133,26 +120,13 @@ package views.settings {
 			var test:int;
 			switch(event.currentTarget){
 				case upStppr:
-					if(event.params)
-						test = (parseInt(upStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(upStppr.nti.input.text);
-					if(test > -1){
-						upStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("speed",test,"uploadRateLimit");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("speed",event.params.value,"uploadRateLimit");
 					break;
 				case downStppr:
-					if(event.params)
-						test = (parseInt(downStppr.nti.input.text)+event.params.value);
-					else
-						test = parseInt(downStppr.nti.input.text);
-					if(test > -1){
-						downStppr.nti.input.text = test.toString();
-						model.SettingsLocalStore.setProp("speed",test,"downloadRateLimit");
-					}
+					if(event.params.value > -1)
+						model.SettingsLocalStore.setProp("speed",event.params.value,"downloadRateLimit");
 					break;
-				
 				case chkUpload:
 					upStppr.enable(event.params.value);
 					model.SettingsLocalStore.setProp("speed",event.params.value,"uploadRateEnabled");

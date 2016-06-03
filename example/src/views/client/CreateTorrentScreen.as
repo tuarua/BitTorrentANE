@@ -233,25 +233,24 @@ package views.client {
 				
 				
 				var obj:Object = new Object();
-				obj.file = folderInput.nti.input.text;
+				obj.file = folderInput.text;
 				
 				var trackers:Vector.<TorrentTracker> = new Vector.<TorrentTracker>();
-				var arrTrackers:Array = TextUtils.trim(trackerInput.nti.input.text).split(String.fromCharCode(13));
+				var arrTrackers:Array = TextUtils.trim(trackerInput.text).split(String.fromCharCode(13));
 				for (var i:int=0, l:int=arrTrackers.length; i<l; ++i)
 					trackers.push(new TorrentTracker(arrTrackers[i]));
 				obj.trackers = trackers;
 				
 				var webSeeds:Vector.<TorrentWebSeed> = new Vector.<TorrentWebSeed>();
-				var arrWebSeeds:Array = TextUtils.trim(webInput.nti.input.text).split(String.fromCharCode(13));
+				var arrWebSeeds:Array = TextUtils.trim(webInput.text).split(String.fromCharCode(13));
 				for (var i2:int=0, l2:int=arrTrackers.length; i2<l2; ++i2)
 					webSeeds.push(new TorrentWebSeed(arrWebSeeds[i2]));
 				
 				obj.webSeeds = webSeeds;
-				obj.comments = commentInput.nti.input.text;
+				obj.comments = commentInput.text;
 				obj.size = (chkAuto.selected) ? 0 : sizeDataList[size.selected].value;
 				obj.isPrivate = chkPrivate.selected;
 				obj.seedNow = chkSeed.selected;
-				//obj.output = (event.target as File).nativePath;
 				
 				showFields(false);
 				txtHolder.visible = folderInput.visible = chooseFile.visible = folderBtn.visible = trackerInput.visible = webInput.visible = commentInput.visible = chkAuto.visible = chkPrivate.visible = chkSeed.visible = okButton.visible = cancelButton.visible = size.visible = false;
@@ -290,10 +289,10 @@ package views.client {
 				hide();
 		}
 		private function onFolderSelect(event:Event):void {
-			folderInput.nti.input.text = selectedFolder.nativePath;
+			folderInput.text = selectedFolder.nativePath;
 		}
 		private function onFileSelect(event:Event):void {
-			folderInput.nti.input.text = selectedFile.nativePath;
+			folderInput.text = selectedFile.nativePath;
 		}
 		private function onFolderTouch(event:TouchEvent):void {
 			event.stopPropagation();
@@ -322,8 +321,8 @@ package views.client {
 		}
 		public function hide():void {
 			this.visible = false;
-			commentInput.nti.input.text = "";
-			webInput.nti.input.text = "";
+			commentInput.text = "";
+			webInput.text = "";
 			showFields(false);
 		}
 	}

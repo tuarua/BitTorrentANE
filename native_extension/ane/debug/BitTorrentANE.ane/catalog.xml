@@ -10,7 +10,7 @@
     </features>
     <libraries>
         <library path="library.swf">
-            <script name="com/tuarua/BitTorrentANE" mod="1463356645582">
+            <script name="com/tuarua/BitTorrentANE" mod="1464985060900">
                 <def id="com.tuarua:BitTorrentANE"/>
                 <dep id="Boolean" type="s"/>
                 <dep id="Error" type="e"/>
@@ -47,7 +47,7 @@
                 <dep id="Boolean" type="s"/>
                 <dep id="Object" type="i"/>
             </script>
-            <script name="com/tuarua/torrent/PeerInfo" mod="1463936007616">
+            <script name="com/tuarua/torrent/PeerInfo" mod="1463956467443">
                 <def id="com.tuarua.torrent:PeerInfo"/>
                 <dep id="Number" type="s"/>
                 <dep id="Object" type="i"/>
@@ -123,7 +123,7 @@
                 <dep id="com.tuarua.torrent.settings:Proxy" type="e"/>
                 <dep id="com.tuarua.torrent.settings:Queueing" type="e"/>
                 <dep id="com.tuarua.torrent.settings:Speed" type="e"/>
-                <dep id="com.tuarua.torrent.settings:Storage" type="s"/>
+                <dep id="com.tuarua.torrent.settings:Storage" type="e"/>
                 <dep id="int" type="s"/>
             </script>
             <script name="com/tuarua/torrent/TorrentStateCodes" mod="1456271322181">
@@ -133,12 +133,13 @@
                 <dep id="String" type="s"/>
                 <dep id="int" type="s"/>
             </script>
-            <script name="com/tuarua/torrent/TorrentStatus" mod="1457984383241">
+            <script name="com/tuarua/torrent/TorrentStatus" mod="1464908237130">
                 <def id="com.tuarua.torrent:TorrentStatus"/>
                 <dep id="Boolean" type="s"/>
                 <dep id="Number" type="s"/>
                 <dep id="Object" type="i"/>
                 <dep id="String" type="s"/>
+                <dep id="__AS3__.vec:Vector" type="s"/>
                 <dep id="int" type="s"/>
                 <dep id="uint" type="s"/>
             </script>
@@ -181,6 +182,13 @@
             <script name="com/tuarua/torrent/constants/Encryption" mod="1455662402793">
                 <def id="com.tuarua.torrent.constants:Encryption"/>
                 <dep id="Object" type="i"/>
+                <dep id="int" type="s"/>
+            </script>
+            <script name="com/tuarua/torrent/constants/FilePriority" mod="1464986589175">
+                <def id="com.tuarua.torrent.constants:FilePriority"/>
+                <dep id="Array" type="e"/>
+                <dep id="Object" type="i"/>
+                <dep id="String" type="s"/>
                 <dep id="int" type="s"/>
             </script>
             <script name="com/tuarua/torrent/constants/LogLevel" mod="1455578742443">
@@ -286,7 +294,7 @@
                 <dep id="int" type="e"/>
             </script>
             <digests>
-                <digest type="SHA-256" signed="false" value="432da710e1ee938211eb7a1b39f1dd6597c2a1c4dd13733183acd26dc41c2687"/>
+                <digest type="SHA-256" signed="false" value="f027ed955722d9e8818a0f80ca880c17ab357a69a08635cd0d33a7ad1c58b5a1"/>
             </digests>
         </library>
     </libraries>
