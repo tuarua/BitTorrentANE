@@ -46,6 +46,7 @@ You will need
 
 
 ### OSX Preconfiguration to modify the ANE code:
+ - !this ANE uses libtorrent-rasterbar 1.0.9 Homebrew's formula has been updated to 1.1.0. Will need to provide amended homebrew instructions until I migrate ANE over to 1.1.0
  - Install Homebrew
  - from the Terminal run: brew install boost openssl libtorrent-rasterbar --with-geoip
 
