@@ -423,6 +423,8 @@ package views.client {
 				itm.y = (i*20)+(numNonSeeding*20);
 			}
 			if(selectedId){
+				if(!(TorrentsLibrary.status[selectedId] as TorrentStatus).isFinished)
+					(panelsVec[0] as InfoPanel).updatePartialPieces((TorrentsLibrary.status[selectedId] as TorrentStatus).partialPieces);
 				(panelsVec[0] as InfoPanel).updateStatus(TorrentsLibrary.status[selectedId]);
 				if(selectedMenu == 4){
 					if((TorrentsLibrary.status[selectedId] as TorrentStatus).isFinished){

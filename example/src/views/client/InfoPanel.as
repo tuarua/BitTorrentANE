@@ -19,6 +19,7 @@ package views.client {
 		private var txtHolder:Sprite = new Sprite();
 		private var pieceBG:Quad = new Quad(1000,8,0x090909);
 		private var pieceQB:QuadBatch = new QuadBatch();
+		private var pieceParitalQB:QuadBatch = new QuadBatch();
 		private var numLastKnownPieces:int = 0;
 		private var pieceFactor:int = 1;
 		private var numPieces:int = 0;
@@ -65,15 +66,16 @@ package views.client {
 				txtHolder.addChild(txt);
 			}
 			txtHolder.x = 130;
-			pieceQB.x = pieceBG.x = 140;
-			pieceQB.y = pieceBG.y = 31;
-			pieceQB.alpha = 0.5;
+			pieceParitalQB.x = pieceQB.x = pieceBG.x = 140;
+			pieceParitalQB.y = pieceQB.y = pieceBG.y = 31;
+			pieceParitalQB.alpha = pieceQB.alpha = 0.5;
 			
 			addChild(lblHolder);
 			addChild(txtHolder);
 			
 			addChild(pieceBG);
 			addChild(pieceQB);
+			addChild(pieceParitalQB);
 		}
 		
 		public function init(_tm:TorrentMeta):void {
@@ -119,6 +121,7 @@ package views.client {
 		
 		public function finishPieces(_tp:TorrentPieces):void {
 			pieceQB.reset();
+			pieceParitalQB.reset();
 			var q:Quad;
 			if(_tp && _tp.pieces && _tp.pieces.length > 0){
 				(txtHolder.getChildAt(16) as TextField).text = numPieces.toString() + " x " + TextUtils.bytesToString(pieceLength) + " (have "+numPieces+")";
@@ -156,7 +159,27 @@ package views.client {
 			(txtHolder.getChildAt(22) as TextField).text = "";
 			
 			pieceQB.reset();
+			pieceParitalQB.reset();
+		}
+		
+		public function updatePartialPieces(p:Vector.<int>):void {
 			
+			pieceParitalQB.reset();
+			if(p != null){
+				var finalArr:Vector.<int> = new Vector.<int>();
+				var val:int;
+				for (var i:int=0, l:int=p.length; i<l; ++i){
+					val = Math.floor(p[i]/pieceFactor);
+					if(finalArr.lastIndexOf(val) == -1)
+						finalArr.push(val);
+				}
+				var q:Quad;
+				for (var ii:int=0, ll:int=finalArr.length; ii<ll; ++ii){
+					q = new Quad(1,8,0x6DD900);
+					q.x = finalArr[ii];
+					pieceParitalQB.addQuad(q);
+				}
+			}
 		}
 		
 		public function updatePieces(_tp:TorrentPieces):void {
@@ -207,7 +230,7 @@ package views.client {
 					q = new Quad(fnlArr[i][1],8,0x4DD2FF);
 					q.x = fnlArr[i][0];
 					pieceQB.addQuad(q);
-				}	
+				}
 			}
 			
 			

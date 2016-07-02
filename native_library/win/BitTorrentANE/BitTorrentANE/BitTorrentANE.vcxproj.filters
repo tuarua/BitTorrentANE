@@ -30,7 +30,7 @@
     <ClInclude Include="..\..\..\source\Settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\win\BitTorrentANE.h">
+    <ClInclude Include="..\..\..\include\BitTorrentANE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

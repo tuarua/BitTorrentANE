@@ -2,8 +2,8 @@
 <swc xmlns="http://www.adobe.com/flash/swccatalog/9">
     <versions>
         <swc version="1.2"/>
-        <flex version="4.7.0" build="354174" minimumSupportedVersion="3.0.0"/>
-        <compiler name="ActionScript Compiler" version="2.0.0" build="354174"/>
+        <flex version="4.7.0" build="354188" minimumSupportedVersion="3.0.0"/>
+        <compiler name="ActionScript Compiler" version="2.0.0" build="354188"/>
     </versions>
     <features>
         <feature-script-deps/>
@@ -133,7 +133,7 @@
                 <dep id="String" type="s"/>
                 <dep id="int" type="s"/>
             </script>
-            <script name="com/tuarua/torrent/TorrentStatus" mod="1464908237130">
+            <script name="com/tuarua/torrent/TorrentStatus" mod="1467478484250">
                 <def id="com.tuarua.torrent:TorrentStatus"/>
                 <dep id="Boolean" type="s"/>
                 <dep id="Number" type="s"/>
@@ -294,7 +294,7 @@
                 <dep id="int" type="e"/>
             </script>
             <digests>
-                <digest type="SHA-256" signed="false" value="f027ed955722d9e8818a0f80ca880c17ab357a69a08635cd0d33a7ad1c58b5a1"/>
+                <digest type="SHA-256" signed="false" value="dcbfe630cddead67458d51495ad134947dcfe81de0f1963a3bf8add03859b861"/>
             </digests>
         </library>
     </libraries>

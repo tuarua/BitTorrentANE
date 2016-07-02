@@ -37,5 +37,8 @@ package com.tuarua.torrent {
 		
 		public var fileProgress:Vector.<Number>;
 		public var filePriority:Vector.<int>;
+		
+		public var partialPieces:Vector.<int>;
+		
 	}
 }
