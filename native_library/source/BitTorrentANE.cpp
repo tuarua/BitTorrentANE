@@ -1307,15 +1307,11 @@ extern "C" {
 			i->get_download_queue(queue);
 			FREObject vecPartialPieces = NULL;
 			unsigned int numPartial = 0;
-			//trace("partial pieces");
 			FRENewObject((const uint8_t*)"Vector.<int>", 0, NULL, &vecPartialPieces, NULL);
-
 			for (std::vector<partial_piece_info>::const_iterator it = queue.begin(); it != queue.end(); ++it) {
 				FRESetArrayElementAt(vecPartialPieces, numPartial, getFREObjectFromInt32(it->piece_index));
-				//trace(boost::lexical_cast<std::string>(it->piece_index));
 				numPartial++;
 			}
-			//trace("-------------");
 			FRESetObjectProperty(freStatus, (const uint8_t*)"partialPieces", vecPartialPieces, NULL);
 			
 
