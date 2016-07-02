@@ -891,17 +891,7 @@ extern "C" {
 		
 		ltsession->apply_settings(settings);
 
-		std::vector<char> in;
-		if (loadFile(settingsContext.storage.sessionStatePath + pathSlash + ".ses_state", in, ec) == 0) {
-			bdecode_node e;
-			if (bdecode(&in[0], &in[0] + in.size(), e, ec) == 0) {
-				trace("load session state");
-				ltsession->load_state(e, session::save_dht_state);
-			}
-
-		}
-
-
+					
 		if (ec) {
 			FRENewObjectFromBool(false, &result);
 			logError("SOCKET_FAIL");
@@ -912,7 +902,15 @@ extern "C" {
 			logInfo("listening on " + boost::lexical_cast<std::string>(ltsession->listen_port()));
 		}
 
-		
+					std::vector<char> in;
+					if (loadFile(settingsContext.storage.sessionStatePath + pathSlash + ".ses_state", in, ec) == 0) {
+									bdecode_node e;
+									if (bdecode(&in[0], &in[0] + in.size(), e, ec) == 0) {
+													trace("load session state");
+													ltsession->load_state(e, session::save_dht_state);
+									}
+									
+					}
 		
 		ltsession->add_extension(&create_ut_metadata_plugin);
 		if(settingsContext.advanced.enableTrackerExchange)

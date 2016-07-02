@@ -15,8 +15,8 @@
 		CE2C58601CB45A8B0013A858 /* Adobe AIR_64 in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C585D1CB45A8B0013A858 /* Adobe AIR_64 */; };
 		CE2C58611CB45A8B0013A858 /* Adobe AIR in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C585E1CB45A8B0013A858 /* Adobe AIR */; };
 		CE2C58621CB45A8B0013A858 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C585F1CB45A8B0013A858 /* Cocoa.framework */; };
-		CE2C586C1CB4635A0013A858 /* BitTorrentANE.h in Headers */ = {isa = PBXBuildFile; fileRef = CE2C586B1CB4635A0013A858 /* BitTorrentANE.h */; };
 		CE2C586E1CB463C20013A858 /* BitTorrentANE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE2C586D1CB463C20013A858 /* BitTorrentANE.cpp */; };
+		CED842501D287120008AC387 /* BitTorrentANE.h in Headers */ = {isa = PBXBuildFile; fileRef = CED8424F1D287120008AC387 /* BitTorrentANE.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,12 +30,14 @@
 		CE2C585D1CB45A8B0013A858 /* Adobe AIR_64 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "Adobe AIR_64"; path = "/Applications/Adobe Flash Builder 4.7/sdks/4.6.0/runtimes/air/mac/Adobe AIR.framework/Versions/1.0/Adobe AIR_64"; sourceTree = "<absolute>"; };
 		CE2C585E1CB45A8B0013A858 /* Adobe AIR */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "Adobe AIR"; path = "/Applications/Adobe Flash Builder 4.7/sdks/4.6.0/runtimes/air/mac/Adobe AIR.framework/Versions/1.0/Adobe AIR"; sourceTree = "<absolute>"; };
 		CE2C585F1CB45A8B0013A858 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		CE2C58631CB45BF50013A858 /* libboost_thread-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_thread-mt.a"; path = "../../../../../../../usr/local/lib/libboost_thread-mt.a"; sourceTree = "<group>"; };
-		CE2C58641CB45BF50013A858 /* libboost_system-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_system-mt.a"; path = "../../../../../../../usr/local/lib/libboost_system-mt.a"; sourceTree = "<group>"; };
 		CE2C58651CB45BF50013A858 /* libtorrent-rasterbar.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libtorrent-rasterbar.a"; path = "../../../../../../../usr/local/lib/libtorrent-rasterbar.a"; sourceTree = "<group>"; };
 		CE2C58691CB45CEB0013A858 /* BitTorrentANE_Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BitTorrentANE_Prefix.pch; sourceTree = "<group>"; };
-		CE2C586B1CB4635A0013A858 /* BitTorrentANE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BitTorrentANE.h; path = ../../../include/mac/BitTorrentANE.h; sourceTree = "<group>"; };
 		CE2C586D1CB463C20013A858 /* BitTorrentANE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.cpp.cpp; lineEnding = 2; name = BitTorrentANE.cpp; path = ../../../source/BitTorrentANE.cpp; sourceTree = "<group>"; tabWidth = 1; wrapsLines = 0; };
+		CE4153F11D2489AC000F3BBE /* libboost_chrono-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_chrono-mt.a"; path = "../../../../../../../usr/local/lib/libboost_chrono-mt.a"; sourceTree = "<group>"; };
+		CE4153F21D248A45000F3BBE /* libboost_random-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_random-mt.a"; path = "../../../../../../../usr/local/lib/libboost_random-mt.a"; sourceTree = "<group>"; };
+		CE4153F31D248BD1000F3BBE /* libboost_system-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_system-mt.a"; path = "../../../../../../../usr/local/lib/libboost_system-mt.a"; sourceTree = "<group>"; };
+		CE4153F51D248CD7000F3BBE /* libboost_thread-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_thread-mt.a"; path = "../../../../../../../usr/local/Cellar/boost/1.60.0_2/lib/libboost_thread-mt.a"; sourceTree = "<group>"; };
+		CED8424F1D287120008AC387 /* BitTorrentANE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BitTorrentANE.h; path = ../../../include/BitTorrentANE.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,8 +59,10 @@
 			children = (
 				CE2C585D1CB45A8B0013A858 /* Adobe AIR_64 */,
 				CE2C585E1CB45A8B0013A858 /* Adobe AIR */,
-				CE2C58631CB45BF50013A858 /* libboost_thread-mt.a */,
-				CE2C58641CB45BF50013A858 /* libboost_system-mt.a */,
+				CE4153F21D248A45000F3BBE /* libboost_random-mt.a */,
+				CE4153F11D2489AC000F3BBE /* libboost_chrono-mt.a */,
+				CE4153F51D248CD7000F3BBE /* libboost_thread-mt.a */,
+				CE4153F31D248BD1000F3BBE /* libboost_system-mt.a */,
 				CE2C58651CB45BF50013A858 /* libtorrent-rasterbar.a */,
 				CE2C585F1CB45A8B0013A858 /* Cocoa.framework */,
 				CE08AC581CB32B92008F933D /* BitTorrentANE */,
@@ -79,8 +83,8 @@
 		CE08AC581CB32B92008F933D /* BitTorrentANE */ = {
 			isa = PBXGroup;
 			children = (
+				CED8424F1D287120008AC387 /* BitTorrentANE.h */,
 				CE2C586D1CB463C20013A858 /* BitTorrentANE.cpp */,
-				CE2C586B1CB4635A0013A858 /* BitTorrentANE.h */,
 				CE08AC741CB32C88008F933D /* ANEhelper.cpp */,
 				CE08AC751CB32C88008F933D /* Constants.hpp */,
 				CE08AC761CB32C88008F933D /* Settings.hpp */,
@@ -100,7 +104,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE08AC781CB32C88008F933D /* Constants.hpp in Headers */,
-				CE2C586C1CB4635A0013A858 /* BitTorrentANE.h in Headers */,
+				CED842501D287120008AC387 /* BitTorrentANE.h in Headers */,
 				CE08AC731CB32C35008F933D /* json.hpp in Headers */,
 				CE08AC791CB32C88008F933D /* Settings.hpp in Headers */,
 				CE08AC721CB32C35008F933D /* ANEhelper.h in Headers */,
@@ -306,6 +310,7 @@
 					../../include,
 					../../include/mac,
 					/usr/local/include,
+					/usr/local/opt/openssl/include,
 				);
 				INFOPLIST_FILE = BitTorrentANE/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -313,15 +318,18 @@
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SYSTEM_APPS_DIR)/Adobe Flash Builder 4.7/sdks/4.6.0/runtimes/air/mac\"",
 					/usr/local/lib,
+					/usr/local/Cellar/boost/1.60.0_2/lib,
 				);
 				OTHER_CFLAGS = "-fvisibility=hidden";
 				OTHER_LDFLAGS = (
 					"-weak_framework",
 					"\"Adobe AIR\"",
 					"-w",
-					"/usr/local/lib/libtorrent-rasterbar.a",
+					"/usr/local/lib/libboost_random-mt.a",
 					"/usr/local/lib/libboost_thread-mt.a",
 					"/usr/local/lib/libboost_system-mt.a",
+					"/usr/local/lib/libboost_chrono-mt.a",
+					"/usr/local/lib/libtorrent-rasterbar.a",
 					/usr/local/opt/openssl/lib/libcrypto.a,
 					/usr/local/opt/openssl/lib/libssl.a,
 					/usr/local/opt/geoip/lib/libGeoIP.a,
@@ -352,6 +360,7 @@
 					../../include,
 					../../include/mac,
 					/usr/local/include,
+					/usr/local/opt/openssl/include,
 				);
 				INFOPLIST_FILE = BitTorrentANE/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -359,15 +368,18 @@
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(SYSTEM_APPS_DIR)/Adobe Flash Builder 4.7/sdks/4.6.0/runtimes/air/mac\"",
 					/usr/local/lib,
+					/usr/local/Cellar/boost/1.60.0_2/lib,
 				);
 				OTHER_CFLAGS = "-fvisibility=hidden";
 				OTHER_LDFLAGS = (
 					"-weak_framework",
 					"\"Adobe AIR\"",
 					"-w",
-					"/usr/local/lib/libtorrent-rasterbar.a",
+					"/usr/local/lib/libboost_random-mt.a",
 					"/usr/local/lib/libboost_thread-mt.a",
 					"/usr/local/lib/libboost_system-mt.a",
+					"/usr/local/lib/libboost_chrono-mt.a",
+					"/usr/local/lib/libtorrent-rasterbar.a",
 					/usr/local/opt/openssl/lib/libcrypto.a,
 					/usr/local/opt/openssl/lib/libssl.a,
 					/usr/local/opt/geoip/lib/libGeoIP.a,

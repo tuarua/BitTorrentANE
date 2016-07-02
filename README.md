@@ -6,7 +6,13 @@ Sample client included
 ![alt tag](https://raw.githubusercontent.com/tuarua/BitTorrentANE/master/screenshots/screen-shot-1.PNG)
 
 ### Version
-- 1.2 64bit OSX and Win 32
+- 1.2.2
+Updated to libtorrent 1.1.0 (Please see preconfiguration sections below for how to update)
+Updated to AIR 22
+Minor changes and build script tidy up
+
+- 1.2
+64bit OSX and Win 32
 
 ### Features
  - Supports Magnet uris
@@ -39,16 +45,19 @@ BitTorrentANE uses the following libraries:
 You will need
  
  - Flash Builder 4.7
- - AIR 21 SDK
+ - AIR 22 SDK
  - Homebrew if you wish to modify the ANE code on OSX
  - XCode if you wish to modify the ANE code on OSX
  - MS Visual Studio 2015 if you wish to modify the ANE code on Windows
 
 
 ### OSX Preconfiguration to modify the ANE code:
- - !this ANE uses libtorrent-rasterbar 1.0.9 Homebrew's formula has been updated to 1.1.0. Will need to provide amended homebrew instructions until I migrate ANE over to 1.1.0
- ~~- Install Homebrew~~
- ~~- from the Terminal run: brew install boost openssl libtorrent-rasterbar --with-geoip~~
+ - Install Homebrew
+ - from the Terminal run:
+    brew update
+    brew install boost
+    brew install openssl 
+    brew install libtorrent-rasterbar --with-geoip
 
 ### Win Preconfiguration to modify the ANE code:
  - Install Visual Studio 2015
