@@ -6,13 +6,13 @@ Sample client included
 ![alt tag](https://raw.githubusercontent.com/tuarua/BitTorrentANE/master/screenshots/screen-shot-1.PNG)
 
 ### Version
-- 1.2.2
-* Updated to libtorrent 1.1.0 (Please see preconfiguration sections below for how to update)
-* Updated to AIR 22
-* Minor changes and build script tidy up
+- 1.2.2  
+Updated to libtorrent 1.1.0 (Please see preconfiguration sections below for how to update)  
+Updated to AIR 22  
+Minor changes and build script tidy up  
 
-- 1.2
-* 64bit OSX and Win 32
+- 1.2  
+64bit OSX and Win 32
 
 ### Features
  - Supports Magnet uris
@@ -53,11 +53,11 @@ You will need
 
 ### OSX Preconfiguration to modify the ANE code:
  - Install Homebrew
- - from the Terminal run:
-    brew update
-    brew install boost
-    brew install openssl 
-    brew install libtorrent-rasterbar --with-geoip
+ - from the Terminal run:  
+    brew update  
+    brew install boost  
+    brew install openssl  
+    brew install libtorrent-rasterbar --with-geoip  
 
 ### Win Preconfiguration to modify the ANE code:
  - Install Visual Studio 2015
