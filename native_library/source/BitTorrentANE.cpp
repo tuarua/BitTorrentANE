@@ -1094,7 +1094,6 @@ extern "C" {
 							std::stringstream ss;
 							ss << boost::format("%c%c") % p->country[0] % p->country[1];
 							FRESetObjectProperty(frePeer, (const uint8_t*)"country", getFREObjectFromString(ss.str()), NULL);
-
 						}
 #endif
 #ifndef TORRENT_DISABLE_GEO_IP

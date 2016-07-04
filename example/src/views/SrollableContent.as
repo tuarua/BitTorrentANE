@@ -31,7 +31,11 @@ package views {
 		}
 		protected function onMouseWheel(event:MouseEvent):void {
 			var mousePoint:Point = this.globalToLocal(new Point(Starling.current.nativeStage.mouseX,Starling.current.nativeStage.mouseY));
-			if(this.visible && mousePoint.x > 0 && mousePoint.x < _w && mousePoint.y > 0 && mousePoint.y < _h && !(_fullHeight < _h)){
+			var isVisible:Boolean = this.visible;
+			try{
+				isVisible = isVisible && this.parent.visible;
+			}catch(e:Error){}
+			if(isVisible && mousePoint.x > 0 && mousePoint.x < _w && mousePoint.y > 0 && mousePoint.y < _h && !(_fullHeight < _h)){
 				var lastY:int;
 				var cY:int = lastY = _spr.y;
 				cY += (_moveBy*event.delta);
@@ -98,6 +102,6 @@ package views {
 			if(_spr && scrollBar)
 				_spr.y = scrollBar.y = 0;
 		}
-
+		
 	}
 }

@@ -108,7 +108,7 @@
                 <dep id="Object" type="i"/>
                 <dep id="String" type="s"/>
                 <dep id="__AS3__.vec:Vector" type="e"/>
-                <dep id="int" type="e"/>
+                <dep id="int" type="s"/>
                 <dep id="parseInt" type="e"/>
             </script>
             <script name="com/tuarua/torrent/TorrentSettings" mod="1458425614440">
@@ -294,7 +294,7 @@
                 <dep id="int" type="e"/>
             </script>
             <digests>
-                <digest type="SHA-256" signed="false" value="dcbfe630cddead67458d51495ad134947dcfe81de0f1963a3bf8add03859b861"/>
+                <digest type="SHA-256" signed="false" value="651da8d635c5c23a49baa1c5a499a8ccb0569de104e073fe9a85287723364d96"/>
             </digests>
         </library>
     </libraries>
