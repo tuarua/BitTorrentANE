@@ -53,7 +53,7 @@ You will need
 
 ### OSX Preconfiguration to modify the ANE code:
  - Install Homebrew
- - from the Terminal run:
+ - from the Terminal run:  
     brew update  
     brew install boost  
     brew install openssl  
