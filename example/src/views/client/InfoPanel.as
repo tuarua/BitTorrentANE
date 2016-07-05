@@ -5,21 +5,21 @@ package views.client {
 	import com.tuarua.torrent.TorrentStatus;
 	
 	import starling.display.Quad;
-	import starling.display.QuadBatch;
 	import starling.display.Sprite;
 	import starling.text.TextField;
 	import starling.text.TextFieldAutoSize;
-	import starling.utils.HAlign;
 	
 	import utils.TextUtils;
 	import utils.TimeUtils;
+	import starling.display.MeshBatch;
+	import starling.utils.Align;
 	
 	public class InfoPanel extends Sprite {
 		private var lblHolder:Sprite = new Sprite();
 		private var txtHolder:Sprite = new Sprite();
 		private var pieceBG:Quad = new Quad(1000,8,0x090909);
-		private var pieceQB:QuadBatch = new QuadBatch();
-		private var pieceParitalQB:QuadBatch = new QuadBatch();
+		private var pieceQB:MeshBatch = new MeshBatch();
+		private var pieceParitalQB:MeshBatch = new MeshBatch();
 		private var numLastKnownPieces:int = 0;
 		private var pieceFactor:int = 1;
 		private var numPieces:int = 0;
@@ -31,11 +31,13 @@ package views.client {
 			var txt:TextField;
 			txtHolder.y = lblHolder.y = 20;
 			for (var i:int=0, l:int=lblArr.length; i<l; ++i){
-				lbl = new TextField(120,32,lblArr[i], "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-				txt = new TextField(1000,32,"", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-				txt.hAlign = HAlign.LEFT;
+				lbl = new TextField(120,32,lblArr[i]);
+				lbl.format.setTo("Fira Sans Semi-Bold 13",13,0xD8D8D8,Align.RIGHT);
+				
+				txt = new TextField(1000,32,"");
+				txt.format.setTo("Fira Sans Semi-Bold 13",13,0xD8D8D8,Align.LEFT);
 				txt.autoSize = TextFieldAutoSize.HORIZONTAL;
-				lbl.hAlign = HAlign.RIGHT;
+				
 				txt.x = lbl.x = 0;
 				if(i == 0){
 					
@@ -120,13 +122,13 @@ package views.client {
 		}
 		
 		public function finishPieces(_tp:TorrentPieces):void {
-			pieceQB.reset();
-			pieceParitalQB.reset();
+			pieceQB.clear()
+			pieceParitalQB.clear();
 			var q:Quad;
 			if(_tp && _tp.pieces && _tp.pieces.length > 0){
 				(txtHolder.getChildAt(16) as TextField).text = numPieces.toString() + " x " + TextUtils.bytesToString(pieceLength) + " (have "+numPieces+")";
 				q = new Quad(Math.ceil(_tp.pieces.length/pieceFactor),8,0x4DD2FF);
-				pieceQB.addQuad(q);
+				pieceQB.addMesh(q);
 			}
 		}
 		
@@ -158,13 +160,13 @@ package views.client {
 			(txtHolder.getChildAt(21) as TextField).text = "";
 			(txtHolder.getChildAt(22) as TextField).text = "";
 			
-			pieceQB.reset();
-			pieceParitalQB.reset();
+			pieceQB.clear();
+			pieceParitalQB.clear();
 		}
 		
 		public function updatePartialPieces(p:Vector.<int>):void {
 			
-			pieceParitalQB.reset();
+			pieceParitalQB.clear();
 			if(p != null){
 				var finalArr:Vector.<int> = new Vector.<int>();
 				var val:int;
@@ -177,7 +179,7 @@ package views.client {
 				for (var ii:int=0, ll:int=finalArr.length; ii<ll; ++ii){
 					q = new Quad(1,8,0x6DD900);
 					q.x = finalArr[ii];
-					pieceParitalQB.addQuad(q);
+					pieceParitalQB.addMesh(q);
 				}
 			}
 		}
@@ -187,10 +189,10 @@ package views.client {
 			//handle > 1000
 			
 			if(_tp == null){
-				pieceQB.reset();
+				pieceQB.clear();
 			}else if(_tp && _tp.numDownloaded > numLastKnownPieces){
 				(txtHolder.getChildAt(16) as TextField).text = numPieces.toString() + " x " + TextUtils.bytesToString(pieceLength) + " (have "+_tp.numDownloaded+")";
-				pieceQB.reset();
+				pieceQB.clear();
 				var fnlArr:Array = new Array();
 				var startIndex:int = 0;
 				var endIndex:int = 0;
@@ -229,7 +231,7 @@ package views.client {
 				for (var i:int=0, l:int=fnlArr.length; i<l; ++i){
 					q = new Quad(fnlArr[i][1],8,0x4DD2FF);
 					q.x = fnlArr[i][0];
-					pieceQB.addQuad(q);
+					pieceQB.addMesh(q);
 				}
 			}
 			

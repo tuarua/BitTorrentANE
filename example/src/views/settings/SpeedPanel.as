@@ -5,8 +5,8 @@ package views.settings {
 	
 	import starling.display.Sprite;
 	import starling.text.TextField;
-	import starling.utils.HAlign;
-	import starling.utils.VAlign;
+	import starling.text.TextFormat;
+	import starling.utils.Align;
 	
 	import views.forms.CheckBox;
 	import views.forms.FormGroup;
@@ -25,13 +25,13 @@ package views.settings {
 		public function SpeedPanel() {
 			super();
 			var rateGroup:FormGroup = new FormGroup(600,120,250);
-			var rateGroupLbl:TextField = new TextField(150,32,"Global Rate Limits", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var uploadLbl:TextField = new TextField(150,32,"Upload", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var downloadLbl:TextField = new TextField(150,32,"Download", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var utpLbl:TextField = new TextField(500,32,"Enable bandwidth management (uTP)", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var rateUTPLbl:TextField = new TextField(500,32,"Apply rate limit to uTP connections", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var rateTransportLbl:TextField = new TextField(500,32,"Apply rate limit to transport overhead", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var rateLANLbl:TextField = new TextField(500,32,"Apply rate limit to peers on LAN", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var rateGroupLbl:TextField = new TextField(150,32,"Global Rate Limits");
+			var uploadLbl:TextField = new TextField(150,32,"Upload");
+			var downloadLbl:TextField = new TextField(150,32,"Download");
+			var utpLbl:TextField = new TextField(500,32,"Enable bandwidth management (uTP)");
+			var rateUTPLbl:TextField = new TextField(500,32,"Apply rate limit to uTP connections");
+			var rateTransportLbl:TextField = new TextField(500,32,"Apply rate limit to transport overhead");
+			var rateLANLbl:TextField = new TextField(500,32,"Apply rate limit to peers on LAN");
 			
 			chkUpload = new CheckBox(model.SettingsLocalStore.settings.speed.uploadRateEnabled);
 			chkUpload.addEventListener(FormEvent.CHANGE,onFormChange);
@@ -68,9 +68,13 @@ package views.settings {
 			downStppr.y = chkDownload.y + 12;
 			downStppr.enable(model.SettingsLocalStore.settings.speed.downloadRateEnabled);
 			
+			var textFormat:TextFormat = new TextFormat();
+			textFormat.setTo("Fira Sans Semi-Bold 13",13);
+			textFormat.horizontalAlign = Align.LEFT;
+			textFormat.verticalAlign = Align.TOP;
+			textFormat.color = 0xD8D8D8;
 			
-			uploadLbl.vAlign = downloadLbl.vAlign = utpLbl.vAlign = rateUTPLbl.vAlign = rateTransportLbl.vAlign = rateLANLbl.vAlign = rateGroupLbl.vAlign = VAlign.TOP;
-			uploadLbl.hAlign = downloadLbl.hAlign = utpLbl.hAlign = rateUTPLbl.hAlign = rateTransportLbl.hAlign = rateLANLbl.hAlign = rateGroupLbl.hAlign = HAlign.LEFT;
+			uploadLbl.format = downloadLbl.format = utpLbl.format = rateUTPLbl.format = rateTransportLbl.format = rateLANLbl.format = rateGroupLbl.format = textFormat;
 			uploadLbl.touchable = downloadLbl.touchable = utpLbl.touchable = rateUTPLbl.touchable = rateTransportLbl.touchable = rateLANLbl.touchable = rateGroupLbl.touchable = false;
 			uploadLbl.batchable = downloadLbl.batchable = utpLbl.batchable = rateUTPLbl.batchable = rateTransportLbl.batchable = rateLANLbl.batchable = rateGroupLbl.batchable = true;
 			
@@ -94,7 +98,7 @@ package views.settings {
 			txtHolder.addChild(rateTransportLbl);
 			txtHolder.addChild(rateLANLbl);
 			
-			txtHolder.flatten();
+			//txtHolder.flatten();
 			
 			rateGroup.addChild(chkUpload);
 			rateGroup.addChild(chkDownload);
@@ -109,8 +113,14 @@ package views.settings {
 			addChild(rateGroup);
 		}
 		public function showFields(_b:Boolean):void {
-			upStppr.nti.show(_b);
-			downStppr.nti.show(_b);
+			if(_b){
+				upStppr.unfreeze();
+				downStppr.unfreeze();
+			}else{
+				upStppr.freeze();
+				downStppr.freeze();
+			}
+		
 		}
 		public function positionAllFields():void {
 			upStppr.updatePosition();

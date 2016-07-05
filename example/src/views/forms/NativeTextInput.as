@@ -9,6 +9,7 @@ package views.forms {
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
+	
 	import starling.core.Starling;
 	
 	public class NativeTextInput extends Sprite {
@@ -37,6 +38,7 @@ package views.forms {
 			textFormat.font = firaSansRegularFont.fontName;
 			textFormat.size = _fontSize;
 			textFormat.align = _align;
+			textFormat.kerning = true;
 			textFormat.color = _fontColor;
 			
 			input.width = _w;
@@ -58,10 +60,11 @@ package views.forms {
 			input.text = _txt;
 			input.y = 0;
 			input.visible = false;
+			//Starling.current.nativeOverlay.stage.focus = input;
 			input.setSelection(0,1);
 			addChild(input);
 		}
-		
+
 		public function enable(value:Boolean,withFade:Boolean=true):void {
 			if(withFade) input.alpha = (value) ? 1.0 : 0.25;
 			input.selectable = value;
@@ -81,6 +84,7 @@ package views.forms {
 		protected function onInputFocusOut(event:FocusEvent):void {
 			this.dispatchEvent(new Event("FOCUS_OUT",true));
 		}
+		
 		protected function onTextInput(event:Event):void {
 			this.dispatchEvent(new Event("CHANGE",true));
 		}
@@ -88,6 +92,7 @@ package views.forms {
 			if(Starling.current.nativeOverlay.contains(this))
 				Starling.current.nativeOverlay.removeChild(this);
 		}
+
 		public function set fontSize(value:uint):void {
 			textFormat.size = _fontSize = value;
 			input.setTextFormat(textFormat);
@@ -106,19 +111,23 @@ package views.forms {
 		public function set maxChars(value:uint):void {
 			input.maxChars = _maxChars = value;
 		}
+		
 		public function set password(value:Boolean):void {
 			input.displayAsPassword = _password = value;
 		}
 		public function set restrict(value:String):void {
 			input.restrict = _restrict = value;
 		}
+
 		public function set multiline(value:Boolean):void {
 			input.wordWrap = input.multiline = _multiline = value;
 		}
+
 		public function setHeight(value:int):void {
 			input.height = _height = value;
 		}
-			
+
+		
+
 	}
 }
-

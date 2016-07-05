@@ -1,15 +1,11 @@
 package views.settings {
 	import com.tuarua.torrent.constants.Encryption;
-	
 	import events.FormEvent;
-	
 	import model.SettingsLocalStore;
-	
 	import starling.display.Sprite;
 	import starling.text.TextField;
-	import starling.utils.HAlign;
-	import starling.utils.VAlign;
-	
+	import starling.text.TextFormat;
+	import starling.utils.Align;
 	import views.forms.CheckBox;
 	import views.forms.DropDown;
 	import views.forms.FormGroup;
@@ -33,17 +29,17 @@ package views.settings {
 		private var slowTorrLbl:TextField;
 		public function BitTorrentPanel() {
 			super();
-			var privacyGroupLbl:TextField = new TextField(50,32,"Privacy", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var dhtLbl:TextField = new TextField(500,32,"Enable DHT (decentralised network) to find more peers", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var pexLbl:TextField = new TextField(500,32,"Enable Peer Exchange (PeX) to find more peers", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var lsdLbl:TextField = new TextField(500,32,"Enable Local Peer Discovery to find more peers", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var encryptionModeLbl:TextField = new TextField(100,32,"Encryption:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var anonModeLbl:TextField = new TextField(160,32,"Enable anonymous mode", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var queuingLbl:TextField = new TextField(160,32,"Torrent queueing", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			maxActiveDownLbl = new TextField(200,32,"Maximum active downloads", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			maxActiveUpLbl = new TextField(200,32,"Maximum active uploads", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			maxActiveTorrLbl = new TextField(200,32,"Maximum active torrents", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			slowTorrLbl = new TextField(400,32,"Do not count slow torrents in these limits", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var privacyGroupLbl:TextField = new TextField(50,32,"Privacy");
+			var dhtLbl:TextField = new TextField(500,32,"Enable DHT (decentralised network) to find more peers");
+			var pexLbl:TextField = new TextField(500,32,"Enable Peer Exchange (PeX) to find more peers");
+			var lsdLbl:TextField = new TextField(500,32,"Enable Local Peer Discovery to find more peers");
+			var encryptionModeLbl:TextField = new TextField(100,32,"Encryption:");
+			var anonModeLbl:TextField = new TextField(160,32,"Enable anonymous mode");
+			var queuingLbl:TextField = new TextField(160,32,"Torrent queueing");
+			maxActiveDownLbl = new TextField(200,32,"Maximum active downloads");
+			maxActiveUpLbl = new TextField(200,32,"Maximum active uploads");
+			maxActiveTorrLbl = new TextField(200,32,"Maximum active torrents");
+			slowTorrLbl = new TextField(400,32,"Do not count slow torrents in these limits");
 			
 			encryptionModeLbl.x = privacyGroupLbl.x = 15;
 			privacyGroupLbl.y = -8;
@@ -56,9 +52,13 @@ package views.settings {
 			pexLbl.y = 50;
 			lsdLbl.y = 80;
 			
+			var textFormat:TextFormat = new TextFormat();
+			textFormat.setTo("Fira Sans Semi-Bold 13",13);
+			textFormat.horizontalAlign = Align.LEFT;
+			textFormat.verticalAlign = Align.TOP;
+			textFormat.color = 0xD8D8D8;
 			
-			slowTorrLbl.vAlign = maxActiveTorrLbl.vAlign = maxActiveUpLbl.vAlign = maxActiveDownLbl.vAlign = queuingLbl.vAlign = anonModeLbl.vAlign = encryptionModeLbl.vAlign = lsdLbl.vAlign = pexLbl.vAlign = dhtLbl.vAlign = privacyGroupLbl.vAlign = VAlign.TOP;
-			slowTorrLbl.hAlign = maxActiveTorrLbl.hAlign = maxActiveUpLbl.hAlign = maxActiveDownLbl.hAlign = queuingLbl.hAlign = anonModeLbl.hAlign = encryptionModeLbl.hAlign = lsdLbl.hAlign = pexLbl.hAlign = dhtLbl.hAlign = privacyGroupLbl.hAlign = HAlign.LEFT;
+			slowTorrLbl.format = maxActiveTorrLbl.format = maxActiveUpLbl.format = maxActiveDownLbl.format = queuingLbl.format = anonModeLbl.format = encryptionModeLbl.format = lsdLbl.format = pexLbl.format = dhtLbl.format = privacyGroupLbl.format = textFormat;
 			slowTorrLbl.touchable = maxActiveTorrLbl.touchable = maxActiveUpLbl.touchable = maxActiveDownLbl.touchable = queuingLbl.touchable = anonModeLbl.touchable = encryptionModeLbl.touchable = lsdLbl.touchable = pexLbl.touchable = dhtLbl.touchable = privacyGroupLbl.touchable = false;
 			slowTorrLbl.batchable = maxActiveTorrLbl.batchable = maxActiveUpLbl.batchable = maxActiveDownLbl.batchable = queuingLbl.batchable = anonModeLbl.batchable = encryptionModeLbl.batchable = lsdLbl.batchable = pexLbl.batchable = dhtLbl.batchable = privacyGroupLbl.batchable = true;
 			
@@ -162,7 +162,7 @@ package views.settings {
 			txtHolder.addChild(maxActiveTorrLbl);
 			txtHolder.addChild(slowTorrLbl);
 			
-			txtHolder.flatten();
+			//txtHolder.flatten();
 			
 			enableQueueing(model.SettingsLocalStore.settings.queueing.enabled);
 			
@@ -221,14 +221,25 @@ package views.settings {
 			maxTorrStppr.enable(_b);
 			
 			chkSlow.enable(_b);
-			txtHolder.unflatten();
+			//txtHolder.unflatten();
 			slowTorrLbl.alpha = maxActiveUpLbl.alpha = maxActiveTorrLbl.alpha = maxActiveDownLbl.alpha = (_b) ? 1.0 : 0.25;
-			txtHolder.flatten();
+			//txtHolder.flatten();
 		}
 		public function showFields(_b:Boolean):void {
-			maxDownStppr.nti.show(_b);
-			maxUpStppr.nti.show(_b);
-			maxTorrStppr.nti.show(_b);
+			//maxDownStppr.nti.show(_b);
+			//maxUpStppr.nti.show(_b);
+			//maxTorrStppr.nti.show(_b);
+			if(_b){
+				maxDownStppr.unfreeze();
+				maxUpStppr.unfreeze();
+				maxTorrStppr.unfreeze();
+			}else{
+				maxDownStppr.freeze();
+				maxUpStppr.freeze();
+				maxTorrStppr.freeze();
+			}
+			
+			
 		}
 		public function positionAllFields():void {
 			maxDownStppr.updatePosition();

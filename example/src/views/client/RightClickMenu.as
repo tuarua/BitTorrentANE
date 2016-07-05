@@ -5,9 +5,6 @@ package views.client {
 	
 	import events.InteractionEvent;
 	
-	import feathers.display.Scale9Image;
-	import feathers.textures.Scale9Textures;
-	
 	import starling.animation.Tween;
 	import starling.core.Starling;
 	import starling.display.BlendMode;
@@ -17,15 +14,14 @@ package views.client {
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.text.TextField;
-	import starling.utils.HAlign;
-	import starling.utils.VAlign;
+	import starling.utils.Align;
+	import starling.display.Image;
 	
 	public class RightClickMenu extends Sprite {
 		private var w:int;
 		private var h:int;
 		private var items:Array;
-		private var listBg:Scale9Image;
-		private var listBgTexture:Scale9Textures;
+		private var listBg:Image;
 		private var listContainer:Sprite = new Sprite();
 		private var hover:Quad;
 		private var listOuterContainer:Sprite = new Sprite();
@@ -43,8 +39,9 @@ package views.client {
 			hover.alpha = 0.4;
 			hover.visible = false;
 			
-			listBgTexture = new Scale9Textures(Assets.getAtlas().getTexture("right-click-bg"),new Rectangle(4,4,41,17));
-			listBg = new Scale9Image(listBgTexture);
+			//listBgTexture = new Scale9Textures(Assets.getAtlas().getTexture("right-click-bg"),new Rectangle(4,4,41,17));
+			listBg = new Image(Assets.getAtlas().getTexture("right-click-bg"));
+			listBg.scale9Grid = new Rectangle(4,4,41,17);
 			listBg.blendMode = BlendMode.NONE;
 			listBg.width = w;
 			listBg.height = h;
@@ -56,11 +53,10 @@ package views.client {
 			
 			var itmLbl:TextField;
 			for (var i:int=0, l:int=items.length; i<l; ++i){
-				itmLbl = new TextField(w,26,items[i].label, "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+				itmLbl = new TextField(w,26,items[i].label);
+				itmLbl.format.setTo("Fira Sans Semi-Bold 13", 13, 0xD8D8D8,Align.LEFT,Align.CENTER);
 				itmLbl.batchable = true;
 				itmLbl.touchable = false;
-				itmLbl.hAlign = HAlign.LEFT;
-				itmLbl.vAlign = VAlign.CENTER;
 				itmLbl.x = 8;
 				itmLbl.y = (i*20) + 0;
 				listContainer.addChild(itmLbl);
@@ -79,11 +75,10 @@ package views.client {
 			var itmLbl:TextField;
 			for (var i:int=0, l:int=items.length; i<l; ++i) {
 				if(i+1 > listContainer.numChildren-2){
-					itmLbl = new TextField(w,26,items[i].label, "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+					itmLbl = new TextField(w,26,items[i].label);
+					itmLbl.format.setTo("Fira Sans Semi-Bold 13", 13, 0xD8D8D8,Align.LEFT,Align.CENTER);
 					itmLbl.batchable = true;
 					itmLbl.touchable = false;
-					itmLbl.hAlign = HAlign.LEFT;
-					itmLbl.vAlign = VAlign.CENTER;
 					itmLbl.x = 8;
 					itmLbl.y = (i*20) + 0;
 					listContainer.addChild(itmLbl);

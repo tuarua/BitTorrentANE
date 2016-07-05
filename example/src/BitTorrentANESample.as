@@ -16,7 +16,7 @@ package {
 			stage.align = StageAlign.TOP_LEFT;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			Starling.multitouchEnabled = false;  // useful on mobile devices
-			Starling.handleLostContext = true;
+			//Starling.handleLostContext = true;
 			var viewPort:Rectangle = new Rectangle(0,0,stage.stageWidth,stage.stageHeight);
 			mStarling = new Starling(StarlingRoot, stage, viewPort,null,"auto","auto");
 			mStarling.stage.stageWidth  = stage.stageWidth;  // <- same size on all devices!
@@ -24,7 +24,8 @@ package {
 			mStarling.simulateMultitouch  = false;
 			mStarling.showStatsAt("right","bottom");
 			mStarling.enableErrorChecking = false;
-			mStarling.antiAliasing = 12;
+			mStarling.antiAliasing = 16;
+			mStarling.skipUnchangedFrames = true;
 			
 			mStarling.addEventListener(starling.events.Event.ROOT_CREATED, 
 				function onRootCreated(event:Object, app:StarlingRoot):void {

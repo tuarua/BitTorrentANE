@@ -1,11 +1,9 @@
 package views {
-	import starling.display.BlendMode;
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.text.TextField;
-	import starling.textures.Texture;
-	import starling.utils.HAlign;
+	import starling.utils.Align;
 	import starling.utils.deg2rad;
 
 	public class CircularLoader extends Sprite {
@@ -22,9 +20,11 @@ package views {
 			imgBG = new Image(Assets.getAtlas().getTexture("semi-circle-bg2"));
 			var w:int = imgR.width;
 			
-			lbl = new TextField(90,32,"", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			lbl = new TextField(90,32,"");
+			lbl.format.setTo("Fira Sans Semi-Bold 13",13);
+			lbl.format.horizontalAlign = Align.CENTER;
+			lbl.format.color = 0xD8D8D8;
 			
-			lbl.hAlign = HAlign.CENTER;
 			lbl.batchable = false;
 			lbl.touchable = false;
 			lbl.x = -w;

@@ -16,9 +16,9 @@ package views.settings {
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.text.TextField;
+	import starling.text.TextFormat;
 	import starling.textures.Texture;
-	import starling.utils.HAlign;
-	import starling.utils.VAlign;
+	import starling.utils.Align;
 	
 	import views.forms.FormGroup;
 	import views.forms.Input;
@@ -38,15 +38,16 @@ package views.settings {
 			appRootInput = new Input(500,model.SettingsLocalStore.settings.outputPath);
 			appRootInput.type = TextFieldType.DYNAMIC;
 			
-			var storageGroupLbl:TextField = new TextField(50,32,"Storage", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var textFormat:TextFormat = new TextFormat();
+			textFormat.setTo("Fira Sans Semi-Bold 13",13);
+			textFormat.horizontalAlign = Align.LEFT;
+			textFormat.verticalAlign = Align.TOP;
+			textFormat.color = 0xD8D8D8;
 			
+			var storageGroupLbl:TextField = new TextField(50,32,"Storage");
+			storageGroupLbl.format = textFormat;
 			storageGroupLbl.x = 15;
 			storageGroupLbl.y = -8;
-			
-			
-			
-			storageGroupLbl.hAlign = HAlign.LEFT;
-			storageGroupLbl.vAlign = VAlign.TOP;
 			storageGroupLbl.touchable = false;
 			storageGroupLbl.batchable = true;
 			
@@ -79,7 +80,7 @@ package views.settings {
 
 			addChild(storageGroup);
 			
-			txtHolder.flatten();
+		//	txtHolder.flatten();
 			
 			addChild(txtHolder);
 			
@@ -108,7 +109,11 @@ package views.settings {
 		}
 		
 		public function showFields(_b:Boolean):void {
-			appRootInput.nti.show(_b);
+			if(_b){
+				appRootInput.unfreeze();
+			}else{
+				appRootInput.freeze();
+			}
 		}
 		public function positionAllFields():void {
 			appRootInput.updatePosition();

@@ -3,9 +3,6 @@ package views.client {
 	import com.tuarua.torrent.TorrentStateCodes;
 	import com.tuarua.torrent.TorrentStatus;
 	
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
-	
 	import events.InteractionEvent;
 	
 	import starling.animation.Transitions;
@@ -17,7 +14,7 @@ package views.client {
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.text.TextField;
-	import starling.utils.HAlign;
+	import starling.utils.Align;
 	
 	import utils.TextUtils;
 	import utils.TimeUtils;
@@ -25,10 +22,10 @@ package views.client {
 	public class TorrentItem extends Sprite {
 		private var txtHolder:Sprite = new Sprite();
 		private var _id:String;
-		private var highlight:Quad = new Quad(1180,20,0xCC8D1E,false);
+		private var highlight:Quad = new Quad(1180,20,0xCC8D1E);
 		private var isSelected:Boolean = false;
 		private static const divArr:Array = new Array(0,36,320, 410,474,600,665,724,825,925,1015);
-		private static const txtAligns:Array = new Array(HAlign.CENTER,HAlign.LEFT,HAlign.RIGHT,HAlign.RIGHT,HAlign.LEFT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT);
+		private static const txtAligns:Array = new Array(Align.CENTER,Align.LEFT,Align.RIGHT,Align.RIGHT,Align.LEFT,Align.RIGHT,Align.RIGHT,Align.RIGHT,Align.RIGHT,Align.RIGHT,Align.RIGHT);
 		public function TorrentItem() {
 			super();
 			txtHolder.touchable = false;
@@ -38,9 +35,8 @@ package views.client {
 			var txt:TextField;
 			for (var i:int=0, l:int=divArr.length; i<l; ++i){
 				if(i < l) {
-					//TorrentStateCodes.DOWNLOADING
-					txt = new TextField(divArr[i+1] - divArr[i] - 24,32,txtArr[i], "Fira Sans Semi-Bold 13", 13, /*(i == 4)  ? 0x5CB601 : */0xD8D8D8);
-					txt.hAlign = txtAligns[i];
+					txt = new TextField(divArr[i+1] - divArr[i] - 24,32,txtArr[i]);
+					txt.format.setTo("Fira Sans Semi-Bold 13", 13, 0xD8D8D8,txtAligns[i]);
 					txt.x = divArr[i] + 12;
 					txt.batchable = true;
 					txt.touchable = false;

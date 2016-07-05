@@ -22,6 +22,7 @@ package {
 	import flash.utils.Dictionary;
 	import flash.utils.Timer;
 	
+	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
@@ -443,6 +444,7 @@ package {
 						isVideoPlaying = true;
 						torrentClientPanel.showMask(false);
 						settingsPanel.showMask(false);
+						Starling.current.skipUnchangedFrames = false;
 						starlingVideo.loadVideo(File.applicationDirectory.resolvePath("output").resolvePath(currentVideoFile.path).nativePath);
 					}
 				}

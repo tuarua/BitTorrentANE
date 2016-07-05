@@ -6,13 +6,12 @@ package views.settings {
 	import flash.net.NetworkInterface;
 	
 	import events.FormEvent;
+	
 	import model.SettingsLocalStore;
 	
 	import starling.display.Sprite;
 	import starling.text.TextField;
-	import starling.utils.HAlign;
-	import starling.utils.VAlign;
-	
+	import starling.utils.Align;
 	import views.forms.CheckBox;
 	import views.forms.DropDown;
 	import views.forms.FormGroup;
@@ -177,9 +176,11 @@ package views.settings {
 		}
 		
 		private function drawLabel(_s:String,_x:int,_y:int):void {
-			var txt:TextField = new TextField(500,32,_s, "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			txt.vAlign = VAlign.TOP;
-			txt.hAlign = HAlign.LEFT;
+			var txt:TextField = new TextField(500,32,_s);
+			txt.format.setTo("Fira Sans Semi-Bold 13",13);
+			txt.format.color = 0xD8D8D8;
+			txt.format.horizontalAlign = Align.LEFT;
+			txt.format.verticalAlign = Align.TOP;
 			txt.touchable = false;
 			txt.batchable = true;
 			txt.x = _x;
@@ -188,10 +189,10 @@ package views.settings {
 		}
 		
 		private function onInterfaceFocusIn(event:FormEvent):void {
-			IPannounceInput.nti.enable(false,false);
+			IPannounceInput.enable(false);
 		}
 		private function onInterfaceFocusOut(event:FormEvent):void {
-			IPannounceInput.nti.enable(true,false);
+			IPannounceInput.enable(true);
 		}
 		private function onFormChange(event:FormEvent):void {
 			var test:int;
@@ -258,12 +259,21 @@ package views.settings {
 			}
 		}
 		public function showFields(_b:Boolean):void {
-			diskWriteStppr.nti.show(_b);
-			diskCacheExpiryStppr.nti.show(_b);
-			outPortMinStppr.nti.show(_b);
-			outPortMaxStppr.nti.show(_b);
-			maxHalfStppr.nti.show(_b);
-			IPannounceInput.nti.show(_b);
+			if(_b){
+				diskWriteStppr.unfreeze();
+				diskCacheExpiryStppr.unfreeze();
+				outPortMinStppr.unfreeze();
+				outPortMaxStppr.unfreeze();
+				maxHalfStppr.unfreeze();
+				IPannounceInput.unfreeze();
+			}else{
+				diskWriteStppr.freeze();
+				diskCacheExpiryStppr.freeze();
+				outPortMinStppr.freeze();
+				outPortMaxStppr.freeze();
+				maxHalfStppr.freeze();
+				IPannounceInput.freeze();
+			}
 		}
 		public function positionAllFields():void {
 			diskWriteStppr.updatePosition();

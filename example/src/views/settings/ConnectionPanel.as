@@ -17,8 +17,8 @@ package views.settings {
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.text.TextField;
-	import starling.utils.HAlign;
-	import starling.utils.VAlign;
+	import starling.text.TextFormat;
+	import starling.utils.Align;
 	
 	import views.forms.CheckBox;
 	import views.forms.DropDown;
@@ -74,32 +74,32 @@ package views.settings {
 			
 			selectedFile.addEventListener(Event.SELECT, selectFile); 
 			
-			var privacyGroupLbl:TextField = new TextField(150,32,"Listening Port", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var portLbl:TextField = new TextField(500,32,"Port used for incoming connections", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var upnpLbl:TextField = new TextField(500,32,"Use UPnP / NAT-PMP port forwarding from my router", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var randomLbl:TextField = new TextField(500,32,"Use different port on each startup", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var privacyGroupLbl:TextField = new TextField(150,32,"Listening Port");
+			var portLbl:TextField = new TextField(500,32,"Port used for incoming connections");
+			var upnpLbl:TextField = new TextField(500,32,"Use UPnP / NAT-PMP port forwarding from my router");
+			var randomLbl:TextField = new TextField(500,32,"Use different port on each startup");
 			
-			var limitsGroupLbl:TextField = new TextField(150,32,"Connections Limits", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var proxyGroupLbl:TextField = new TextField(150,32,"Proxy Server", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var filterGroupLbl:TextField = new TextField(150,32,"IP Filtering", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var limitsGroupLbl:TextField = new TextField(150,32,"Connections Limits");
+			var proxyGroupLbl:TextField = new TextField(150,32,"Proxy Server");
+			var filterGroupLbl:TextField = new TextField(150,32,"IP Filtering");
 			
-			var proxyTypeLbl:TextField = new TextField(150,32,"Type:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			proxyHostLbl = new TextField(150,32,"Host:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			proxyPortLbl = new TextField(150,32,"Port:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var proxyTypeLbl:TextField = new TextField(150,32,"Type:");
+			proxyHostLbl = new TextField(150,32,"Host:");
+			proxyPortLbl = new TextField(150,32,"Port:");
 			
-			proxyForPeersLbl = new TextField(500,32,"Use proxy for peer connections", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			proxyDisableConnsLbl = new TextField(500,32,"Disable connections not supported by proxies", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			proxyAuthenticationLbl = new TextField(150,32,"Authentication", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			proxyUsernameLbl = new TextField(150,32,"Username:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			proxyPasswordLbl = new TextField(150,32,"Password:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			proxyForPeersLbl = new TextField(500,32,"Use proxy for peer connections");
+			proxyDisableConnsLbl = new TextField(500,32,"Disable connections not supported by proxies");
+			proxyAuthenticationLbl = new TextField(150,32,"Authentication");
+			proxyUsernameLbl = new TextField(150,32,"Username:");
+			proxyPasswordLbl = new TextField(150,32,"Password:");
 			
-			var maxConnLbl:TextField = new TextField(500,32,"Global maximum number of connections:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var maxConnTorrLbl:TextField = new TextField(500,32,"Maximum number of connections per torrent:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var maxUpLbl:TextField = new TextField(500,32,"Global maximum number of upload slots:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var maxUpTorrLbl:TextField = new TextField(500,32,"Maximum number of upload slots per torrent:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var maxConnLbl:TextField = new TextField(500,32,"Global maximum number of connections:");
+			var maxConnTorrLbl:TextField = new TextField(500,32,"Maximum number of connections per torrent:");
+			var maxUpLbl:TextField = new TextField(500,32,"Global maximum number of upload slots:");
+			var maxUpTorrLbl:TextField = new TextField(500,32,"Maximum number of upload slots per torrent:");
 			
-			filterPathLbl = new TextField(500,32,"Filter path (.p2p):", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			applyToTrackersLbl = new TextField(500,32,"Apply to trackers", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			filterPathLbl = new TextField(500,32,"Filter path (.p2p):");
+			applyToTrackersLbl = new TextField(500,32,"Apply to trackers");
 			
 			portStppr = new Stepper(75,String(model.SettingsLocalStore.settings.listening.port),5);
 			portStppr.addEventListener(FormEvent.CHANGE,onFormChange);
@@ -141,8 +141,13 @@ package views.settings {
 			chkUPnP.y = 35;
 			chkRandom.y = 65;
 			
-			filterGroupLbl.vAlign = filterPathLbl.vAlign = applyToTrackersLbl.vAlign = proxyHostLbl.vAlign = proxyPortLbl.vAlign = proxyForPeersLbl.vAlign = proxyDisableConnsLbl.vAlign = proxyAuthenticationLbl.vAlign = proxyUsernameLbl.vAlign = proxyPasswordLbl.vAlign = proxyTypeLbl.vAlign = proxyGroupLbl.vAlign = maxUpTorrLbl.vAlign = maxUpLbl.vAlign = maxConnTorrLbl.vAlign = maxConnLbl.vAlign = limitsGroupLbl.vAlign = randomLbl.vAlign = upnpLbl.vAlign = portLbl.vAlign = privacyGroupLbl.vAlign = VAlign.TOP;
-			filterGroupLbl.hAlign = filterPathLbl.hAlign = applyToTrackersLbl.hAlign = proxyHostLbl.hAlign = proxyPortLbl.hAlign = proxyForPeersLbl.hAlign = proxyDisableConnsLbl.hAlign = proxyAuthenticationLbl.hAlign = proxyUsernameLbl.hAlign = proxyPasswordLbl.hAlign = proxyTypeLbl.hAlign = proxyGroupLbl.hAlign = maxUpTorrLbl.hAlign = maxUpLbl.hAlign = maxConnTorrLbl.hAlign = maxConnLbl.hAlign = limitsGroupLbl.hAlign = randomLbl.hAlign = upnpLbl.hAlign = portLbl.hAlign = privacyGroupLbl.hAlign = HAlign.LEFT;
+			var textFormat:TextFormat = new TextFormat();
+			textFormat.setTo("Fira Sans Semi-Bold 13",13);
+			textFormat.horizontalAlign = Align.LEFT;
+			textFormat.verticalAlign = Align.TOP;
+			textFormat.color = 0xD8D8D8;
+			
+			filterGroupLbl.format = filterPathLbl.format = applyToTrackersLbl.format = proxyHostLbl.format = proxyPortLbl.format = proxyForPeersLbl.format = proxyDisableConnsLbl.format = proxyAuthenticationLbl.format = proxyUsernameLbl.format = proxyPasswordLbl.format = proxyTypeLbl.format = proxyGroupLbl.format = maxUpTorrLbl.format = maxUpLbl.format = maxConnTorrLbl.format = maxConnLbl.format = limitsGroupLbl.format = randomLbl.format = upnpLbl.format = portLbl.format = privacyGroupLbl.format =textFormat;
 			filterGroupLbl.touchable = filterPathLbl.touchable = applyToTrackersLbl.touchable = proxyHostLbl.touchable = proxyPortLbl.touchable = proxyForPeersLbl.touchable = proxyDisableConnsLbl.touchable = proxyAuthenticationLbl.touchable = proxyUsernameLbl.touchable = proxyPasswordLbl.touchable = proxyTypeLbl.touchable = proxyGroupLbl.touchable = maxUpTorrLbl.touchable = maxUpLbl.touchable = maxConnTorrLbl.touchable = maxConnLbl.touchable = limitsGroupLbl.touchable = randomLbl.touchable = upnpLbl.touchable = portLbl.touchable = privacyGroupLbl.touchable = false;
 			filterGroupLbl.batchable = filterPathLbl.batchable = applyToTrackersLbl.batchable = proxyHostLbl.batchable = proxyPortLbl.batchable = proxyForPeersLbl.batchable = proxyDisableConnsLbl.batchable = proxyAuthenticationLbl.batchable = proxyUsernameLbl.batchable = proxyPasswordLbl.batchable = proxyTypeLbl.batchable = proxyGroupLbl.batchable = maxUpTorrLbl.batchable = maxUpLbl.batchable = maxConnTorrLbl.batchable = maxConnLbl.batchable = limitsGroupLbl.batchable = randomLbl.batchable = upnpLbl.batchable = portLbl.batchable = privacyGroupLbl.batchable = true;
 			
@@ -367,7 +372,7 @@ package views.settings {
 			enableProxy(model.SettingsLocalStore.settings.proxy.type);
 			
 			addChild(txtHolder);
-			txtHolder.flatten();
+			//txtHolder.flatten();
 			
 			addChild(filterGroup);
 			addChild(proxyGroup);
@@ -376,9 +381,9 @@ package views.settings {
 		
 		private function enableIPfilter(_b:Boolean):void {
 			chkApplyToTrackers.enable(_b);
-			txtHolder.unflatten();
+			//txtHolder.unflatten();
 			chooseFile.alpha = filterPathLbl.alpha = applyToTrackersLbl.alpha = (_b) ? 1.0 : 0.25;
-			txtHolder.flatten();
+			//txtHolder.flatten();
 			chooseFile.touchable = _b;
 			filterPathInput.enable(_b);
 		}
@@ -386,7 +391,7 @@ package views.settings {
 		private function enableProxy(_type:int):void {
 			proxyPortStppr.enable(_type > ProxyType.DISABLED && _type < ProxyType.I2P);
 			
-			txtHolder.unflatten();
+			//txtHolder.unflatten();
 			proxyPortLbl.alpha = proxyForPeersLbl.alpha = proxyDisableConnsLbl.alpha = (_type > ProxyType.DISABLED && _type < ProxyType.I2P) ? 1.0 : 0.25;
 			proxyHostInput.alpha = (_type > ProxyType.DISABLED) ? 1.0 : 0.25;
 			proxyHostInput.enable(_type > ProxyType.DISABLED);
@@ -395,7 +400,7 @@ package views.settings {
 			proxyUsernameLbl.alpha = (_type > ProxyType.SOCKS4 && _type < ProxyType.I2P && model.SettingsLocalStore.settings.proxy.useAuth) ? 1.0 : 0.25;
 			proxyPasswordLbl.alpha = (_type > ProxyType.SOCKS4 && _type < ProxyType.I2P && model.SettingsLocalStore.settings.proxy.useAuth) ? 1.0 : 0.25;
 			
-			txtHolder.flatten();
+			//txtHolder.flatten();
 			
 			chkProxyForPeers.enable(_type > ProxyType.DISABLED && _type < ProxyType.I2P);
 			chkProxyDisableConns.enable(_type > ProxyType.DISABLED && _type < ProxyType.I2P);
@@ -504,17 +509,30 @@ package views.settings {
 			}
 		}
 		public function showFields(_b:Boolean):void {
-			portStppr.nti.show(_b);
-			maxConnStppr.nti.show(_b);
-			maxConnTorrStppr.nti.show(_b);
-			maxUpStppr.nti.show(_b);
-			maxUpTorrStppr.nti.show(_b);
-			proxyPortStppr.nti.show(_b);
 			
-			proxyHostInput.nti.show(_b);
-			proxyUsernameInput.nti.show(_b);
-			proxyPasswordInput.nti.show(_b);
-			filterPathInput.nti.show(_b);
+			if(_b){
+				portStppr.unfreeze();
+				maxConnStppr.unfreeze();
+				maxConnTorrStppr.unfreeze();
+				maxUpStppr.unfreeze();
+				maxUpTorrStppr.unfreeze();
+				proxyPortStppr.unfreeze();
+				proxyHostInput.unfreeze();
+				proxyUsernameInput.unfreeze();
+				proxyPasswordInput.unfreeze();
+				filterPathInput.unfreeze();
+			}else{
+				portStppr.freeze();
+				maxConnStppr.freeze();
+				maxConnTorrStppr.freeze();
+				maxUpStppr.freeze();
+				maxUpTorrStppr.freeze();
+				proxyPortStppr.freeze();
+				proxyHostInput.freeze();
+				proxyUsernameInput.freeze();
+				proxyPasswordInput.freeze();
+				filterPathInput.freeze();
+			}	
 		}
 		public function positionAllFields():void {
 			portStppr.updatePosition();

@@ -1,13 +1,7 @@
 package views.client {
-
 	import flash.geom.Rectangle;
-	
 	import events.FormEvent;
 	import events.InteractionEvent;
-	
-	import feathers.display.Scale9Image;
-	import feathers.textures.Scale9Textures;
-	
 	import starling.display.BlendMode;
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -15,29 +9,26 @@ package views.client {
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.text.TextField;
-	import starling.utils.HAlign;
-	
+	import starling.utils.Align;
 	import views.forms.Input;
 	
 	public class MagnetScreen extends Sprite {
-		private var bgTexture:Scale9Textures;
-		private var bg:Scale9Image;
+		private var bg:Image;
 		private var lbl:TextField;
 		private var input:Input;
 		private var okButton:Image = new Image(Assets.getAtlas().getTexture("ok-button"));
 		private var cancelButton:Image = new Image(Assets.getAtlas().getTexture("cancel-button"));
 		public function MagnetScreen(_txt:String="") {
 			super();
-			
-			bgTexture = new Scale9Textures(Assets.getAtlas().getTexture("popmenu-bg"),new Rectangle(4,4,16,16));
-			bg = new Scale9Image(bgTexture);
+			bg = new Image(Assets.getAtlas().getTexture("popmenu-bg"));
+			bg.scale9Grid = new Rectangle(4,4,16,16);
 			bg.blendMode = BlendMode.NONE;
 			bg.touchable = false;
 			bg.width = 600;
 			bg.height = 318;
 			
-			lbl = new TextField(600,32,"Add torrent links (one per line, magnet uris and info hashes supported)", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			lbl.hAlign = HAlign.LEFT;
+			lbl = new TextField(600,32,"Add torrent links (one per line, magnet uris and info hashes supported)");
+			lbl.format.setTo("Fira Sans Semi-Bold 13",13,0xD8D8D8,Align.LEFT);
 			lbl.batchable = true;
 			lbl.touchable = false;
 			
@@ -84,7 +75,11 @@ package views.client {
 		}
 		
 		public function showFields(_b:Boolean):void {
-			input.nti.show(_b);
+			if(_b){
+				input.unfreeze();
+			}else{
+				input.freeze();
+			}
 		}
 		
 		public function show():void {

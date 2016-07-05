@@ -1,16 +1,17 @@
 package views.client {
 	import com.tuarua.torrent.TrackerInfo;
 	import starling.display.Quad;
-	import starling.display.QuadBatch;
 	import starling.display.Sprite;
 	import starling.text.TextField;
-	import starling.utils.HAlign;
+	import starling.utils.Align;
 	import views.SrollableContent;
+	import starling.display.MeshBatch;
+
 	public class TrackersPanel extends Sprite {
 		private static var divArr:Array = new Array(0,36,400,600,700,1100);
 		private static var headingArr:Array = new Array("#", "URL", "Status","Peers","Message","");
-		private static var headingAligns:Array = new Array(HAlign.CENTER,HAlign.LEFT,HAlign.LEFT,HAlign.RIGHT,HAlign.LEFT,HAlign.LEFT);
-		private var bg:QuadBatch = new QuadBatch();
+		private static var headingAligns:Array = new Array(Align.CENTER,Align.LEFT,Align.LEFT,Align.RIGHT,Align.LEFT,Align.LEFT);
+		private var bg:MeshBatch = new MeshBatch();
 		private var headingHolder:Sprite = new Sprite();
 		private var holder:Sprite = new Sprite();
 		private var txtHolder:Sprite = new Sprite();
@@ -23,9 +24,9 @@ package views.client {
 			var heading:TextField;
 			for (var i:int=0, l:int=divArr.length; i<l; ++i){
 				divider.x = divArr[i];
-				if(i > 0) bg.addQuad(divider);
-				heading = new TextField(divArr[i+1] - divArr[i] - 24,32,headingArr[i], "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-				heading.hAlign = headingAligns[i];
+				if(i > 0) bg.addMesh(divider);
+				heading = new TextField(divArr[i+1] - divArr[i] - 24,32,headingArr[i]);
+				heading.format.setTo("Fira Sans Semi-Bold 13", 13, 0xD8D8D8,headingAligns[i]);
 				heading.x = divArr[i] + 12;
 				heading.batchable = true;
 				heading.touchable = false;
@@ -75,8 +76,8 @@ package views.client {
 				if(rowIndex > (txtHolder.numChildren-1)) {
 					var txt:TextField;
 					for(var j:int=0,ll:int=divArr.length-1;j<ll;++j){
-						txt = new TextField(divArr[j+1] - divArr[j] - 24,32,"", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-						txt.hAlign = headingAligns[j];
+						txt = new TextField(divArr[j+1] - divArr[j] - 24,32,"");
+						txt.format.setTo("Fira Sans Semi-Bold 13", 13, 0xD8D8D8,headingAligns[j]);
 						txt.x = divArr[j] + 12;
 						txt.y = i*20;
 						txt.batchable = true;

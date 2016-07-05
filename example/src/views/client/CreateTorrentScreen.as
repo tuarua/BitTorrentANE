@@ -11,9 +11,6 @@ package views.client {
 	import events.FormEvent;
 	import events.InteractionEvent;
 	
-	import feathers.display.Scale9Image;
-	import feathers.textures.Scale9Textures;
-	
 	import starling.display.BlendMode;
 	import starling.display.Button;
 	import starling.display.Image;
@@ -22,9 +19,9 @@ package views.client {
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.text.TextField;
+	import starling.text.TextFormat;
 	import starling.textures.Texture;
-	import starling.utils.HAlign;
-	import starling.utils.VAlign;
+	import starling.utils.Align;
 	
 	import utils.TextUtils;
 	
@@ -35,8 +32,7 @@ package views.client {
 	
 	public class CreateTorrentScreen extends Sprite {
 		private var txtHolder:Sprite = new Sprite();
-		private var bgTexture:Scale9Textures;
-		private var bg:Scale9Image;
+		private var bg:Image;
 		private var lbl:TextField;
 		private var folderInput:Input;
 		private var chooseFile:Image = new Image(Assets.getAtlas().getTexture("choose-bg"));
@@ -61,25 +57,31 @@ package views.client {
 		private var circularLoader:CircularLoader;
 		public function CreateTorrentScreen() {
 			super();
-			bgTexture = new Scale9Textures(Assets.getAtlas().getTexture("popmenu-bg"),new Rectangle(4,4,16,16));
-			bg = new Scale9Image(bgTexture);
+			//bgTexture = new Scale9Textures(Assets.getAtlas().getTexture("popmenu-bg"),new Rectangle(4,4,16,16));
+			bg = new Image(Assets.getAtlas().getTexture("popmenu-bg"));
+			bg.scale9Grid = new Rectangle(4,4,16,16);
 			bg.blendMode = BlendMode.NONE;
 			bg.touchable = false;
 			bg.width = 600;
 			bg.height = 500;
 			
-			var fileLbl:TextField = new TextField(120,32,"File or folder:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var trackerLbl:TextField = new TextField(120,32,"Tracker URLs:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var webLbl:TextField = new TextField(120,32,"Web seed URLs:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var commentLbl:TextField = new TextField(120,32,"Comment:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var sizeLbl:TextField = new TextField(120,32,"Piece size:", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var autoLbl:TextField = new TextField(120,32,"Auto", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var privateLbl:TextField = new TextField(120,32,"Private", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-			var seedNowLbl:TextField = new TextField(120,32,"Seed now", "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
+			var textFormat:TextFormat = new TextFormat();
+			textFormat.setTo("Fira Sans Semi-Bold 13",13);
+			textFormat.horizontalAlign = Align.LEFT;
+			textFormat.verticalAlign = Align.TOP;
+			textFormat.color = 0xD8D8D8;
+			
+			var fileLbl:TextField = new TextField(120,32,"File or folder:");
+			var trackerLbl:TextField = new TextField(120,32,"Tracker URLs:");
+			var webLbl:TextField = new TextField(120,32,"Web seed URLs:");
+			var commentLbl:TextField = new TextField(120,32,"Comment:");
+			var sizeLbl:TextField = new TextField(120,32,"Piece size:");
+			var autoLbl:TextField = new TextField(120,32,"Auto");
+			var privateLbl:TextField = new TextField(120,32,"Private");
+			var seedNowLbl:TextField = new TextField(120,32,"Seed now");
 			
 			
-			seedNowLbl.vAlign = privateLbl.vAlign = autoLbl.vAlign = sizeLbl.vAlign = webLbl.vAlign = commentLbl.vAlign = trackerLbl.vAlign = fileLbl.vAlign = VAlign.TOP;
-			seedNowLbl.hAlign = privateLbl.hAlign = autoLbl.hAlign = sizeLbl.hAlign = webLbl.hAlign = commentLbl.hAlign = trackerLbl.hAlign = fileLbl.hAlign = HAlign.LEFT;
+			seedNowLbl.format = privateLbl.format = autoLbl.format = sizeLbl.format = webLbl.format = commentLbl.format = trackerLbl.format = fileLbl.format = textFormat;
 			seedNowLbl.touchable = privateLbl.touchable = autoLbl.touchable = sizeLbl.touchable = webLbl.touchable = commentLbl.touchable = trackerLbl.touchable = fileLbl.touchable = false;
 			seedNowLbl.batchable = privateLbl.batchable = autoLbl.batchable = sizeLbl.batchable = webLbl.batchable = commentLbl.batchable = trackerLbl.batchable = fileLbl.batchable = true;
 
@@ -194,7 +196,7 @@ package views.client {
 			txtHolder.addChild(privateLbl);
 			txtHolder.addChild(seedNowLbl);
 
-			txtHolder.flatten();
+		//	txtHolder.flatten();
 			
 			addChild(txtHolder);
 			addChild(folderInput);
@@ -307,10 +309,17 @@ package views.client {
 				selectedFile.browse();
 		}
 		public function showFields(_b:Boolean):void {
-			folderInput.nti.show(_b);
-			trackerInput.nti.show(_b);
-			webInput.nti.show(_b);
-			commentInput.nti.show(_b);
+			if(_b){
+				folderInput.unfreeze();
+				trackerInput.unfreeze();
+				webInput.unfreeze();
+				commentInput.unfreeze();
+			}else{
+				folderInput.freeze();
+				trackerInput.freeze();
+				webInput.freeze();
+				commentInput.freeze();
+			}	
 		}
 		public function show():void {
 			this.visible = true;

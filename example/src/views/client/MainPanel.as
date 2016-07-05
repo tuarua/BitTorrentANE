@@ -15,21 +15,21 @@ package views.client {
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Quad;
-	import starling.display.QuadBatch;
 	import starling.display.Sprite;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
 	import starling.text.TextField;
 	import starling.textures.Texture;
-	import starling.utils.HAlign;
+	import starling.utils.Align;
 	
 	import views.SrollableContent;
 	import views.client.RightClickMenu;
+	import starling.display.MeshBatch;
 
 	public class MainPanel extends Sprite {
 		private var bgMask:Quad = new Quad(1920,1046,0x111414);
-		private var bg:QuadBatch = new QuadBatch();
+		private var bg:MeshBatch = new MeshBatch();
 		private var holder:Sprite = new Sprite();
 		private var headingHolder:Sprite = new Sprite();
 		private var w:int = 1200;
@@ -63,41 +63,41 @@ package views.client {
 			super();
 			
 			bg.touchable = false;
-			bg.addQuad(new Quad(w,1,0x0D1012));
+			bg.addMesh(new Quad(w,1,0x0D1012));
 			var lineLeft:Quad = new Quad(1,153,0x0D1012);
 			var lineRight:Quad = new Quad(1,153,0x0D1012);
 			var lineBot:Quad = new Quad(w,1,0x0D1012);
 			var middle:Quad = new Quad(w-2,153,0x0D1012);
 			middle.x = middle.y = lineRight.y = lineLeft.y = 1;
-			middle.alpha = 0.92;
+			bg.alpha = 0.92;
 			
 			lineRight.x = w-1;
 			lineBot.y = 154;
-			bg.touchable = false;
-			bg.addQuad(lineLeft);
-			bg.addQuad(lineRight);
-			bg.addQuad(lineBot);
-			bg.addQuad(middle);
+			
+			bg.addMesh(lineLeft);
+			bg.addMesh(lineRight);
+			bg.addMesh(lineBot);
+			bg.addMesh(middle);
 			
 			//the menu bar
 			//#080808
 			var mb:Quad = new Quad(w-4,28,0x080808);
 			mb.y = mb.x = 2;
 			
-			bg.addQuad(mb);
+			bg.addMesh(mb);
 			
 			var divArr:Array = new Array(0,36,320, 410,474,600,665,724,825,925,1015);
 			var headingArr:Array = new Array("#", "Name", "Size","Done","Status","Seeds","Peers","Down Speed","Up Speed","ETA","");
-			var headingAligns:Array = new Array(HAlign.CENTER,HAlign.LEFT,HAlign.RIGHT,HAlign.RIGHT,HAlign.LEFT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT,HAlign.RIGHT);
+			var headingAligns:Array = new Array(Align.CENTER,Align.LEFT,Align.RIGHT,Align.RIGHT,Align.LEFT,Align.RIGHT,Align.RIGHT,Align.RIGHT,Align.RIGHT,Align.RIGHT,Align.RIGHT);
 			var divider:Quad = new Quad(1,28,0x202020);
 			divider.y = 2;
 			var heading:TextField;
 			for (var i:int=0, l:int=divArr.length; i<l; ++i){
 				divider.x = divArr[i];
-				if(i > 0) bg.addQuad(divider);
+				if(i > 0) bg.addMesh(divider);
 				if(i < l) {
-					heading = new TextField(divArr[i+1] - divArr[i] - 24,32,headingArr[i], "Fira Sans Semi-Bold 13", 13, 0xD8D8D8);
-					heading.hAlign = headingAligns[i];
+					heading = new TextField(divArr[i+1] - divArr[i] - 24,32,headingArr[i]);
+					heading.format.setTo("Fira Sans Semi-Bold 13",13,0xD8D8D8,headingAligns[i]);
 					heading.x = divArr[i] + 12;
 					heading.batchable = true;
 					heading.touchable = false;
@@ -117,10 +117,10 @@ package views.client {
 			blineRight.y = bmiddle.y = 200;
 			blineLeft.y = 200;
 			blineBot.y = 508;
-			bg.addQuad(bmiddle);
-			bg.addQuad(blineLeft);
-			bg.addQuad(blineRight);
-			bg.addQuad(blineBot);
+			bg.addMesh(bmiddle);
+			bg.addMesh(blineLeft);
+			bg.addMesh(blineRight);
+			bg.addMesh(blineBot);
 			
 			itemsList = new SrollableContent(1200,115,itmHolder);
 			//itemsList.y = 40;

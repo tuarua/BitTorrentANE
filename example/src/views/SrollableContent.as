@@ -25,17 +25,13 @@ package views {
 			_h = h;
 			_spr = spr;
 			_moveBy = moveBy;
-			this.clipRect = new Rectangle(0,0,w,h);
+			this.mask = new Quad(w, h);
 			addChild(spr);
 			Starling.current.nativeStage.addEventListener(MouseEvent.MOUSE_WHEEL,onMouseWheel);
 		}
 		protected function onMouseWheel(event:MouseEvent):void {
 			var mousePoint:Point = this.globalToLocal(new Point(Starling.current.nativeStage.mouseX,Starling.current.nativeStage.mouseY));
-			var isVisible:Boolean = this.visible;
-			try{
-				isVisible = isVisible && this.parent.visible;
-			}catch(e:Error){}
-			if(isVisible && mousePoint.x > 0 && mousePoint.x < _w && mousePoint.y > 0 && mousePoint.y < _h && !(_fullHeight < _h)){
+			if(this.visible && mousePoint.x > 0 && mousePoint.x < _w && mousePoint.y > 0 && mousePoint.y < _h && !(_fullHeight < _h)){
 				var lastY:int;
 				var cY:int = lastY = _spr.y;
 				cY += (_moveBy*event.delta);
@@ -76,10 +72,10 @@ package views {
 				scrollBeganY = globalToLocal(new Point(0,touch.globalY)).y-scrollBar.y;
 			if(touch && touch.phase == TouchPhase.ENDED)
 				scrollBeganY = -1;
-			if(touch && touch.phase == TouchPhase.HOVER)
-				Starling.juggler.tween(scrollBar, 0.2, {transition: Transitions.LINEAR,alpha: 1});
-			if(touch == null)
-				Starling.juggler.tween(scrollBar, 0.2, {transition: Transitions.LINEAR,alpha: 0});
+			//if(touch && touch.phase == TouchPhase.HOVER)
+				//Starling.juggler.tween(scrollBar, 0.2, {transition: Transitions.LINEAR,alpha: 1});
+			//if(touch == null)
+				//Starling.juggler.tween(scrollBar, 0.2, {transition: Transitions.LINEAR,alpha: 0});
 			
 			if(touch && touch.phase == TouchPhase.MOVED){
 				var sby:int = globalToLocal(new Point(touch.globalX,touch.globalY-(scrollBeganY))).y;
@@ -102,6 +98,6 @@ package views {
 			if(_spr && scrollBar)
 				_spr.y = scrollBar.y = 0;
 		}
-		
+
 	}
 }

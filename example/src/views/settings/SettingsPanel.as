@@ -2,13 +2,13 @@ package views.settings {
 	import events.InteractionEvent;
 	
 	import starling.display.Quad;
-	import starling.display.QuadBatch;
 	import starling.display.Sprite;
 	import views.client.MenuItem;
+	import starling.display.MeshBatch;
 
 	public class SettingsPanel extends Sprite {
 		private var bgMask:Quad = new Quad(1920,1046,0x111414);
-		private var bg:QuadBatch = new QuadBatch();
+		private var bg:MeshBatch = new MeshBatch();
 		private var holder:Sprite = new Sprite();
 		private var w:int = 1200;
 		private var menuItemHolder:Sprite = new Sprite();
@@ -32,10 +32,10 @@ package views.settings {
 			blineRight.y = bmiddle.y = 0;
 			blineLeft.y = 0;
 			blineBot.y = 508;
-			bg.addQuad(bmiddle);
-			bg.addQuad(blineLeft);
-			bg.addQuad(blineRight);
-			bg.addQuad(blineBot);
+			bg.addMesh(bmiddle);
+			bg.addMesh(blineLeft);
+			bg.addMesh(blineRight);
+			bg.addMesh(blineBot);
 			
 			addChild(bgMask);
 			
