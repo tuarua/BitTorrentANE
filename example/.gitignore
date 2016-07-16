@@ -6,22 +6,6 @@ bin/
 bin-debug/torrents/
 bin-debug/output/
 bin-release/
-.actionScriptProperties
-.flexConfig.xml
-
-# only for a non-library project
-.flexProperties
-
-# only for library project
-.flexLibProperties
-
-# Other files and folders
-.settings/
-.project/
-
-.FlexUnitSettings
-.externalToolBuilders
-.model
 
 # textures
 .tps
