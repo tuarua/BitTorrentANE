@@ -237,16 +237,12 @@ FREObject readPiecesFromByteRanges(std::string const& filename, std::vector<int>
 	if (hasError) {
 	} else {
 		file_storage const& sto = ti.files();
-		FRESetArrayLength(vecPieces, offsets.size());
-
-		//loop over offsets
+		FRESetArrayLength(vecPieces, (uint32_t)offsets.size());
 
 		int64_t brOffset = 0;
 		int64_t videoSize = 0;
 		int64_t brEnd = 0;
 
-		int cnt = 0;
-		int tdd = 0;
 		for (unsigned int k = 0; k < offsets.size(); ++k) {
 			FREObject obj;
 			brOffset = offsets.at(k);
@@ -1946,7 +1942,7 @@ extern "C" {
 		logLevel = getUInt32FromFREObject(getFREObjectProperty(settingsProps, (const uint8_t*) "logLevel"));
 		
 		std::stringstream ss;
-		ss << getStringFromFREObject(getFREObjectProperty(settingsProps, (const uint8_t*) "clientNamePrefix")) << "/" << LIBTORRENT_VERSION << std::endl;
+		ss << getStringFromFREObject(getFREObjectProperty(settingsProps, (const uint8_t*) "clientName")) << "/" << LIBTORRENT_VERSION << std::endl;
 		clientName = ss.str();
 
 		settingsContext.priorityFileTypes = getStringVectorFromFREObject(getFREObjectProperty(settingsProps, (const uint8_t*) "prioritizedFileTypes"), NULL);
