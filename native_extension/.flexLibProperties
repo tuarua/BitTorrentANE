@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="com.tuarua.torrent.utils.MagnetParser"/>
+    <classEntry path="com.tuarua.torrent.utils.Magnet"/>
+    <classEntry path="com.tuarua.torrent.constants.FilePriority"/>
+    <classEntry path="com.tuarua.torrent.constants.PiecePriority"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

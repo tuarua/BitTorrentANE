@@ -5,18 +5,9 @@
 bin-debug/
 bin-release/
 ane/platforms/mac
-.actionScriptProperties
-.flexConfig.xml
-
-# only for a non-library project
-.flexProperties
-
-# only for library project
-.flexLibProperties
 
 # Other files and folders
 .settings/
-.project/
 
 .FlexUnitSettings
 .externalToolBuilders
