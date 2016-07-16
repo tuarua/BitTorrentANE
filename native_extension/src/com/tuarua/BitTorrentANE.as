@@ -54,8 +54,10 @@ package com.tuarua {
 				case TorrentInfoEvent.TORRENT_PIECE:
 					pObj = JSON.parse(event.code);
 					tp = TorrentsLibrary.pieces[pObj.id] as TorrentPieces;
-					if(tp)
+					if(tp){
 						tp.setDownloaded(pObj.index);
+						tp.setTime(pObj.index,pObj.time);
+					}
 					break;
 				case TorrentInfoEvent.TORRENT_CREATED_FROM_META:
 					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.TORRENT_CREATED_FROM_META,JSON.parse(event.code)));
@@ -74,6 +76,10 @@ package com.tuarua {
 					pObj = JSON.parse(event.code);
 					tp = new TorrentPieces(pObj.pieces);
 					TorrentsLibrary.updatePieces(pObj.id,tp);
+					break;
+				case TorrentInfoEvent.TORRENT_FILE_COMPLETE:
+					pObj = JSON.parse(event.code);
+					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.TORRENT_FILE_COMPLETE,JSON.parse(event.code)));
 					break;
 				case TorrentInfoEvent.DHT_STARTED:
 					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.DHT_STARTED));
@@ -143,13 +149,32 @@ package com.tuarua {
 			if(extensionContext)
 				extensionContext.call("pauseTorrent",(id) ? id : "");
 		}
+		public function forceRecheck(id:String=null):void {
+			if(extensionContext)
+				extensionContext.call("forceRecheck",(id) ? id : "");
+		}
+		public function forceAnnounce(id:String=null,trackerIndex:int=-1):void {
+			if(extensionContext)
+				extensionContext.call("forceAnnounce",(id) ? id : "",trackerIndex);
+		}
+		public function forceDHTAnnounce(id:String=null):void {
+			if(extensionContext)
+				extensionContext.call("forceDHTAnnounce",(id) ? id : "");
+		}
+		public function setPiecePriority(id:String,index:uint,priority:int):void {
+			if(extensionContext)
+				extensionContext.call("setPiecePriority",id,index,priority);
+		}
+		public function setPieceDeadline(id:String,index:uint,deadline:int):void {//deadline is in milliseconds
+			if(extensionContext)
+				extensionContext.call("setPieceDeadline",(id,index,deadline));
+		}
 		public function getMagnetURI(id:String):String{
 			var ret:String;
 			if(extensionContext)
 				ret = extensionContext.call("getMagnetURI",id) as String;
 			return ret;
 		}
-		
 		public function resumeTorrent(id:String=null):void {
 			if(extensionContext)
 				extensionContext.call("resumeTorrent",(id) ? id : "");
@@ -198,7 +223,7 @@ package com.tuarua {
 		}
 		//pieceSize is in KiB
 		public function createTorrent(input:String,output:String,pieceSize:int,trackers:Vector.<TorrentTracker>,webSeeds:Vector.<TorrentWebSeed>,isPrivate:Boolean=false,comment:String=null,seedNow:Boolean=false,rootCert:String=null):void {
-			if(pieceSize % 16 > 0) throw new Error("pieceSize must be a miltiple of 16");
+			if(pieceSize % 16 > 0) throw new Error("pieceSize must be a multiple of 16");
 			extensionContext.call("createTorrent",input,output,trackers,webSeeds,pieceSize,isPrivate,comment,seedNow,rootCert);
 		}
 		
@@ -210,6 +235,11 @@ package com.tuarua {
 		public function isSupported():Boolean {
 			return extensionContext.call("isSupported"); 
 		}
+		
+		public function getPiecesFromByteRanges(filename:String,bytes:Vector.<Object>):Vector.<Object> {
+			return extensionContext.call("getPiecesFromByteRanges",filename,bytes) as Vector.<Object>; 
+		}
+		
 		public function updateSettings():void {
 			extensionContext.call("updateSettings",TorrentSettings);
 		}

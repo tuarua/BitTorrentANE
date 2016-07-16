@@ -5,5 +5,7 @@ package com.tuarua.torrent.settings {
 		public var resumePath:String;
 		public var sessionStatePath:String;
 		public var geoipDataPath:String;
+		public var sparse:Boolean = true;
+		public var enabled:Boolean = true;
 	}
 }

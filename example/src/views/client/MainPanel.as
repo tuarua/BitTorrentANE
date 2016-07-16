@@ -3,6 +3,7 @@ package views.client {
 	import com.tuarua.torrent.TorrentPeers;
 	import com.tuarua.torrent.TorrentPieces;
 	import com.tuarua.torrent.TorrentStatus;
+	import com.tuarua.torrent.TorrentStateCodes;
 	import com.tuarua.torrent.TorrentTrackers;
 	import com.tuarua.torrent.TorrentsLibrary;
 	
@@ -14,6 +15,7 @@ package views.client {
 	
 	import starling.core.Starling;
 	import starling.display.Image;
+	import starling.display.MeshBatch;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.events.Touch;
@@ -24,8 +26,10 @@ package views.client {
 	import starling.utils.Align;
 	
 	import views.SrollableContent;
-	import views.client.RightClickMenu;
-	import starling.display.MeshBatch;
+	import views.client.peers.PeersPanel;
+	import views.client.files.FilesPanel;
+	import views.client.http.HttpPanel;
+	import views.client.trackers.TrackersPanel;
 
 	public class MainPanel extends Sprite {
 		private var bgMask:Quad = new Quad(1920,1046,0x111414);
@@ -51,10 +55,10 @@ package views.client {
 		public var createTorrentScreen:CreateTorrentScreen = new CreateTorrentScreen();
 		private var selectedId:String;
 		private var _selectedMenu:int = 0;
-		private var rightClickMenus:Dictionary = new Dictionary();
-		private var rightClickMenusData:Dictionary = new Dictionary(true);
+		
+		private var rightClickMenu:RightClickMenu;
+		
 		private var itemSpriteDictionary:Dictionary = new Dictionary();
-		private var hasRightClickPriority:Boolean = false;
 		private var isPowerOn:Boolean = true;
 		
 		private var itemsList:SrollableContent;
@@ -231,48 +235,6 @@ package views.client {
 				this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_POWER_CLICK,{on:isPowerOn}));
 			}
 		}
-		public function addPriorityToRightClick(value:Boolean):void {
-			var tmpArr:Array;
-			if(value && !hasRightClickPriority){
-				for (var key:String in rightClickMenusData){
-					tmpArr = new Array();
-					var obj:Object;
-					for each(var thing:Object in rightClickMenusData[key]){
-						obj = new Object();
-						obj.value = thing.value;
-						obj.label = thing.label;
-						tmpArr.push(obj);
-					}
-					tmpArr.push({value:3,label:"Move to top"});
-					tmpArr.push({value:4,label:"Move up"});
-					tmpArr.push({value:5,label:"Move down"});
-					tmpArr.push({value:6,label:"Move to bottom"});
-					rightClickMenusData[key] = tmpArr;
-					(rightClickMenus[key] as RightClickMenu).update(rightClickMenusData[key]);
-				}
-				hasRightClickPriority = true;
-			}else if(!value && hasRightClickPriority){
-				hasRightClickPriority = false;
-			}
-				
-		}
-		
-		public function addRightClickMenu(_id:String,_menuDataList:Array):void {
-			var rightClickMenu:RightClickMenu;
-			rightClickMenu = new RightClickMenu(_id,200,_menuDataList);
-			rightClickMenu.visible = false;
-			
-			rightClickMenus[_id] = rightClickMenu;
-			rightClickMenusData[_id] = _menuDataList;
-			addChild(rightClickMenu);
-		}
-		
-		public function updateRightClickMenu(_id:String,index:int,label:String,value:int):void {
-			var vec:Array = rightClickMenusData[_id];
-			vec[index].value = value;
-			vec[index].label = label;
-			(rightClickMenus[_id] as RightClickMenu).update(vec);
-		}
 		
 		protected function onRightClick(event:MouseEvent):void {
 			event.stopImmediatePropagation();
@@ -280,7 +242,14 @@ package views.client {
 			
 			var rightCP:Point = holder.globalToLocal(new Point(event.stageX,event.stageY));
 			var mousePoint:Point = new Point(rightCP.x,rightCP.y - 30);
-			var openMenu:Boolean = false;
+			
+			if(rightClickMenu){
+				if(!this.contains(rightClickMenu))
+					addChild(rightClickMenu);
+				rightClickMenu.dispose();
+				rightClickMenu = null;
+			}
+			
 			var ti:TorrentItem;
 			for (var i:int=0, l:int=itmHolder.numChildren; i<l; ++i){
 				ti = itmHolder.getChildAt(i) as TorrentItem;
@@ -290,12 +259,40 @@ package views.client {
 						selectedId = ti.id;
 						itemSelect();
 					}
-					rightClickMenus[ti.id].visible = true;
-					rightClickMenus[ti.id].x = event.stageX;
-					rightClickMenus[ti.id].y = event.stageY-30;
-					rightClickMenus[ti.id].open();
-				}else{
-					rightClickMenus[ti.id].close();
+
+					var ts:TorrentStatus;
+					ts = TorrentsLibrary.status[selectedId];
+
+					var rightClickMenuDataList:Array = new Array();
+					rightClickMenuDataList.push({value:(ts.state == TorrentStateCodes.PAUSED) ? 8 : 0,label:(ts.state == TorrentStateCodes.PAUSED) ? "Resume" : "Pause"});
+					rightClickMenuDataList.push({value:1,label:"Delete"});
+					rightClickMenuDataList.push({value:(ts.isSequential) ? 2 : 9,label:(ts.isSequential) ? "Sequential Off": "Sequential On"});
+					rightClickMenuDataList.push({value:7,label:"Copy magnet link"});
+					
+					if(TorrentsLibrary.length(TorrentsLibrary.meta) > 1){
+						if(ts.queuePosition > 0){
+							rightClickMenuDataList.push({value:3,label:"Move to top"});
+							rightClickMenuDataList.push({value:4,label:"Move up"});
+						}
+						if((ts.queuePosition < TorrentsLibrary.length(TorrentsLibrary.meta)-1) && ts.queuePosition > -1){
+							rightClickMenuDataList.push({value:5,label:"Move down"});
+							rightClickMenuDataList.push({value:6,label:"Move to bottom"});
+						}
+						
+						
+					}
+					
+					// + preview file
+					
+						
+					rightClickMenu = new RightClickMenu(selectedId,200,rightClickMenuDataList);
+					rightClickMenu.visible = true;
+					rightClickMenu.x = event.stageX;
+					rightClickMenu.y = event.stageY-30;
+					rightClickMenu.open();
+					
+					addChild(rightClickMenu);
+					break;
 				}
 				
 			}	
@@ -317,6 +314,8 @@ package views.client {
 		protected function onMenuSelect(event:InteractionEvent):void {
 			_selectedMenu = event.params.type;
 			if(_selectedMenu == 2)
+				updatePeers();
+			else
 				(panelsVec[2] as PeersPanel).destroy();
 			
 			var mi:MenuItem;

@@ -28,7 +28,7 @@
 #include <string>
 #include <complex>
 #include <tuple>
-
+//#include <chrono>
 #include <fstream>
 #include <array>
 #include <math.h>
@@ -44,13 +44,11 @@
 #include <boost/format.hpp>
 #include <boost/optional/optional_io.hpp>
 #include <boost/bimap.hpp>
-
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int.hpp>
 #include <boost/random/variate_generator.hpp>
-
-
 #include <boost/random/random_device.hpp>
+#include <boost/date_time/local_time/local_time.hpp>
 
 
 #include "libtorrent/version.hpp"
@@ -82,6 +80,8 @@
 #include "libtorrent/bdecode.hpp"
 #include "libtorrent/add_torrent_params.hpp"
 #include "libtorrent/time.hpp"
+#include "libtorrent/file.hpp"
+#include "libtorrent/storage.hpp"
 
 #include "json.hpp"
 
@@ -99,9 +99,9 @@ std::string pathSlash = "/";
 #include "Constants.hpp"
 #include "Settings.hpp"
 
+std::string clientName;
 
 libtorrent::session* ltsession = nullptr;
-bool getPeers = true;
 
 struct addedTorrentId{};
 struct addedTorrentHash{};
@@ -116,6 +116,14 @@ AddedTorrents addedTorrents;
 typedef std::map<std::string, int> TrackerPeerMap;
 typedef std::map<std::string, TrackerPeerMap> TorrentTrackerPeerMap;
 TorrentTrackerPeerMap torrentTrackerPeerMap;
+
+
+//piece times
+//id, map of pieces
+
+typedef std::map<int, libtorrent::time_point> PieceTimesMap;//piece, <startTime,endTime>
+typedef std::map<std::string, PieceTimesMap> TorrentPieceTimesMap;
+TorrentPieceTimesMap torrentPieceTimesMap;
 
 extern std::string getHashFromId(std::string const id) {
 	using namespace std;
@@ -186,6 +194,76 @@ extern int loadFile(std::string const& filename, std::vector<char>& v, libtorren
 
 	return 0;
 }
+
+FREObject readPiecesFromByteRanges(std::string const& filename, std::vector<int> offsets, std::vector<int> sizes) {
+	using namespace libtorrent;
+
+	int item_limit = 1000000;
+	int depth_limit = 1000;
+	bool hasError = false;
+	std::string errorMsg = "";
+
+	std::vector<char> buf;
+	error_code ec;
+	int ret = loadFile(filename, buf, ec, 40 * 1000000);
+
+	if (ret == -1) {
+		hasError = true;
+		errorMsg = "file too big";
+	}
+
+	if (ret != 0) {
+		hasError = true;
+		errorMsg = "failed to load file";
+	}
+	bdecode_node e;
+	int pos = -1;
+	ret = bdecode(&buf[0], &buf[0] + buf.size(), e, ec, &pos, depth_limit, item_limit);
+	if (ret != 0) {
+		hasError = true;
+		errorMsg = "failed to decode file";
+	}
+
+	torrent_info ti(e, ec);
+	if (ec) {
+		hasError = true;
+		errorMsg = "failed to read torrrent info";
+	}
+	e.clear();
+	std::vector<char>().swap(buf);
+
+	FREObject vecPieces = NULL;
+	FRENewObject((const uint8_t*)"Vector.<Object>", 0, NULL, &vecPieces, NULL);
+	if (hasError) {
+	} else {
+		file_storage const& sto = ti.files();
+		FRESetArrayLength(vecPieces, offsets.size());
+
+		//loop over offsets
+
+		int64_t brOffset = 0;
+		int64_t videoSize = 0;
+		int64_t brEnd = 0;
+
+		int cnt = 0;
+		int tdd = 0;
+		for (unsigned int k = 0; k < offsets.size(); ++k) {
+			FREObject obj;
+			brOffset = offsets.at(k);
+			videoSize = sizes.at(k);
+			brEnd = brOffset + videoSize;
+			peer_request prOffset = sto.map_file(0, brOffset, 0);
+			peer_request prEnd = sto.map_file(0, brEnd - 1, 0);
+			FRENewObject((const uint8_t*)"Object", 0, NULL, &obj, NULL);
+			FRESetObjectProperty(obj, (const uint8_t*)"startPiece", getFREObjectFromInt32(prOffset.piece), NULL);
+			FRESetObjectProperty(obj, (const uint8_t*)"endPiece", getFREObjectFromInt32(prEnd.piece+1), NULL);
+			FRESetArrayElementAt(vecPieces, k, obj);
+		}
+	}
+	
+	return vecPieces;
+}
+
 FREObject readTorrentInfo(std::string const& filename) {
 	using namespace libtorrent;
 
@@ -280,8 +358,8 @@ FREObject readTorrentInfo(std::string const& filename) {
 libtorrent::settings_pack getDefaultSessionSettings(std::vector<std::string> dhtRouters) {
 	using namespace libtorrent;
 	settings_pack settings;
-
-	settings.set_str(settings_pack::user_agent, "BitTorrentANE/" LIBTORRENT_VERSION);
+	
+	settings.set_str(settings_pack::user_agent, clientName);
 	settings.set_bool(settings_pack::apply_ip_filter_to_trackers, (!settingsContext.filters.filename.empty() && settingsContext.filters.applyToTrackers));
 	settings.set_bool(settings_pack::upnp_ignore_nonrouters,true);
 	settings.set_int(settings_pack::ssl_listen,0);
@@ -294,10 +372,11 @@ libtorrent::settings_pack getDefaultSessionSettings(std::vector<std::string> dht
 	settings.set_bool(settings_pack::announce_to_all_tiers, settingsContext.advanced.announceToAllTrackers);
 
 	int cache_size = settingsContext.advanced.diskCacheSize;
-	cache_size = cache_size ? cache_size * 64 : -1;
+	if(cache_size > 0)
+		cache_size = cache_size * 64;  //0 is off, -1 is 1/8 of machine's RAM
+
 	settings.set_int(settings_pack::cache_size, cache_size);
 	settings.set_int(settings_pack::cache_expiry, settingsContext.advanced.diskCacheTTL);
-
 	settings_pack::io_buffer_mode_t mode = settingsContext.advanced.enableOsCache ? settings_pack::enable_os_cache : settings_pack::disable_os_cache;
 
 	settings.set_int(settings_pack::disk_io_read_mode, mode);
@@ -369,7 +448,6 @@ libtorrent::settings_pack getDefaultSessionSettings(std::vector<std::string> dht
 	settings.set_int(settings_pack::upload_rate_limit, settingsContext.speed.uploadRateLimit);
 	settings.set_int(settings_pack::download_rate_limit, settingsContext.speed.downloadRateLimit);
 	settings.set_int(settings_pack::max_peerlist_size, 100);
-
 
 	//Local Peer Discovery
 	settings.set_bool(settings_pack::enable_lsd, settingsContext.privacy.useLSD);
@@ -467,9 +545,11 @@ boost::thread createThread(void(*otherFunction)(int p), int p) {
 	return boost::move(t);
 }
 
+
 extern "C" {
 	FREContext dllContext;
 	unsigned int logLevel = 0;
+	
 	std::vector<std::string> dhtRouters = {};
 
 	bool yes(libtorrent::torrent_status const&) {
@@ -562,7 +642,7 @@ extern "C" {
 					first = st.map_file(i, 0, 0).piece;
 					//last = st.map_file(i, (std::max)(size_type(st.file_size(i)) - 1, size_type(0)), 0).piece;
 					last = st.map_file(i, (std::max)(boost::int64_t(st.file_size(i)) - 1, boost::int64_t(0)), 0).piece;
-					std::cout << st.file_path(i) << std::endl;
+					//std::cout << st.file_path(i) << std::endl;
 					logInfo("prioritizing " + st.file_path(i));
 					h.file_priority(i, 7);
 					/* 0, 1, 2, 7
@@ -592,11 +672,29 @@ extern "C" {
 		using std::ofstream;
 		using std::ios;
 		using json = nlohmann::json;
-			if (logLevel == LogLevelConstants::DBG) {
+		if (logLevel == LogLevelConstants::DBG) {
 			logInfo(a->what());
 			logInfo("alert message: " + a->message());
 		}
-		if (torrent_finished_alert* f = alert_cast<torrent_finished_alert>(a)) {
+
+		if (block_downloading_alert* f = alert_cast<block_downloading_alert>(a)) {
+			torrent_handle h = f->handle;
+			if (settingsContext.timePieces && h.is_valid()) {
+				boost::shared_ptr<const torrent_info> ti = h.torrent_file();
+				if (ti) {
+					std::string hash = boost::lexical_cast<std::string>(ti->info_hash());
+					std::string id = getIdFromHash(hash);
+					//cout << "block downloading: " << f->block_index << " from piece: " << f->piece_index << endl;
+					auto search = torrentPieceTimesMap[id].find(f->piece_index);//how expensive is this ?
+					if (search == torrentPieceTimesMap[id].end()) {
+						torrentPieceTimesMap.insert(make_pair(id, PieceTimesMap()));
+						torrentPieceTimesMap[id].insert(std::make_pair(f->piece_index, f->timestamp()));
+					}
+
+				}
+			}
+		}
+		else if (torrent_finished_alert* f = alert_cast<torrent_finished_alert>(a)) {
 			torrent_handle h = f->handle;
 			if (h.is_valid()) {
 				h.save_resume_data();
@@ -604,52 +702,30 @@ extern "C" {
 					h.force_recheck();
 			}
 		}
-		else if (rss_alert* f = alert_cast<rss_alert>(a)) {
-			std::string state;
-			logInfo("RSS State change: " + f->error.message());
-			json j;
-			j["url"] = f->url;
-			j["state"] = f->state;
-			j["message"] = f->error.message();
-			FREDispatchStatusEventAsync(dllContext, (uint8_t*)j.dump().c_str(), (const uint8_t*)torrentInfoEvent.RSS_STATE_CHANGE.c_str());
-
-			/*
-			feed_handle fh = f->handle;
-			feed_status fs = fh.get_feed_status();
-			
-			trace("description: " + fs.description);
-			trace("updating: "+ boost::lexical_cast<string>(fs.updating));
-			trace("title: " + fs.title);
-			trace("ttl: " + boost::lexical_cast<string>(fs.ttl));
-			trace("error number: " + boost::lexical_cast<string>(fs.error));
-			trace("last_update: " + boost::lexical_cast<string>(fs.last_update));
-			trace("next_update: " + boost::lexical_cast<string>(fs.next_update));
-			trace("--------");
-			*/
-		}
-		else if (rss_item_alert* f = alert_cast<rss_item_alert>(a)) {
-			logInfo("RSS item change: " + f->message());
-			feed_item fi = f->item;
-			json j;
-			j["url"] = fi.url;
-			j["title"] = fi.title;
-			j["comment"] = fi.comment;
-			j["description"] = fi.description;
-			j["category"] = fi.category;
-			j["uuid"] = fi.uuid;
-			j["size"] = fi.size;
-			j["hash"] = boost::lexical_cast<std::string>(fi.info_hash);
-			FREDispatchStatusEventAsync(dllContext, (uint8_t*)j.dump().c_str(), (const uint8_t*)torrentInfoEvent.RSS_ITEM.c_str());
-		}
 		else if (piece_finished_alert* f = alert_cast<piece_finished_alert>(a)) {
 			torrent_handle h = f->handle;
-			
 			if (h.is_valid()) {
 				boost::shared_ptr<const torrent_info> ti = h.torrent_file();
-				json j;
-				j["id"] = getIdFromHash(boost::lexical_cast<std::string>(ti->info_hash()));
-				j["index"] = f->piece_index;
-				FREDispatchStatusEventAsync(dllContext, (uint8_t*)j.dump().c_str(), (const uint8_t*)torrentInfoEvent.TORRENT_PIECE.c_str());
+				if (ti) {
+					std::string hash = boost::lexical_cast<std::string>(ti->info_hash());
+					std::string id = getIdFromHash(hash);
+					json j;
+					j["id"] = getIdFromHash(boost::lexical_cast<std::string>(ti->info_hash()));
+					j["index"] = f->piece_index;
+					j["time"] = 0;
+					if (settingsContext.timePieces) {
+						auto search = torrentPieceTimesMap[id].find(f->piece_index);
+						if (search != torrentPieceTimesMap[id].end()) {
+							auto t1 = search->second;
+							auto int_ms = std::chrono::duration_cast<std::chrono::milliseconds>(f->timestamp() - t1);
+							j["time"] = int_ms.count();
+							torrentPieceTimesMap[id].erase(f->piece_index);
+							//cout << "piece: " << f->piece_index << "took: " << int_ms.count() << " milliseconds" << endl << endl;
+						}
+					}
+					//cout << "piece finished: " << f->piece_index << endl;
+					FREDispatchStatusEventAsync(dllContext, (uint8_t*)j.dump().c_str(), (const uint8_t*)torrentInfoEvent.TORRENT_PIECE.c_str());
+				}
 			}
 		}
 		else if (tracker_reply_alert* r = alert_cast<tracker_reply_alert>(a)) {
@@ -692,12 +768,6 @@ extern "C" {
 				logError("MAGNET_HANDLE_FAIL");
 			}
 		}
-		else if (fastresume_rejected_alert* z = alert_cast<fastresume_rejected_alert>(a)) {
-			torrent_handle h = z->handle;
-			boost::shared_ptr<const torrent_info> ti = h.torrent_file();
-			ti.reset();
-			h.resume();
-		}
 		else if (save_resume_data_alert* q = alert_cast<save_resume_data_alert>(a)) {
 			torrent_handle h = q->handle;
 			if (h.is_valid()) {
@@ -713,7 +783,6 @@ extern "C" {
 		else if (add_torrent_alert* r = alert_cast<add_torrent_alert>(a)) {
 			torrent_handle h = r->handle;
 			if (h.is_valid()) {
-			
 				std::string id;
 				std::string hash;
 				std::string fileName = "";
@@ -781,6 +850,61 @@ extern "C" {
 				FREDispatchStatusEventAsync(dllContext, (uint8_t*)j.dump().c_str(), (const uint8_t*)torrentInfoEvent.TORRENT_CHECKED.c_str());
 			}
 		}
+		else if (file_completed_alert* f = alert_cast<file_completed_alert>(a)) {
+			torrent_handle h = f->handle;
+
+			if (h.is_valid()) {
+				boost::shared_ptr<const torrent_info> ti = h.torrent_file();
+				json j;
+				j["id"] = getIdFromHash(boost::lexical_cast<std::string>(ti->info_hash()));
+				j["index"] = f->index;
+				j["fileName"] = ti->file_at(f->index).path;
+				FREDispatchStatusEventAsync(dllContext, (uint8_t*)j.dump().c_str(), (const uint8_t*)torrentInfoEvent.TORRENT_FILE_COMPLETE.c_str());
+			}
+		}
+		else if (fastresume_rejected_alert* z = alert_cast<fastresume_rejected_alert>(a)) {
+			torrent_handle h = z->handle;
+			boost::shared_ptr<const torrent_info> ti = h.torrent_file();
+			ti.reset();
+			h.resume();
+		}
+		else if (rss_alert* f = alert_cast<rss_alert>(a)) {
+			std::string state;
+			logInfo("RSS State change: " + f->error.message());
+			json j;
+			j["url"] = f->url;
+			j["state"] = f->state;
+			j["message"] = f->error.message();
+			FREDispatchStatusEventAsync(dllContext, (uint8_t*)j.dump().c_str(), (const uint8_t*)torrentInfoEvent.RSS_STATE_CHANGE.c_str());
+
+			/*
+			feed_handle fh = f->handle;
+			feed_status fs = fh.get_feed_status();
+
+			trace("description: " + fs.description);
+			trace("updating: "+ boost::lexical_cast<string>(fs.updating));
+			trace("title: " + fs.title);
+			trace("ttl: " + boost::lexical_cast<string>(fs.ttl));
+			trace("error number: " + boost::lexical_cast<string>(fs.error));
+			trace("last_update: " + boost::lexical_cast<string>(fs.last_update));
+			trace("next_update: " + boost::lexical_cast<string>(fs.next_update));
+			trace("--------");
+			*/
+		}
+		else if (rss_item_alert* f = alert_cast<rss_item_alert>(a)) {
+			logInfo("RSS item change: " + f->message());
+			feed_item fi = f->item;
+			json j;
+			j["url"] = fi.url;
+			j["title"] = fi.title;
+			j["comment"] = fi.comment;
+			j["description"] = fi.description;
+			j["category"] = fi.category;
+			j["uuid"] = fi.uuid;
+			j["size"] = fi.size;
+			j["hash"] = boost::lexical_cast<std::string>(fi.info_hash);
+			FREDispatchStatusEventAsync(dllContext, (uint8_t*)j.dump().c_str(), (const uint8_t*)torrentInfoEvent.RSS_ITEM.c_str());
+		}
 	}
 	
 	FREObject addTorrent(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
@@ -806,6 +930,12 @@ extern "C" {
 		if (ec) logError("adding torrent: " + lexical_cast<std::string>(ec.message()));
 		
 		add_torrent_params p;
+
+		if (!settingsContext.storage.enabled)
+			p.storage = zero_storage_constructor;
+		
+		//p.storage = temp_storage_constructor;
+
 		p.max_connections = settingsContext.connections.maxNumPerTorrent;
 		p.max_uploads = settingsContext.connections.maxUploadsPerTorrent;
 
@@ -834,6 +964,11 @@ extern "C" {
 		}	
 		p.merge_resume_trackers = true;
 
+		if(settingsContext.storage.sparse)
+			p.storage_mode = libtorrent::storage_mode_sparse;
+		else
+			p.storage_mode = libtorrent::storage_mode_allocate;
+
 		p.flags &= ~add_torrent_params::flag_paused;
 		p.flags |= add_torrent_params::flag_auto_managed;
 		if (isSeq)
@@ -856,20 +991,18 @@ extern "C" {
 		FREObject result;
 		FRENewObjectFromBool(true, &result);
 
+		//deprecated init in a different way
 		ltsession = new libtorrent::session(fingerprint("LT", LIBTORRENT_VERSION_MAJOR, LIBTORRENT_VERSION_MINOR, LIBTORRENT_VERSION_TINY,0), 0);
-		
 		error_code ec;
 
 		settings_pack settings = getDefaultSessionSettings(dhtRouters);
+		//allow to ovveride ?
 		settings.set_int(settings_pack::alert_mask, alert::error_notification | alert::peer_notification /*| alert::port_mapping_notification */ | alert::storage_notification | alert::tracker_notification | alert::status_notification | alert::ip_block_notification | alert::progress_notification | alert::rss_notification/* | alert::stats_notification*/);
-		
-
 		
 
 		int port = settingsContext.listening.port;
 		std::pair<int, int> ports(settingsContext.listening.port, settingsContext.listening.port +8);
 		if (settingsContext.advanced.networkInterface.size() > 0) {
-			trace("have a custom interface");
 			std::vector<std::pair<std::string, std::string>> nv;
 			nv = settingsContext.advanced.networkInterface;
 			for (std::vector<std::pair<std::string, std::string>>::const_iterator i = nv.begin(); i != nv.end(); ++i) {
@@ -890,8 +1023,7 @@ extern "C" {
 		}
 		
 		ltsession->apply_settings(settings);
-
-					
+			
 		if (ec) {
 			FRENewObjectFromBool(false, &result);
 			logError("SOCKET_FAIL");
@@ -902,16 +1034,16 @@ extern "C" {
 			logInfo("listening on " + boost::lexical_cast<std::string>(ltsession->listen_port()));
 		}
 
-					std::vector<char> in;
-					if (loadFile(settingsContext.storage.sessionStatePath + pathSlash + ".ses_state", in, ec) == 0) {
-									bdecode_node e;
-									if (bdecode(&in[0], &in[0] + in.size(), e, ec) == 0) {
-													trace("load session state");
-													ltsession->load_state(e, session::save_dht_state);
-									}
-									
-					}
-		
+		/*
+		std::vector<char> in;
+		if (loadFile(settingsContext.storage.sessionStatePath + pathSlash + ".ses_state", in, ec) == 0) {
+			bdecode_node e;
+			if (bdecode(&in[0], &in[0] + in.size(), e, ec) == 0) {
+				trace("load session state");
+				ltsession->load_state(e, session::save_dht_state);
+			}							
+		}
+		*/
 		ltsession->add_extension(&create_ut_metadata_plugin);
 		if(settingsContext.advanced.enableTrackerExchange)
 			ltsession->add_extension(&create_lt_trackers_plugin);
@@ -933,6 +1065,7 @@ extern "C" {
 		sendInfo("Geoip is disabled");
 #endif
 
+
 		return result;
 	}
 	
@@ -941,6 +1074,7 @@ extern "C" {
 	}
 	FREObject getTorrentTrackers(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
 		using namespace libtorrent;
+		
 		FREObject vecTorrentTrackers = NULL;
 		std::vector<torrent_status> temp;
 		ltsession->get_torrent_status(&temp, &yes, 0);
@@ -1248,6 +1382,8 @@ extern "C" {
 			FRESetObjectProperty(freStatus, (const uint8_t*)"infoHash", getFREObjectFromString(hash), NULL);
 			FRESetObjectProperty(freStatus, (const uint8_t*)"numPieces", getFREObjectFromUint32(status.num_pieces), NULL);
 			FRESetObjectProperty(freStatus, (const uint8_t*)"isFinished", getFREObjectFromBool(status.is_finished), NULL);
+			FRESetObjectProperty(freStatus, (const uint8_t*)"isSequential", getFREObjectFromBool(status.sequential_download), NULL);
+			
 			if (status.paused)
 				FRESetObjectProperty(freStatus, (const uint8_t*)"state", getFREObjectFromUint32((status.auto_managed) ? 8 : 9), NULL); //8 is queued, 9 is paused
 			else
@@ -1266,6 +1402,7 @@ extern "C" {
 			FRESetObjectProperty(freStatus, (const uint8_t*)"numSeeds", getFREObjectFromUint32(status.num_seeds), NULL);
 			FRESetObjectProperty(freStatus, (const uint8_t*)"numSeedsTotal", getFREObjectFromUint32(status.list_seeds), NULL);
 			
+			
 			FRESetObjectProperty(freStatus, (const uint8_t*)"wasted", getFREObjectFromUint32((uint32_t)(status.total_failed_bytes + status.total_redundant_bytes)), NULL);
 			if (status.state == torrent_status::seeding)
 				FRESetObjectProperty(freStatus, (const uint8_t*)"activeTime", getFREObjectFromUint32(status.seeding_time), NULL);
@@ -1280,9 +1417,9 @@ extern "C" {
 			if (i->download_limit() > 0)
 				FRESetObjectProperty(freStatus, (const uint8_t*)"downloadMax", getFREObjectFromInt32(i->download_limit()), NULL);//-1
 			FRESetObjectProperty(freStatus, (const uint8_t*)"numConnections", getFREObjectFromUint32(status.num_connections), NULL);
-			//FRESetObjectProperty(freStatus, (const uint8_t*)"nextAnnounce", getFREObjectFromUint32(status.next_announce.total_seconds()), NULL); //OLD
-			//http://stackoverflow.com/questions/35016622/c-get-period-of-an-stdchronoduration?rq=1
-
+			auto int_announce = std::chrono::duration_cast<std::chrono::seconds>(status.next_announce);
+			if(int_announce.count() > 0 && int_announce.count() < 3600)
+				FRESetObjectProperty(freStatus, (const uint8_t*)"nextAnnounce", getFREObjectFromUint32((uint32_t)int_announce.count()), NULL);
 			if (status.last_seen_complete != 0)
 				FRESetObjectProperty(freStatus, (const uint8_t*)"lastSeenComplete", getFREObjectFromInt32((int32_t)status.last_seen_complete), NULL);
 			if (status.completed_time != 0)
@@ -1290,8 +1427,8 @@ extern "C" {
 			FRESetObjectProperty(freStatus, (const uint8_t*)"addedOn", getFREObjectFromInt32((int32_t)status.added_time), NULL);
 			FRESetObjectProperty(freStatus, (const uint8_t*)"savePath", getFREObjectFromString(status.save_path), NULL);
 				
-			double uploadR = status.all_time_upload;
-			double downloadR = (status.all_time_download < status.total_done * 0.01) ? status.total_done : status.all_time_download;
+			double uploadR = (double)status.all_time_upload;
+			double downloadR = (status.all_time_download < status.total_done * 0.01) ? (double)status.total_done : (double)status.all_time_download;
 			
 			if (downloadR == 0){
 				FRESetObjectProperty(freStatus, (const uint8_t*)"shareRatio", getFREObjectFromDouble((uploadR == 0) ? 0.00 : 9999.0), NULL);
@@ -1312,12 +1449,11 @@ extern "C" {
 				numPartial++;
 			}
 			FRESetObjectProperty(freStatus, (const uint8_t*)"partialPieces", vecPartialPieces, NULL);
-			
 
 			if (queryFileProgress && status.state != torrent_status::seeding) {
 				std::vector<boost::int64_t> fp;
 				i->file_progress(fp);
-
+				
 				FREObject vecFileProgress = NULL;
 				FRENewObject((const uint8_t*)"Vector.<Number>", 0, NULL, &vecFileProgress, NULL);
 				
@@ -1362,6 +1498,63 @@ extern "C" {
 			
 		return getFREObjectFromString(ret);
 	}
+
+	FREObject getPiecesFromByteRanges(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
+		std::vector<int> offsets = getIntVectorFromFREObject(argv[1], (const uint8_t*)"offset");
+		std::vector<int> sizes = getIntVectorFromFREObject(argv[1], (const uint8_t*)"size");
+		return readPiecesFromByteRanges(getStringFromFREObject(argv[0]), offsets, sizes);
+	}
+
+
+	FREObject setPieceDeadline(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
+		using namespace libtorrent;
+		using namespace std;
+		std::string id = getStringFromFREObject(argv[0]);
+		unsigned int index = getUInt32FromFREObject(argv[1]);
+		unsigned int deadline = getUInt32FromFREObject(argv[2]);
+		vector<torrent_status> temp;
+		ltsession->get_torrent_status(&temp, &yes, 0);
+		vector<torrent_handle> tv;
+		tv = ltsession->get_torrents();
+		std::string hash = getHashFromId(id);
+		int foundN = findHandle(tv, hash);
+		torrent_handle fh;
+		if (foundN > -1) {
+			logInfo("we have found the torrent - setting piece deadline");
+			fh = tv[foundN];
+			if (fh.is_valid() && fh.status().has_metadata)
+				fh.set_piece_deadline(index, deadline);
+		}
+		else {
+			logInfo("we didn't find the torrent - can't piece deadline");
+		}
+		return getReturnTrue();
+	}
+	FREObject setPiecePriority(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
+		using namespace libtorrent;
+		using namespace std;
+		std::string id = getStringFromFREObject(argv[0]);
+		unsigned int index = getUInt32FromFREObject(argv[1]);
+		unsigned int priority = getUInt32FromFREObject(argv[2]);
+		vector<torrent_status> temp;
+		ltsession->get_torrent_status(&temp, &yes, 0);
+		vector<torrent_handle> tv;
+		tv = ltsession->get_torrents();
+		std::string hash = getHashFromId(id);
+		int foundN = findHandle(tv, hash);
+		torrent_handle fh;
+		if (foundN > -1) {
+			logInfo("we have found the torrent - setting piece priority");
+			fh = tv[foundN];
+			if (fh.is_valid() && fh.status().has_metadata)
+				fh.piece_priority(index, priority);
+		}
+		else {
+			logInfo("we didn't find the torrent - can't set piece file priority");
+		}
+		return getReturnTrue();
+	}
+
 	FREObject setFilePriority(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
 		using namespace libtorrent;
 		using namespace std;
@@ -1386,6 +1579,96 @@ extern "C" {
 		return getReturnTrue();
 	}
 
+	FREObject forceDHTAnnounce(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
+		using namespace libtorrent;
+		using namespace std;
+		std::string id = getStringFromFREObject(argv[0]);
+		vector<torrent_status> temp;
+		ltsession->get_torrent_status(&temp, &yes, 0);
+		vector<torrent_handle> tv;
+		tv = ltsession->get_torrents();
+
+		if (id.empty()) {
+			for (std::vector<torrent_handle>::const_iterator i = tv.begin(); i != tv.end(); ++i) {
+				i->force_dht_announce();
+			}
+		}
+		else {
+			std::string hash = getHashFromId(id);
+			int foundN = findHandle(tv, hash);
+			torrent_handle fh;
+			if (foundN > -1) {
+				logInfo("we have found the torrent - forcing DHT rennounce");
+				fh = tv[foundN];
+				fh.force_dht_announce();
+			}
+			else {
+				logInfo("we didn't find the torrent - can't force DHT rennounce");
+			}
+		}
+		return getReturnTrue();
+	}
+
+	FREObject forceAnnounce(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
+		using namespace libtorrent;
+		using namespace std;
+		std::string id = getStringFromFREObject(argv[0]);
+		int trackerIndex = getInt32FromFREObject(argv[1]);
+		vector<torrent_status> temp;
+		ltsession->get_torrent_status(&temp, &yes, 0);
+		vector<torrent_handle> tv;
+		tv = ltsession->get_torrents();
+
+		if (id.empty()) {
+			for (std::vector<torrent_handle>::const_iterator i = tv.begin(); i != tv.end(); ++i) {
+				i->force_reannounce(0, trackerIndex);
+			}
+		} else {
+			std::string hash = getHashFromId(id);
+			int foundN = findHandle(tv, hash);
+			torrent_handle fh;
+			if (foundN > -1) {
+				logInfo("we have found the torrent - forcing rennounce");
+				fh = tv[foundN];
+				fh.force_reannounce(0, trackerIndex);
+			} else {
+				logInfo("we didn't find the torrent - can't force rennounce");
+			}
+		}
+		return getReturnTrue();
+	}
+	
+	FREObject forceRecheck(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
+		using namespace libtorrent;
+		using namespace std;
+		std::string id = getStringFromFREObject(argv[0]);
+		vector<torrent_status> temp;
+		ltsession->get_torrent_status(&temp, &yes, 0);
+		vector<torrent_handle> tv;
+		tv = ltsession->get_torrents();
+
+		if (id.empty()) {
+			for (std::vector<torrent_handle>::const_iterator i = tv.begin(); i != tv.end(); ++i) {
+				i->save_resume_data();
+				i->force_recheck();
+			}
+		}
+		else {
+			std::string hash = getHashFromId(id);
+			int foundN = findHandle(tv, hash);
+			torrent_handle fh;
+			if (foundN > -1) {
+				logInfo("we have found the torrent - forcing recheck");
+				fh = tv[foundN];
+				fh.save_resume_data();
+				fh.force_recheck();
+			}
+			else {
+				logInfo("we didn't find the torrent - can't force recheck");
+			}
+		}
+		return getReturnTrue();
+	}
 	FREObject pauseTorrent(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
 		using namespace libtorrent;
 		using namespace std;
@@ -1615,10 +1898,7 @@ extern "C" {
 
 	FREObject listenForAlert(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
 		using namespace libtorrent;
-		//std::deque<alert*> alerts;
-
 		std::vector<alert*> alerts;
-
 		ltsession->pop_alerts(&alerts);
 		for (std::vector<alert*>::iterator i = alerts.begin(), end(alerts.end()); i != end; ++i)
 			handleAlert(*i);
@@ -1652,6 +1932,7 @@ extern "C" {
 		endSettings.set_bool(settings_pack::enable_lsd, false);
 		endSettings.set_bool(settings_pack::enable_upnp, false);
 		endSettings.set_bool(settings_pack::enable_natpmp, false);
+
 		ltsession->apply_settings(endSettings);
 
 		logInfo("session ended");
@@ -1663,13 +1944,23 @@ extern "C" {
 		FREObject settingsProps = argv[0];
 		
 		logLevel = getUInt32FromFREObject(getFREObjectProperty(settingsProps, (const uint8_t*) "logLevel"));
+		
+		std::stringstream ss;
+		ss << getStringFromFREObject(getFREObjectProperty(settingsProps, (const uint8_t*) "clientNamePrefix")) << "/" << LIBTORRENT_VERSION << std::endl;
+		clientName = ss.str();
+
 		settingsContext.priorityFileTypes = getStringVectorFromFREObject(getFREObjectProperty(settingsProps, (const uint8_t*) "prioritizedFileTypes"), NULL);
+		settingsContext.timePieces = getBoolFromFREObject(getFREObjectProperty(settingsProps, (const uint8_t*) "timePieces"));
+
 		FREObject storageProps = getFREObjectProperty(settingsProps, (const uint8_t*) "storage");
 		settingsContext.storage.outputPath = getStringFromFREObject(getFREObjectProperty(storageProps, (const uint8_t*) "outputPath"));
 		settingsContext.storage.torrentPath = getStringFromFREObject(getFREObjectProperty(storageProps, (const uint8_t*) "torrentPath"));
 		settingsContext.storage.resumePath = getStringFromFREObject(getFREObjectProperty(storageProps, (const uint8_t*) "resumePath"));
 		settingsContext.storage.geoipDataPath = getStringFromFREObject(getFREObjectProperty(storageProps, (const uint8_t*) "geoipDataPath"));
 		settingsContext.storage.sessionStatePath = getStringFromFREObject(getFREObjectProperty(storageProps, (const uint8_t*) "sessionStatePath"));
+		settingsContext.storage.sparse = getBoolFromFREObject(getFREObjectProperty(storageProps, (const uint8_t*) "sparse"));
+		settingsContext.storage.enabled = getBoolFromFREObject(getFREObjectProperty(storageProps, (const uint8_t*) "enabled"));
+
 		FREObject privacyProps = getFREObjectProperty(settingsProps, (const uint8_t*) "privacy");
 		settingsContext.privacy.usePEX = getBoolFromFREObject(getFREObjectProperty(privacyProps, (const uint8_t*) "usePEX"));
 		settingsContext.privacy.useLSD = getBoolFromFREObject(getFREObjectProperty(privacyProps, (const uint8_t*) "useLSD"));
@@ -1725,7 +2016,7 @@ extern "C" {
 		settingsContext.proxy.password = getStringFromFREObject(getFREObjectProperty(proxyProps, (const uint8_t*) "password"));
 
 		FREObject advancedProps = getFREObjectProperty(settingsProps, (const uint8_t*) "advanced");
-		settingsContext.advanced.diskCacheSize = getUInt32FromFREObject(getFREObjectProperty(advancedProps, (const uint8_t*) "diskCacheSize"));
+		settingsContext.advanced.diskCacheSize = getInt32FromFREObject(getFREObjectProperty(advancedProps, (const uint8_t*) "diskCacheSize"));
 		settingsContext.advanced.diskCacheTTL = getUInt32FromFREObject(getFREObjectProperty(advancedProps, (const uint8_t*) "diskCacheTTL"));
 		settingsContext.advanced.enableOsCache = getBoolFromFREObject(getFREObjectProperty(advancedProps, (const uint8_t*) "enableOsCache"));
 		settingsContext.advanced.outgoingPortsMin = getUInt32FromFREObject(getFREObjectProperty(advancedProps, (const uint8_t*) "outgoingPortsMin"));
@@ -1894,7 +2185,7 @@ extern "C" {
 		createTorrentContext.pieceSize = getUInt32FromFREObject(argv[4]) * 1024;
 		createTorrentContext.isPrivate = getBoolFromFREObject(argv[5]);
 		createTorrentContext.comment = getStringFromFREObject(argv[6]);
-		createTorrentContext.creator = "BitTorrentANE";
+		createTorrentContext.creator = clientName;
 		createTorrentContext.seedNow = getBoolFromFREObject(argv[7]);
 		createTorrentContext.rootCert = getStringFromFREObject(argv[8]);
 		threads[0] = boost::move(createThread(&threadCreateTorrent, 1));
@@ -1975,6 +2266,15 @@ extern "C" {
 			,{ (const uint8_t*) "saveSessionState",NULL, &saveSessionState }
 			,{ (const uint8_t*) "getMagnetURI",NULL, &getMagnetURI }
 			,{ (const uint8_t*) "setFilePriority",NULL, &setFilePriority }
+			,{ (const uint8_t*) "forceRecheck",NULL, &forceRecheck }
+			,{ (const uint8_t*) "forceAnnounce",NULL, &forceAnnounce }
+			,{ (const uint8_t*) "forceDHTAnnounce",NULL, &forceDHTAnnounce }
+			,{ (const uint8_t*) "setPiecePriority",NULL, &setPiecePriority }
+			,{ (const uint8_t*) "setPieceDeadline",NULL, &setPieceDeadline }
+
+			,{ (const uint8_t*) "getPiecesFromByteRanges",NULL, &getPiecesFromByteRanges }
+			
+
 			,{ (const uint8_t*) "saveAs",NULL, &saveAs }
 		};
 

@@ -162,8 +162,6 @@ package views.settings {
 			txtHolder.addChild(maxActiveTorrLbl);
 			txtHolder.addChild(slowTorrLbl);
 			
-			//txtHolder.flatten();
-			
 			enableQueueing(model.SettingsLocalStore.settings.queueing.enabled);
 			
 			addChild(txtHolder);
@@ -219,27 +217,13 @@ package views.settings {
 			maxDownStppr.enable(_b);
 			maxUpStppr.enable(_b);
 			maxTorrStppr.enable(_b);
-			
 			chkSlow.enable(_b);
-			//txtHolder.unflatten();
 			slowTorrLbl.alpha = maxActiveUpLbl.alpha = maxActiveTorrLbl.alpha = maxActiveDownLbl.alpha = (_b) ? 1.0 : 0.25;
-			//txtHolder.flatten();
 		}
 		public function showFields(_b:Boolean):void {
-			//maxDownStppr.nti.show(_b);
-			//maxUpStppr.nti.show(_b);
-			//maxTorrStppr.nti.show(_b);
-			if(_b){
-				maxDownStppr.unfreeze();
-				maxUpStppr.unfreeze();
-				maxTorrStppr.unfreeze();
-			}else{
-				maxDownStppr.freeze();
-				maxUpStppr.freeze();
-				maxTorrStppr.freeze();
-			}
-			
-			
+			maxDownStppr.freeze(!_b);
+			maxUpStppr.freeze(!_b);
+			maxTorrStppr.freeze(!_b);
 		}
 		public function positionAllFields():void {
 			maxDownStppr.updatePosition();

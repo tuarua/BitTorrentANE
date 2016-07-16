@@ -56,7 +56,7 @@ package views.settings {
 			settings2Group.x = 550;
 			
 			drawLabel("Settings",settings2Group.x + 15,-8);
-			drawLabel("Disk write cache size (MiB) [0: Auto]",settings2Group.x + 15,20);
+			drawLabel("Disk write cache size (MiB) [-1: Auto,0: Off]",settings2Group.x + 15,20);
 			drawLabel("Disk cache expiry interval (s)",settings2Group.x + 15,50);
 			drawLabel("Outgoing ports (Min) [0: Disabled]",settings2Group.x + 15,80);
 			drawLabel("Outgoing ports (Max) [0: Disabled]",settings2Group.x + 15,110);
@@ -259,21 +259,12 @@ package views.settings {
 			}
 		}
 		public function showFields(_b:Boolean):void {
-			if(_b){
-				diskWriteStppr.unfreeze();
-				diskCacheExpiryStppr.unfreeze();
-				outPortMinStppr.unfreeze();
-				outPortMaxStppr.unfreeze();
-				maxHalfStppr.unfreeze();
-				IPannounceInput.unfreeze();
-			}else{
-				diskWriteStppr.freeze();
-				diskCacheExpiryStppr.freeze();
-				outPortMinStppr.freeze();
-				outPortMaxStppr.freeze();
-				maxHalfStppr.freeze();
-				IPannounceInput.freeze();
-			}
+			diskWriteStppr.freeze(!_b);
+			diskCacheExpiryStppr.freeze(!_b);
+			outPortMinStppr.freeze(!_b);
+			outPortMaxStppr.freeze(!_b);
+			maxHalfStppr.freeze(!_b);
+			IPannounceInput.freeze(!_b);
 		}
 		public function positionAllFields():void {
 			diskWriteStppr.updatePosition();

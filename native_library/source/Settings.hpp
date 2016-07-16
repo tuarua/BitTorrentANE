@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 typedef struct {
+	bool timePieces = true;
 	std::vector<std::string> priorityFileTypes = {};
 	typedef struct {
 		std::string outputPath;
@@ -10,6 +11,8 @@ typedef struct {
 		std::string resumePath;
 		std::string sessionStatePath;
 		std::string geoipDataPath;
+		bool sparse = true;
+		bool enabled = true;
 	}StorageContext;
 	StorageContext storage;
 
@@ -77,7 +80,7 @@ typedef struct {
 	typedef struct {
 		bool announceToAllTrackers = false;
 		bool enableTrackerExchange = false;
-		uint32_t diskCacheSize;
+		int32_t diskCacheSize;
 		uint32_t diskCacheTTL;
 		bool enableOsCache = false;
 		int outgoingPortsMin;

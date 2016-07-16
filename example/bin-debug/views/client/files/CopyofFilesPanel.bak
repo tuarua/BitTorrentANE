@@ -1,17 +1,23 @@
-package views.client {
+package views.client.files {
 	import com.tuarua.torrent.TorrentFileMeta;
 	import com.tuarua.torrent.TorrentStatus;
 	import com.tuarua.torrent.constants.FilePriority;
 	
+	import flash.events.MouseEvent;
+	
+	import starling.core.Starling;
 	import starling.display.Image;
+	import starling.display.MeshBatch;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.text.TextField;
 	import starling.utils.Align;
+	
 	import utils.TextUtils;
 	
 	import views.SrollableContent;
-	import starling.display.MeshBatch;
+	import flash.geom.Point;
+	import views.client.RightClickMenu;
 	
 	public class FilesPanel extends Sprite {
 		private static var divArr:Array = new Array(0,800,900,1000,1200);
@@ -27,6 +33,10 @@ package views.client {
 		private var _files:Vector.<TorrentFileMeta>;
 		private var fileRowIndexes:Array = new Array();
 		private var _isFinished:Boolean = false;
+		
+		private var highlight:Quad = new Quad(1180,20,0xCC8D1E);
+		private var rightClickMenu:RightClickMenu;
+		
 		public function FilesPanel() {
 			super();
 			
@@ -53,7 +63,44 @@ package views.client {
 			
 			addChild(fileList);
 			
+			Starling.current.nativeStage.addEventListener(flash.events.MouseEvent.RIGHT_CLICK, onRightClick);
+		}
+		
+		protected function onRightClick(event:MouseEvent):void {
+			var mousePointCheck:Point = this.globalToLocal(new Point(Starling.current.nativeStage.mouseX,Starling.current.nativeStage.mouseY));
 			
+			//trace(mousePointCheck);
+			if(this.visible && mousePointCheck.x > 0 && mousePointCheck.y > 0){
+				event.stopImmediatePropagation();
+				event.stopPropagation();
+				
+				
+				var rightCP:Point = holder.globalToLocal(new Point(event.stageX,event.stageY));
+				var mousePoint:Point = new Point(rightCP.x,rightCP.y - 30);
+				
+				//trace(rightCP);
+				//trace(mousePoint);
+				
+				if(rightClickMenu){
+					if(!this.contains(rightClickMenu))
+						addChild(rightClickMenu);
+					rightClickMenu.dispose();
+					rightClickMenu = null;
+				}
+				
+				for (var i:int=0, l:int=holder.numChildren; i<l; ++i){
+					
+				}
+				
+			}
+			//if(this.visible && mousePoint.x > 0 && mousePoint.x < 1200 && mousePoint.y > 0 && mousePoint.y < _h && !(_fullHeight < _h) && scrollBar && _spr){
+				
+			//}
+			/*
+			
+			
+			
+			*/
 		}
 		
 		public function populate(files:Vector.<TorrentFileMeta>):void {

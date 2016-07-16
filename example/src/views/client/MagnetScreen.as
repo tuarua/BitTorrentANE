@@ -75,11 +75,7 @@ package views.client {
 		}
 		
 		public function showFields(_b:Boolean):void {
-			if(_b){
-				input.unfreeze();
-			}else{
-				input.freeze();
-			}
+			input.freeze(!_b);
 		}
 		
 		public function show():void {

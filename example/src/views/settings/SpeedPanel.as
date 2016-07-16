@@ -97,9 +97,7 @@ package views.settings {
 			txtHolder.addChild(rateUTPLbl);
 			txtHolder.addChild(rateTransportLbl);
 			txtHolder.addChild(rateLANLbl);
-			
-			//txtHolder.flatten();
-			
+
 			rateGroup.addChild(chkUpload);
 			rateGroup.addChild(chkDownload);
 			rateGroup.addChild(chkEnableUTP);
@@ -113,14 +111,8 @@ package views.settings {
 			addChild(rateGroup);
 		}
 		public function showFields(_b:Boolean):void {
-			if(_b){
-				upStppr.unfreeze();
-				downStppr.unfreeze();
-			}else{
-				upStppr.freeze();
-				downStppr.freeze();
-			}
-		
+			upStppr.freeze(!_b);
+			downStppr.freeze(!_b);
 		}
 		public function positionAllFields():void {
 			upStppr.updatePosition();

@@ -57,7 +57,8 @@ package views.client {
 			if(touch && touch.phase == TouchPhase.ENDED){
 				//isSelected = !isSelected
 				//select(isSelected);
-				if(!isSelected) this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_TORRENT_ITEM_SELECT,{id:_id},true));
+				if(!isSelected)
+					this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_TORRENT_ITEM_SELECT,{id:_id},true));
 			}
 		}
 		public function select(_b:Boolean):void {

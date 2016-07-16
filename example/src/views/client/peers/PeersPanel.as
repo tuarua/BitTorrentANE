@@ -1,4 +1,4 @@
-package views.client {
+package views.client.peers {
 	import com.tuarua.torrent.PeerInfo;
 	import starling.display.Image;
 	import starling.display.Quad;
@@ -66,8 +66,6 @@ package views.client {
 				imgHolder.removeChildAt(k);
 			imgHolder.dispose();
 			
-			//dispose anything else ?
-			
 		}
 		
 		public function clear():void {
@@ -132,6 +130,8 @@ package views.client {
 				(txtHolder.getChildAt(rowIndex+8) as TextField).text = (_tp[i].downloaded > 0) ? TextUtils.bytesToString(_tp[i].downloaded) : "";
 				(txtHolder.getChildAt(rowIndex+9) as TextField).text = (_tp[i].uploaded > 0) ? TextUtils.bytesToString(_tp[i].uploaded) : "";
 				(txtHolder.getChildAt(rowIndex+10) as TextField).text = (_tp[i].relevance > 0) ? (_tp[i].relevance*100.0).toFixed(1)+"%" : "";
+				
+				//trace(_tp[i].country);
 				
 				if(_tp[i].country) {
 					try{

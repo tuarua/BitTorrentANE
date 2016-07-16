@@ -1,4 +1,4 @@
-package views.client {
+package views.client.trackers {
 	import com.tuarua.torrent.TrackerInfo;
 	import starling.display.Quad;
 	import starling.display.Sprite;

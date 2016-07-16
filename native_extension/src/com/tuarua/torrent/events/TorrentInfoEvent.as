@@ -10,6 +10,7 @@ package com.tuarua.torrent.events {
 		public static const TORRENT_PIECE:String = "Torrent.Piece";
 		public static const TORRENT_UNAVAILABLE:String = "Torrent.Unavailable";
 		public static const TORRENT_DOWNLOADED:String = "Torrent.Downloaded";
+		public static const TORRENT_FILE_COMPLETE:String = "Torrent.File.Complete";
 		public static const RESUME_SAVED:String = "Torrent.Resume.Saved";
 		public static const DHT_STARTED:String = "Torrent.DHT.Started";
 		public static const ON_ERROR:String = "Torrent.Error";
@@ -17,6 +18,7 @@ package com.tuarua.torrent.events {
 		public static const RSS_ITEM:String = "Torrent.RSS.Item";
 		public static const FILTERLIST_ADDED:String = "Torrent.Filter.ListAdded";
 		public var params:Object;
+		
 		
 		public function TorrentInfoEvent(type:String, _params:Object=null, bubbles:Boolean=false, cancelable:Boolean=false) {
 			super(type, bubbles, cancelable);

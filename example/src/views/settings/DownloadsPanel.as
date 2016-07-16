@@ -79,9 +79,6 @@ package views.settings {
 			storageGroup.addChild(folderBtn);
 
 			addChild(storageGroup);
-			
-		//	txtHolder.flatten();
-			
 			addChild(txtHolder);
 			
 		}
@@ -109,11 +106,7 @@ package views.settings {
 		}
 		
 		public function showFields(_b:Boolean):void {
-			if(_b){
-				appRootInput.unfreeze();
-			}else{
-				appRootInput.freeze();
-			}
+			appRootInput.freeze(!_b);
 		}
 		public function positionAllFields():void {
 			appRootInput.updatePosition();

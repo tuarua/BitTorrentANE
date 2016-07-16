@@ -5,14 +5,6 @@ Sample client included
 
 ![alt tag](https://raw.githubusercontent.com/tuarua/BitTorrentANE/master/screenshots/screen-shot-1.PNG)
 
-### Version
-- 1.2.2  
-Updated to libtorrent 1.1.0 (Please see preconfiguration sections below for how to update)  
-Updated to AIR 22  
-Minor changes and build script tidy up  
-
-- 1.2  
-64bit OSX and Win 32
 
 ### Features
  - Supports Magnet uris

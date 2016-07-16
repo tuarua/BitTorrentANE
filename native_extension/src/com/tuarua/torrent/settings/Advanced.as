@@ -1,7 +1,7 @@
 package com.tuarua.torrent.settings {
 	public class Advanced extends Object {
-		public var diskCacheSize:int = 0;//0 is auto
-		public var diskCacheTTL:int = 60;
+		public var diskCacheSize:int = 0;//0 is off, -1 is auto, otherwise value in MiB
+		public var diskCacheTTL:int = 60; //seconds
 		public var outgoingPortsMin:int = 0;//0 is disabled
 		public var outgoingPortsMax:int = 0;//0 is disabled
 		public var numMaxHalfOpenConnections:int = 20;//0 is disabled

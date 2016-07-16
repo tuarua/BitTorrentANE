@@ -8,6 +8,8 @@ package {
 	import com.tuarua.torrent.TorrentStateCodes;
 	import com.tuarua.torrent.TorrentStatus;
 	import com.tuarua.torrent.TorrentsLibrary;
+	import com.tuarua.torrent.constants.FilePriority;
+	import com.tuarua.torrent.constants.PiecePriority;
 	import com.tuarua.torrent.constants.LogLevel;
 	import com.tuarua.torrent.constants.QueuePosition;
 	import com.tuarua.torrent.events.TorrentInfoEvent;
@@ -19,8 +21,13 @@ package {
 	import flash.events.TimerEvent;
 	import flash.filesystem.File;
 	import flash.net.FileFilter;
+	import flash.system.System;
 	import flash.utils.Dictionary;
 	import flash.utils.Timer;
+	
+	import events.InteractionEvent;
+	
+	import model.SettingsLocalStore;
 	
 	import starling.core.Starling;
 	import starling.display.Image;
@@ -32,9 +39,8 @@ package {
 	import starling.text.TextField;
 	import starling.textures.Texture;
 	
-	import events.InteractionEvent;
-	import model.SettingsLocalStore;
 	import utils.TextUtils;
+	
 	import views.client.MainPanel;
 	import views.settings.SettingsPanel;
 
@@ -55,7 +61,7 @@ package {
 		private var settingsPanel:SettingsPanel;
 		private var settingsButtonTexture:Texture = Assets.getAtlas().getTexture("settings-cog");
 		private var settingsButton:Image = new Image(settingsButtonTexture);
-		private var downloadAsSequential:Boolean = true;
+		private var downloadAsSequential:Boolean = false;
 		private var selectedFile:File = new File();
 
 		public function StarlingRoot() {
@@ -101,11 +107,13 @@ package {
 				
 				TorrentSettings.logLevel = LogLevel.INFO;
 				TorrentSettings.prioritizedFileTypes = new Array("mp4"); 
-				
+				TorrentSettings.clientName = "BitTorrentANE_Example";
 				TorrentSettings.storage.torrentPath = File.applicationDirectory.resolvePath("torrents").nativePath;
 				TorrentSettings.storage.resumePath = File.applicationDirectory.resolvePath("torrents").resolvePath("resume").nativePath; //path where we save our "faststart" resume files
 				TorrentSettings.storage.geoipDataPath = File.applicationDirectory.resolvePath("geoip").nativePath;
 				TorrentSettings.storage.sessionStatePath = File.applicationDirectory.resolvePath("session").nativePath;
+				TorrentSettings.storage.sparse = true;
+				TorrentSettings.storage.enabled = true; //set to false for testing and benchmarking. No data is saved to disk.
 				
 				updateTorrentSettings();
 				libTorrentANE.updateSettings();
@@ -122,6 +130,9 @@ package {
 				libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_UNAVAILABLE,onTorrentUnavailable);
 				libTorrentANE.addEventListener(TorrentInfoEvent.FILTERLIST_ADDED,onFilterListAdded);
 				libTorrentANE.addEventListener(TorrentInfoEvent.RSS_ITEM,onRSSitem);
+				
+				libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_FILE_COMPLETE,onFileComplete);
+				
 				libTorrentANE.initSession();
 				
 				if(model.SettingsLocalStore.settings.filters.enabled)
@@ -149,13 +160,6 @@ package {
 			var meta:TorrentMeta = libTorrentANE.getTorrentMeta(event.params.fileName);
 			if(meta.status == "ok"){
 				torrentId = meta.infoHash; //it's a good idea to use the hash as the id
-				var dict:Dictionary = TorrentsLibrary.status;
-				var rightClickMenuDataList:Array = new Array();
-				rightClickMenuDataList.push({value:0,label:"Pause"});//Resume
-				rightClickMenuDataList.push({value:1,label:"Delete"});
-				rightClickMenuDataList.push({value:(downloadAsSequential) ? 2 : 9,label:(downloadAsSequential) ? "Sequential Off": "Sequential On"});
-				rightClickMenuDataList.push({value:7,label:"Copy magnet link"});
-				torrentClientPanel.addRightClickMenu(torrentId,rightClickMenuDataList);
 				libTorrentANE.addTorrent(meta.torrentFile,torrentId,meta.infoHash,downloadAsSequential,false,null,true);
 			}else{
 				trace("failed to load torrent");
@@ -165,22 +169,14 @@ package {
 		private function onMagnetListAdd(event:InteractionEvent):void {
 			var lst:Array = TextUtils.trim(event.params.value).split(String.fromCharCode(13));
 			var itm:String;
-			var rightClickMenuDataList:Array = new Array();
-			rightClickMenuDataList.push({value:0,label:"Pause"});
-			rightClickMenuDataList.push({value:1,label:"Delete"});
-			rightClickMenuDataList.push({value:(downloadAsSequential) ? 2 : 9,label:(downloadAsSequential) ? "Sequential Off": "Sequential On"});
-			rightClickMenuDataList.push({value:7,label:"Copy magnet link"});
-			
 			for (var i:int=0, l:int=lst.length; i<l; ++i){
 				itm = lst[i];
 				if(itm.length > 0){
 					if(itm.length > 8 && itm.substr(0,8) == "magnet:?"){
 						torrentId = MagnetParser.parse(itm).hash;
-						torrentClientPanel.addRightClickMenu(torrentId,rightClickMenuDataList);
 						libTorrentANE.torrentFromMagnet(itm,torrentId,downloadAsSequential);
 					}else{
 						torrentId = itm;
-						torrentClientPanel.addRightClickMenu(torrentId,rightClickMenuDataList);
 						libTorrentANE.torrentFromHash(torrentId,torrentId,"",downloadAsSequential);
 					}
 				}
@@ -200,33 +196,26 @@ package {
 				}
 			}
 		}
+
 		private function onRightMenuClick(event:InteractionEvent):void {
 			var meta:TorrentMeta = TorrentsLibrary.meta[event.params.id];
 			switch(event.params.value){
 				case 0:
-					torrentClientPanel.updateRightClickMenu(event.params.id,0,"Resume",8);
 					libTorrentANE.pauseTorrent(meta.infoHash);
 					onStatusTimer();
 					break;
 				case 8:
-					torrentClientPanel.updateRightClickMenu(event.params.id,0,"Pause",0);
 					libTorrentANE.resumeTorrent(meta.infoHash);
 					onStatusTimer();
 					break;
 				case 1:
 					TorrentsLibrary.remove(meta.infoHash);
-					stopStatusListener();
 					libTorrentANE.removeTorrent(meta.infoHash);
-					torrentClientPanel.clear();
-					//clear the item from the client
-					
 					break;
 				case 2:
-					torrentClientPanel.updateRightClickMenu(event.params.id,2,"Sequential On",9);
 					libTorrentANE.setSequentialDownload(meta.infoHash,false);
 					break;
 				case 9:
-					torrentClientPanel.updateRightClickMenu(event.params.id,2,"Sequential Off",2);
 					libTorrentANE.setSequentialDownload(meta.infoHash,true);
 					break;
 				case 3:
@@ -249,11 +238,11 @@ package {
 					Clipboard.generalClipboard.clear(); 
 					Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, libTorrentANE.getMagnetURI(meta.infoHash), false);
 					break;
-				
 			}
 			
+			onStatusTimer();
+			
 		}
-		
 		private function updateTorrentSettings():void {
 			TorrentSettings.storage.outputPath = model.SettingsLocalStore.settings.outputPath;
 			TorrentSettings.privacy.useDHT = model.SettingsLocalStore.settings.privacy.useDHT;
@@ -324,16 +313,9 @@ package {
 		}
 		
 		protected function selectFile(event:Event):void {
-			var meta:TorrentMeta = libTorrentANE.getTorrentMeta(selectedFile.nativePath);
+			var meta:TorrentMeta = libTorrentANE.getTorrentMeta(selectedFile.nativePath);	
 			if(meta.status == "ok"){
 				torrentId = meta.infoHash; //it's a good idea to use the hash as the id
-				var dict:Dictionary = TorrentsLibrary.status;
-				var rightClickMenuDataList:Array = new Array();
-				rightClickMenuDataList.push({value:0,label:"Pause"});//Resume
-				rightClickMenuDataList.push({value:1,label:"Delete"});
-				rightClickMenuDataList.push({value:(downloadAsSequential) ? 2 : 9,label:(downloadAsSequential) ? "Sequential Off": "Sequential On"});
-				rightClickMenuDataList.push({value:7,label:"Copy magnet link"});
-				torrentClientPanel.addRightClickMenu(torrentId,rightClickMenuDataList);
 				libTorrentANE.addTorrent(meta.torrentFile,torrentId,meta.infoHash,downloadAsSequential);
 			}else{
 				trace("failed to load torrent");
@@ -361,10 +343,14 @@ package {
 				showSettings(!settingsPanel.visible);
 			}
 		}
+		protected function onFileComplete(event:TorrentInfoEvent):void {
+			trace(event);
+		}
 		protected function onTorrentAdded(event:TorrentInfoEvent):void {
 			var meta:TorrentMeta;
 			var torrentFileExists:Boolean = false;
-			if(!event.params.toQueue) torrentId = event.params.id.toLowerCase();
+			if(!event.params.toQueue)
+				torrentId = event.params.id.toLowerCase();
 			if(event.params.fileName == ""){
 				var torrentFile:File = File.applicationDirectory.resolvePath(TorrentSettings.storage.torrentPath).resolvePath(event.params.id+".torrent");
 				torrentFileExists = torrentFile.exists;
@@ -376,8 +362,6 @@ package {
 			}
 			if(meta)
 				TorrentsLibrary.add(event.params.id.toLowerCase(),meta);
-			
-			torrentClientPanel.addPriorityToRightClick((TorrentsLibrary.length(TorrentsLibrary.meta) > 1));
 			
 			startStatusListener();
 			onStatusTimer();

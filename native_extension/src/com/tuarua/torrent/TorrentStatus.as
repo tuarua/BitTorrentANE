@@ -5,6 +5,7 @@ package com.tuarua.torrent {
 		public var infoHash:String;
 		public var numPieces:uint=0;
 		public var isFinished:Boolean;
+		public var isSequential:Boolean;
 		public var state:int;
 		public var queuePosition:int=0;
 		public var progress:Number;

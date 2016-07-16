@@ -57,7 +57,6 @@ package views.client {
 		private var circularLoader:CircularLoader;
 		public function CreateTorrentScreen() {
 			super();
-			//bgTexture = new Scale9Textures(Assets.getAtlas().getTexture("popmenu-bg"),new Rectangle(4,4,16,16));
 			bg = new Image(Assets.getAtlas().getTexture("popmenu-bg"));
 			bg.scale9Grid = new Rectangle(4,4,16,16);
 			bg.blendMode = BlendMode.NONE;
@@ -196,8 +195,6 @@ package views.client {
 			txtHolder.addChild(privateLbl);
 			txtHolder.addChild(seedNowLbl);
 
-		//	txtHolder.flatten();
-			
 			addChild(txtHolder);
 			addChild(folderInput);
 			addChild(chooseFile);
@@ -309,17 +306,10 @@ package views.client {
 				selectedFile.browse();
 		}
 		public function showFields(_b:Boolean):void {
-			if(_b){
-				folderInput.unfreeze();
-				trackerInput.unfreeze();
-				webInput.unfreeze();
-				commentInput.unfreeze();
-			}else{
-				folderInput.freeze();
-				trackerInput.freeze();
-				webInput.freeze();
-				commentInput.freeze();
-			}	
+			folderInput.freeze(!_b);
+			trackerInput.freeze(!_b);
+			webInput.freeze(!_b);
+			commentInput.freeze(!_b);
 		}
 		public function show():void {
 			this.visible = true;

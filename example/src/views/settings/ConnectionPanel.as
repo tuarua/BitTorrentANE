@@ -372,8 +372,6 @@ package views.settings {
 			enableProxy(model.SettingsLocalStore.settings.proxy.type);
 			
 			addChild(txtHolder);
-			//txtHolder.flatten();
-			
 			addChild(filterGroup);
 			addChild(proxyGroup);
 			
@@ -381,17 +379,13 @@ package views.settings {
 		
 		private function enableIPfilter(_b:Boolean):void {
 			chkApplyToTrackers.enable(_b);
-			//txtHolder.unflatten();
 			chooseFile.alpha = filterPathLbl.alpha = applyToTrackersLbl.alpha = (_b) ? 1.0 : 0.25;
-			//txtHolder.flatten();
 			chooseFile.touchable = _b;
 			filterPathInput.enable(_b);
 		}
 		
 		private function enableProxy(_type:int):void {
 			proxyPortStppr.enable(_type > ProxyType.DISABLED && _type < ProxyType.I2P);
-			
-			//txtHolder.unflatten();
 			proxyPortLbl.alpha = proxyForPeersLbl.alpha = proxyDisableConnsLbl.alpha = (_type > ProxyType.DISABLED && _type < ProxyType.I2P) ? 1.0 : 0.25;
 			proxyHostInput.alpha = (_type > ProxyType.DISABLED) ? 1.0 : 0.25;
 			proxyHostInput.enable(_type > ProxyType.DISABLED);
@@ -399,8 +393,6 @@ package views.settings {
 			proxyAuthenticationLbl.alpha = (_type > ProxyType.SOCKS4 && _type < ProxyType.I2P) ? 1.0 : 0.25;
 			proxyUsernameLbl.alpha = (_type > ProxyType.SOCKS4 && _type < ProxyType.I2P && model.SettingsLocalStore.settings.proxy.useAuth) ? 1.0 : 0.25;
 			proxyPasswordLbl.alpha = (_type > ProxyType.SOCKS4 && _type < ProxyType.I2P && model.SettingsLocalStore.settings.proxy.useAuth) ? 1.0 : 0.25;
-			
-			//txtHolder.flatten();
 			
 			chkProxyForPeers.enable(_type > ProxyType.DISABLED && _type < ProxyType.I2P);
 			chkProxyDisableConns.enable(_type > ProxyType.DISABLED && _type < ProxyType.I2P);
@@ -509,30 +501,16 @@ package views.settings {
 			}
 		}
 		public function showFields(_b:Boolean):void {
-			
-			if(_b){
-				portStppr.unfreeze();
-				maxConnStppr.unfreeze();
-				maxConnTorrStppr.unfreeze();
-				maxUpStppr.unfreeze();
-				maxUpTorrStppr.unfreeze();
-				proxyPortStppr.unfreeze();
-				proxyHostInput.unfreeze();
-				proxyUsernameInput.unfreeze();
-				proxyPasswordInput.unfreeze();
-				filterPathInput.unfreeze();
-			}else{
-				portStppr.freeze();
-				maxConnStppr.freeze();
-				maxConnTorrStppr.freeze();
-				maxUpStppr.freeze();
-				maxUpTorrStppr.freeze();
-				proxyPortStppr.freeze();
-				proxyHostInput.freeze();
-				proxyUsernameInput.freeze();
-				proxyPasswordInput.freeze();
-				filterPathInput.freeze();
-			}	
+			portStppr.freeze(!_b);
+			maxConnStppr.freeze(!_b);
+			maxConnTorrStppr.freeze(!_b);
+			maxUpStppr.freeze(!_b);
+			maxUpTorrStppr.freeze(!_b);
+			proxyPortStppr.freeze(!_b);
+			proxyHostInput.freeze(!_b);
+			proxyUsernameInput.freeze(!_b);
+			proxyPasswordInput.freeze(!_b);
+			filterPathInput.freeze(!_b);
 		}
 		public function positionAllFields():void {
 			portStppr.updatePosition();

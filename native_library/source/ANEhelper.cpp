@@ -97,6 +97,23 @@ std::vector<std::string> getStringVectorFromFREObject(FREObject arg, const uint8
 	}
 	return ret;
 }
+
+std::vector<int> getIntVectorFromFREObject(FREObject arg, const uint8_t * propertyName) {
+	uint32_t numItems = getFREObjectArrayLength(arg);
+	std::vector<int> ret;
+	for (unsigned int k = 0; k < numItems; ++k) {
+		FREObject elemAS = NULL;
+		FREGetArrayElementAt(arg, k, &elemAS);
+		int elem;
+		if (propertyName == NULL)
+			elem = getInt32FromFREObject(elemAS);
+		else
+			elem = getInt32FromFREObject(getFREObjectProperty(elemAS, propertyName));
+		ret.push_back(elem);
+	}
+	return ret;
+}
+
 FREObject getReturnTrue() {
 	return getFREObjectFromBool(true);
 }

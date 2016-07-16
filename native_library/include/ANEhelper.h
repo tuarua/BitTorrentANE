@@ -24,4 +24,5 @@ double getDoubleFromFREObject(FREObject arg);
 uint32_t getFREObjectArrayLength(FREObject arrayAS);
 std::string getStringFromFREObject(FREObject arg);
 std::vector<std::string> getStringVectorFromFREObject(FREObject arg, const uint8_t * propertyName);
+std::vector<int> getIntVectorFromFREObject(FREObject arg, const uint8_t * propertyName);
 FREObject getReturnTrue();

@@ -16,7 +16,6 @@ package views.client {
 	import starling.text.TextField;
 	import starling.utils.Align;
 	import starling.display.Image;
-	
 	public class RightClickMenu extends Sprite {
 		private var w:int;
 		private var h:int;
@@ -27,7 +26,6 @@ package views.client {
 		private var listOuterContainer:Sprite = new Sprite();
 		private var tween:Tween;
 		private var id:String;
-		
 		public function RightClickMenu(_id:String,_w:int,_items:Array) {
 			super();
 			id = _id;
@@ -39,7 +37,6 @@ package views.client {
 			hover.alpha = 0.4;
 			hover.visible = false;
 			
-			//listBgTexture = new Scale9Textures(Assets.getAtlas().getTexture("right-click-bg"),new Rectangle(4,4,41,17));
 			listBg = new Image(Assets.getAtlas().getTexture("right-click-bg"));
 			listBg.scale9Grid = new Rectangle(4,4,41,17);
 			listBg.blendMode = BlendMode.NONE;
@@ -67,27 +64,6 @@ package views.client {
 			listOuterContainer.visible = true;
 			addChild(listOuterContainer);
 		}
-		
-		public function update(_items:Array):void {
-			items = _items;
-			h = (items.length*20) + 5;
-			listBg.height = h;
-			var itmLbl:TextField;
-			for (var i:int=0, l:int=items.length; i<l; ++i) {
-				if(i+1 > listContainer.numChildren-2){
-					itmLbl = new TextField(w,26,items[i].label);
-					itmLbl.format.setTo("Fira Sans Semi-Bold 13", 13, 0xD8D8D8,Align.LEFT,Align.CENTER);
-					itmLbl.batchable = true;
-					itmLbl.touchable = false;
-					itmLbl.x = 8;
-					itmLbl.y = (i*20) + 0;
-					listContainer.addChild(itmLbl);
-				}
-				itmLbl = listContainer.getChildAt(i+2) as TextField;
-				itmLbl.text = items[i].label;
-			}
-		}
-		
 		public function open():void {
 			listOuterContainer.visible = true;
 			Starling.current.nativeStage.addEventListener(MouseEvent.CLICK,onClick);

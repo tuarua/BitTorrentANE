@@ -10,6 +10,7 @@ typedef struct {
 	std::string TORRENT_ADDED = "Torrent.Added";
 	std::string TORRENT_CHECKED = "Torrent.Checked";
 	std::string TORRENT_PIECE = "Torrent.Piece";
+	std::string TORRENT_FILE_COMPLETE = "Torrent.File.Complete";
 	std::string TORRENT_UNAVAILABLE = "Torrent.Unavailable";
 	std::string TORRENT_DOWNLOADED = "Torrent.Downloaded";
 	std::string RESUME_SAVED = "Torrent.Resume.Saved";
