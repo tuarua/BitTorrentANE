@@ -5,6 +5,7 @@ Sample client included
 
 ![alt tag](https://raw.githubusercontent.com/tuarua/BitTorrentANE/master/screenshots/screen-shot-1.PNG)
 
+![alt tag](https://raw.githubusercontent.com/tuarua/BitTorrentANE/master/screenshots/android-soon.png)
 
 ### Features
  - Supports Magnet uris
