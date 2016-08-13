@@ -10,7 +10,7 @@
     </features>
     <libraries>
         <library path="library.swf">
-            <script name="com/tuarua/BitTorrentANE" mod="1471121064499">
+            <script name="com/tuarua/BitTorrentANE" mod="1471108224140">
                 <def id="com.tuarua:BitTorrentANE"/>
                 <dep id="Boolean" type="s"/>
                 <dep id="Error" type="e"/>
@@ -45,7 +45,7 @@
                 <dep id="trace" type="e"/>
                 <dep id="uint" type="s"/>
             </script>
-            <script name="com/tuarua/TorrentDownloader" mod="1471121997819">
+            <script name="com/tuarua/TorrentDownloader" mod="1470266678920">
                 <def id="com.tuarua:TorrentDownloader"/>
                 <dep id="Array" type="e"/>
                 <dep id="Boolean" type="s"/>
@@ -107,7 +107,7 @@
                 <dep id="Boolean" type="s"/>
                 <dep id="Object" type="i"/>
                 <dep id="__AS3__.vec:Vector" type="e"/>
-                <dep id="int" type="e"/>
+                <dep id="int" type="s"/>
             </script>
             <script name="com/tuarua/torrent/TorrentSettings" mod="1470697212907">
                 <def id="com.tuarua.torrent:TorrentSettings"/>
@@ -123,7 +123,7 @@
                 <dep id="com.tuarua.torrent.settings:Proxy" type="e"/>
                 <dep id="com.tuarua.torrent.settings:Queueing" type="e"/>
                 <dep id="com.tuarua.torrent.settings:Speed" type="e"/>
-                <dep id="com.tuarua.torrent.settings:Storage" type="e"/>
+                <dep id="com.tuarua.torrent.settings:Storage" type="s"/>
                 <dep id="int" type="s"/>
             </script>
             <script name="com/tuarua/torrent/TorrentStateCodes" mod="1456271322181">
@@ -152,8 +152,8 @@
                 <def id="com.tuarua.torrent:TorrentTrackers"/>
                 <dep id="Object" type="i"/>
                 <dep id="String" type="s"/>
-                <dep id="__AS3__.vec:Vector" type="e"/>
-                <dep id="com.tuarua.torrent:TrackerInfo" type="e"/>
+                <dep id="__AS3__.vec:Vector" type="s"/>
+                <dep id="com.tuarua.torrent:TrackerInfo" type="s"/>
             </script>
             <script name="com/tuarua/torrent/TorrentWebSeed" mod="1458429620411">
                 <def id="com.tuarua.torrent:TorrentWebSeed"/>
@@ -326,7 +326,7 @@
                 <dep id="int" type="e"/>
             </script>
             <digests>
-                <digest type="SHA-256" signed="false" value="095282d9751d39c86be04c2791412afcbc189e3fd529fc0d4fcbe39384b8d2b3"/>
+                <digest type="SHA-256" signed="false" value="1c6592d4f0460aec552dc0478cc4e0841315a8ad9699b928d37698fa03a66ab4"/>
             </digests>
         </library>
     </libraries>
