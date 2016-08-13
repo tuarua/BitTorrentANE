@@ -1479,9 +1479,8 @@ public class BitTorrentANEContext extends FREContext {
                     else
                         p = new AddTorrentParams().createInstanceZeroStorage();
 
-                    //TODO set to proper directory
-                    p.savePath(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath());
-                    //p.savePath(TorrentSettings.storage.torrentPath);
+                   // p.savePath(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath());
+                    p.savePath(TorrentSettings.storage.torrentPath);
 
                     p.torrentInfo(ti);
                     p.swig().setMax_connections(TorrentSettings.connections.maxNumPerTorrent);

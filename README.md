@@ -3,7 +3,7 @@
 Adobe Air Native Extension written in ActionScript 3 and C++ for working with .torrent files and magnet uris.
 Sample client included
 
-![alt tag](https://raw.githubusercontent.com/tuarua/BitTorrentANE/master/screenshots/screen-shot-1.PNG
+![alt tag](https://raw.githubusercontent.com/tuarua/BitTorrentANE/master/screenshots/screen-shot-1.PNG)
 
 ### Features
  - Supports Magnet uris
