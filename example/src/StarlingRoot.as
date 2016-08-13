@@ -29,6 +29,7 @@ package {
 	import starling.events.TouchPhase;
 	import starling.text.TextField;
 	import starling.textures.Texture;
+	import starling.core.Starling
 	
 	import utils.TextUtils;
 	
@@ -391,6 +392,10 @@ package {
 			if(torrentClientPanel.visible)
 				if(torrentClientPanel.selectedMenu == 2) torrentClientPanel.updatePeers();
 		}
+		protected function onTorrentAdded(event:TorrentAlertEvent):void {
+			torrentId = event.params.id;
+			bitTorrentANE.queryForPeers((event.params.value == 2),torrentId,(event.params.value == 2));
+		}
 		protected function onTorrentStateUpdate(event:TorrentAlertEvent):void {
 			trace(event);
 			if(torrentClientPanel.visible){
@@ -399,60 +404,37 @@ package {
 			}
 			
 			currentStatus = TorrentsLibrary.status[torrentId] as TorrentStatus;
-			if(currentStatus){
-				
-			}
-			
-			
-		}
-		
-		protected function onTorrentAdded(event:TorrentAlertEvent):void {
-			torrentId = event.params.id;
-			bitTorrentANE.queryForPeers((event.params.value == 2),torrentId,(event.params.value == 2));
-		}
-		
-		
-		
-		/*
-		
-		private function onStatusTimer(event:TimerEvent=null):void {
-			libTorrentANE.getTorrentStatus((torrentClientPanel.selectedMenu == 4));
-			libTorrentANE.getTorrentPeers();
-			libTorrentANE.getTorrentTrackers();
-			
-			if(torrentClientPanel.visible){
-				torrentClientPanel.updateStatus();
-				if(torrentClientPanel.selectedMenu == 0) torrentClientPanel.updatePieces();
-				if(torrentClientPanel.selectedMenu == 1) torrentClientPanel.updateTrackers();
-				if(torrentClientPanel.selectedMenu == 2) torrentClientPanel.updatePeers();
-			}
-			
-			currentStatus = TorrentsLibrary.status[torrentId] as TorrentStatus; //The dictionary contains all the torrents we've added. Use key to retrieve the status of that torrent. You can of course add multiple torrents, and check their status individually
 			currentPieces = TorrentsLibrary.pieces[torrentId] as TorrentPieces;
-			if(TorrentsLibrary.meta[torrentId])
-				currentVideoFile = TorrentsLibrary.meta[torrentId].getFileByExtension(["mp4"]);
+			if(currentStatus){
+				if(TorrentsLibrary.meta[torrentId])
+					currentVideoFile = TorrentsLibrary.meta[torrentId].getFileByExtension(["mp4"]);
+				
+				if(currentVideoFile && currentStatus && currentPieces){
+					if(isVideoPlaying){
+						
+					}else{
+						numRequiredPieces = Math.ceil((currentVideoFile.lastPiece - currentVideoFile.firstPiece)/1000)*5;
+						var initialPieces:Number = 0;
+						if(currentPieces && currentPieces.pieces.length > 0){
+							initialPieces = currentPieces.numSequential - currentVideoFile.firstPiece;
+							if (currentPieces.pieces[currentVideoFile.lastPiece] == 1) initialPieces++;
+						}
+						if((initialPieces >= numRequiredPieces) || currentStatus.state == TorrentStateCodes.SEEDING || currentStatus.isFinished) {
+							isVideoPlaying = true;
+							torrentClientPanel.showMask(false);
+							settingsPanel.showMask(false);
+							Starling.current.skipUnchangedFrames = false;
+							starlingVideo.loadVideo(File.applicationDirectory.resolvePath("output").resolvePath(currentVideoFile.path).nativePath);
+						}
+					}
+				}	
+			}
 			
-			if(currentVideoFile && currentStatus && currentPieces){
-				if(isVideoPlaying){
-					
-				}else{
-					numRequiredPieces = Math.ceil((currentVideoFile.lastPiece - currentVideoFile.firstPiece)/1000)*5;
-					var initialPieces:Number = 0;
-					if(currentPieces && currentPieces.pieces.length > 0){
-						initialPieces = currentPieces.numSequential - currentVideoFile.firstPiece;
-						if (currentPieces.pieces[currentVideoFile.lastPiece] == 1) initialPieces++;
-					}
-					if((initialPieces >= numRequiredPieces) || currentStatus.state == TorrentStateCodes.SEEDING || currentStatus.isFinished) {
-						isVideoPlaying = true;
-						torrentClientPanel.showMask(false);
-						settingsPanel.showMask(false);
-						Starling.current.skipUnchangedFrames = false;
-						starlingVideo.loadVideo(File.applicationDirectory.resolvePath("output").resolvePath(currentVideoFile.path).nativePath);
-					}
-				}
-			}	
+			
 		}
-		*/
+		
+		
+		
 		
 	}
 }

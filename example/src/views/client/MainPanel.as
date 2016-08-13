@@ -50,11 +50,7 @@ package views.client {
 		private var addButton:Image = new Image(addButtonTexture);
 		private var powerButton:Image = new Image(powerOnButtonTexture);
 		private var createButton:Image = new Image(createButtonTexture);
-		//private var sampleMagnet:String = "magnet:?xt=urn:btih:2ef1ffb5ccb99ff4bef336ebeb12cc61f15bac64&dn=Beauty.and.the.Beast.2012.S01E02.HDTV.x264-ASAP.%5bVTV%5d.mp4&tr=udp%3a%2f%2ftracker.leechers-paradise.org%3a6969&tr=udp%3a%2f%2ftracker.ccc.de%3a80%2fannounce&tr=udp%3a%2f%2ftracker.coppersurfer.tk%3a80&tr=http%3a%2f%2ftracker.publicbt.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.istole.it%3a80%2fannounce&tr=http%3a%2f%2ftracker.ccc.de%2fannounce&tr=udp%3a%2f%2fexodus.desync.com%3a6969&tr=udp%3a%2f%2fopen.demonii.com%3a80&tr=udp%3a%2f%2ftracker.openbittorrent.com%3a80%2fannounce&tr=http%3a%2f%2fpow7.com%2fannounce";
-		
 		private var sampleMagnet:String = "magnet:?xt=urn:btih:88594aaacbde40ef3e2510c47374ec0aa396c08e&dn=bbb%5Fsunflower%5F1080p%5F30fps%5Fnormal.mp4&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80%2Fannounce&ws=http%3A%2F%2Fdistribution.bbb3d.renderfarming.net%2Fvideo%2Fmp4%2Fbbb%5Fsunflower%5F1080p%5F30fps%5Fnormal.mp4";
-
-		
 		private var magnetScreen:MagnetScreen = new MagnetScreen(sampleMagnet);
 		public var createTorrentScreen:CreateTorrentScreen = new CreateTorrentScreen();
 		private var selectedId:String;

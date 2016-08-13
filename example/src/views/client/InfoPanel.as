@@ -124,7 +124,7 @@ package views.client {
 			var q:Quad;
 			if(_tp && _tp.pieces && _tp.pieces.length > 0){
 				(txtHolder.getChildAt(16) as TextField).text = numPieces.toString() + " x " + TextUtils.bytesToString(pieceLength) + " (have "+numPieces+")";
-				q = new Quad(_tp.pieces.length,8,0x4DD2FF);
+				q = new Quad(_tp.pieces.length,8,0x0186B3);
 				pieceQB.addMesh(q);
 			}
 		}
