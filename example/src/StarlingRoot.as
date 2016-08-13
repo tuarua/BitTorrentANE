@@ -394,7 +394,7 @@ package {
 		}
 		protected function onTorrentAdded(event:TorrentAlertEvent):void {
 			torrentId = event.params.id;
-			bitTorrentANE.queryForPeers((event.params.value == 2),torrentId,(event.params.value == 2));
+			bitTorrentANE.queryForPeers((torrentClientPanel.selectedMenu == 2),torrentId,(torrentClientPanel.selectedMenu == 2));
 		}
 		protected function onTorrentStateUpdate(event:TorrentAlertEvent):void {
 			trace(event);

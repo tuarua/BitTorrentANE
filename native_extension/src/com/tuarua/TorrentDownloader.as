@@ -40,7 +40,7 @@ package com.tuarua {
 			fileStream.writeBytes(fileData, 0, fileData.length); 
 			fileStream.close();
 			var obj:Object = new Object();
-			obj.filename = file.url;
+			obj.filename = file.nativePath;
 			obj.id = _id;
 			obj.sequential = _isSequential;
 			this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.TORRENT_DOWNLOADED,obj));

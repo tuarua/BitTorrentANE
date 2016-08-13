@@ -985,17 +985,6 @@ extern "C" {
 		FREObject FREtorrentInfo = NULL;
 		if (isMagnet) {
 			p.storage = disabled_storage_constructor;
-
-			trace("TORRENT FROM MAGNET");
-
-			/*
-			json j;
-			j["id"] = id;
-			j["hash"] = hash;
-			j["isSequential"] = isSeq;
-			*/
-			//add the webseed urls
-
 			std::string sUserData = id + "|" + hash + "|" + uri;
 			p.userdata = (void*)strdup(sUserData.c_str());
 
@@ -1019,19 +1008,18 @@ extern "C" {
 				ec.clear();
 				torrent_handle th;
 				th = ltsession->add_torrent(p, ec);
-
-				//TODO save webseeds ?
-
 				addedTorrents.insert(hashes(id, boost::lexical_cast<std::string>(th.info_hash())));
 				th.resume();
 			}
-
 		}
 		else {
 
+			trace("NOT A MAGNET - A FILE");
+
+			
 			torrent_info ti = readTorrentInfo(uri);
 			FREtorrentInfo = getFRETorrentInfo(ti, uri);
-
+			
 			if (!settingsContext.storage.enabled)
 				p.storage = zero_storage_constructor;
 
@@ -1055,6 +1043,7 @@ extern "C" {
 				p.flags &= ~add_torrent_params::flag_seed_mode;
 
 			ltsession->async_add_torrent(p);
+			
 
 		}
 		return FREtorrentInfo;

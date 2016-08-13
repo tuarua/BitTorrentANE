@@ -290,14 +290,17 @@ package com.tuarua {
 		}
 		
 		public function postTorrentUpdates():void {
-			extensionContext.call("postTorrentUpdates");
+			if(extensionContext)
+				extensionContext.call("postTorrentUpdates");
 		}
 
 		
 		public function getTorrentTrackers():void {
-			var vecTrackers:Vector.<TorrentTrackers> = extensionContext.call("getTorrentTrackers") as Vector.<TorrentTrackers>;
-			for (var i:int=0, l:int=vecTrackers.length; i<l; ++i)
-				TorrentsLibrary.updateTrackers(vecTrackers[i].id,vecTrackers[i]);
+			if(extensionContext){
+				var vecTrackers:Vector.<TorrentTrackers> = extensionContext.call("getTorrentTrackers") as Vector.<TorrentTrackers>;
+				for (var i:int=0, l:int=vecTrackers.length; i<l; ++i)
+					TorrentsLibrary.updateTrackers(vecTrackers[i].id,vecTrackers[i]);
+			}	
 		}
 		
 		public function addTorrent(id:String,url:String="",hash:String="",name:String="",sequential:Boolean=false,
@@ -306,7 +309,7 @@ package com.tuarua {
 			var torrentInfo:TorrentInfo;
 			var _id:String = id.toLocaleLowerCase();
 			var _hash:String = hash.toLocaleLowerCase();
-			if(url == ""){
+			if(url == null || url == ""){
 				var magnet:Magnet = new Magnet();
 				magnet.name = name;
 				magnet.hash = hash;
@@ -382,6 +385,12 @@ package com.tuarua {
 			return ret;
 		}
 		public function dispose():void {
+			
+			//remove listeners 
+			stopStatusTimer();
+			stopPeersTimer();
+			stopTrackersTimer();
+			
 			if (!extensionContext) {
 				trace("[BitTorrentANE] Error. ANE Already in a disposed or failed state...");
 				return;
