@@ -21,7 +21,7 @@ Sample client included
 
 ### Tech
 
-BitTorrentANE uses the following libraries: 
+BitTorrentANE uses the following libraries:  
 C++  
 * [http://www.libtorrent.org] - C++ bittorrent implementation  
 * [http://www.boost.org] - C++ portable libraries

@@ -10,7 +10,7 @@
     </features>
     <libraries>
         <library path="library.swf">
-            <script name="com/tuarua/BitTorrentANE" mod="1471104894341">
+            <script name="com/tuarua/BitTorrentANE" mod="1471108224140">
                 <def id="com.tuarua:BitTorrentANE"/>
                 <dep id="Boolean" type="s"/>
                 <dep id="Error" type="e"/>
@@ -232,7 +232,7 @@
                 <dep id="com.tuarua.torrent.events:TorrentInfoEvent" type="e"/>
                 <dep id="flash.events:Event" type="i"/>
             </script>
-            <script name="com/tuarua/torrent/events/TorrentInfoEvent" mod="1470503206603">
+            <script name="com/tuarua/torrent/events/TorrentInfoEvent" mod="1471108210943">
                 <def id="com.tuarua.torrent.events:TorrentInfoEvent"/>
                 <dep id="Boolean" type="s"/>
                 <dep id="Object" type="s"/>
@@ -326,7 +326,7 @@
                 <dep id="int" type="e"/>
             </script>
             <digests>
-                <digest type="SHA-256" signed="false" value="718cc9c3ff7766a6c97f8a1585240fefa7aa4272b8f7ac7090f2011a141a24f1"/>
+                <digest type="SHA-256" signed="false" value="1c6592d4f0460aec552dc0478cc4e0841315a8ad9699b928d37698fa03a66ab4"/>
             </digests>
         </library>
     </libraries>
