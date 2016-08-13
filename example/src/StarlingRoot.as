@@ -1,35 +1,26 @@
 package {
 	import com.tuarua.BitTorrentANE;
 	import com.tuarua.torrent.TorrentFileMeta;
-	import com.tuarua.torrent.TorrentMeta;
+	import com.tuarua.torrent.TorrentInfo;
 	import com.tuarua.torrent.TorrentPeers;
 	import com.tuarua.torrent.TorrentPieces;
 	import com.tuarua.torrent.TorrentSettings;
 	import com.tuarua.torrent.TorrentStateCodes;
 	import com.tuarua.torrent.TorrentStatus;
 	import com.tuarua.torrent.TorrentsLibrary;
-	import com.tuarua.torrent.constants.FilePriority;
-	import com.tuarua.torrent.constants.PiecePriority;
 	import com.tuarua.torrent.constants.LogLevel;
 	import com.tuarua.torrent.constants.QueuePosition;
+	import com.tuarua.torrent.events.TorrentAlertEvent;
 	import com.tuarua.torrent.events.TorrentInfoEvent;
 	import com.tuarua.torrent.utils.MagnetParser;
-	
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
 	import flash.events.Event;
-	import flash.events.TimerEvent;
 	import flash.filesystem.File;
 	import flash.net.FileFilter;
-	import flash.system.System;
-	import flash.utils.Dictionary;
 	import flash.utils.Timer;
-	
 	import events.InteractionEvent;
-	
 	import model.SettingsLocalStore;
-	
-	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
@@ -46,7 +37,7 @@ package {
 
 	public class StarlingRoot extends Sprite {
 		private var starlingVideo:StarlingVideo = new StarlingVideo();
-		private var libTorrentANE:BitTorrentANE = new BitTorrentANE();
+		private var bitTorrentANE:BitTorrentANE = new BitTorrentANE();
 		private var statusTimer:Timer;
 		private var currentStatus:TorrentStatus;
 		private var currentPieces:TorrentPieces;
@@ -61,13 +52,15 @@ package {
 		private var settingsPanel:SettingsPanel;
 		private var settingsButtonTexture:Texture = Assets.getAtlas().getTexture("settings-cog");
 		private var settingsButton:Image = new Image(settingsButtonTexture);
-		private var downloadAsSequential:Boolean = false;
+		private var downloadAsSequential:Boolean = true;
 		private var selectedFile:File = new File();
 
 		public function StarlingRoot() {
 			super();
 			TextField.registerBitmapFont(Fonts.getFont("fira-sans-semi-bold-13"));
 		}
+
+		
 		public function start():void {
 			
 			selectedFile.addEventListener(Event.SELECT, selectFile); 
@@ -83,6 +76,7 @@ package {
 			starlingVideo.y = 0;
 			
 			torrentClientPanel.addEventListener(InteractionEvent.ON_MENU_ITEM_RIGHT,onRightMenuClick);
+			torrentClientPanel.addEventListener(InteractionEvent.ON_MENU_ITEM_MENU,onMenuClick);
 			settingsPanel.x = torrentClientPanel.x = 0;
 			torrentClientPanel.y = 30;
 			torrentClientPanel.addEventListener(InteractionEvent.ON_MAGNET_ADD_LIST,onMagnetListAdd);
@@ -103,9 +97,10 @@ package {
 			settingsButton.addEventListener(TouchEvent.TOUCH,onSettingsClick);
 			addChild(settingsButton);
 
-			if(libTorrentANE.isSupported()){
+			
+			if(bitTorrentANE.isSupported()){
 				
-				TorrentSettings.logLevel = LogLevel.INFO;
+				TorrentSettings.logLevel = LogLevel.DEBUG;
 				TorrentSettings.prioritizedFileTypes = new Array("mp4"); 
 				TorrentSettings.clientName = "BitTorrentANE_Example";
 				TorrentSettings.storage.torrentPath = File.applicationDirectory.resolvePath("torrents").nativePath;
@@ -116,51 +111,66 @@ package {
 				TorrentSettings.storage.enabled = true; //set to false for testing and benchmarking. No data is saved to disk.
 				
 				updateTorrentSettings();
-				libTorrentANE.updateSettings();
+				bitTorrentANE.updateSettings();
 				
-				libTorrentANE.addDHTRouter("router.bittorrent.com");
-				libTorrentANE.addDHTRouter("router.utorrent.com");
-				libTorrentANE.addDHTRouter("router.bitcomet.com");
-				libTorrentANE.addDHTRouter("dht.transmissionbt.com");
-				libTorrentANE.addDHTRouter("dht.aelitis.com");
 				
-				libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATED_FROM_META,onMagnetSaved);
-				libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_ADDED,onTorrentAdded);
-				libTorrentANE.addEventListener(TorrentInfoEvent.ON_ERROR,onTorrentError);
-				libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_UNAVAILABLE,onTorrentUnavailable);
-				libTorrentANE.addEventListener(TorrentInfoEvent.FILTERLIST_ADDED,onFilterListAdded);
-				libTorrentANE.addEventListener(TorrentInfoEvent.RSS_ITEM,onRSSitem);
+				bitTorrentANE.addDHTRouter("router.bittorrent.com");
+				bitTorrentANE.addDHTRouter("router.utorrent.com");
+				bitTorrentANE.addDHTRouter("router.bitcomet.com");
+				bitTorrentANE.addDHTRouter("dht.transmissionbt.com");
+				bitTorrentANE.addDHTRouter("dht.aelitis.com");
 				
-				libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_FILE_COMPLETE,onFileComplete);
+				bitTorrentANE.addEventListener(TorrentAlertEvent.TORRENT_ADDED,onTorrentAdded);
+				bitTorrentANE.addEventListener(TorrentInfoEvent.ON_ERROR,onTorrentError);
+				bitTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_UNAVAILABLE,onTorrentUnavailable);
+				bitTorrentANE.addEventListener(TorrentInfoEvent.FILTER_LIST_ADDED,onFilterListAdded);	
+				bitTorrentANE.addEventListener(TorrentAlertEvent.FILE_COMPLETED,onFileComplete);
+				bitTorrentANE.addEventListener(TorrentAlertEvent.LISTEN_FAILED,onListenFailed);
 				
-				libTorrentANE.initSession();
+				bitTorrentANE.addEventListener(TorrentAlertEvent.STATE_UPDATE,onTorrentStateUpdate);
+				bitTorrentANE.addEventListener(TorrentAlertEvent.STATE_CHANGED,onTorrentStateChanged);
+				bitTorrentANE.addEventListener(TorrentAlertEvent.PEERS_UPDATE,onTorrentPeersUpdate);
+				bitTorrentANE.addEventListener(TorrentAlertEvent.TRACKERS_UPDATE,onTorrentTrackersUpdate);
+				bitTorrentANE.addEventListener(TorrentAlertEvent.TORRENT_PAUSED,onTorrentPaused);
+				bitTorrentANE.addEventListener(TorrentAlertEvent.TORRENT_RESUMED,onTorrentResumed);
+				bitTorrentANE.addEventListener(TorrentAlertEvent.TORRENT_FINISHED,onTorrentFinished);
+				bitTorrentANE.addEventListener(TorrentAlertEvent.PIECE_FINISHED,onPieceFinished);
+				
+				bitTorrentANE.initSession();
 				
 				if(model.SettingsLocalStore.settings.filters.enabled)
-					libTorrentANE.addFilterList(model.SettingsLocalStore.settings.filters.fileName,model.SettingsLocalStore.settings.filters.applyToTrackers);
+					bitTorrentANE.addFilterList(model.SettingsLocalStore.settings.filters.fileName,model.SettingsLocalStore.settings.filters.applyToTrackers);
 			
 			}else{
 				trace("This ANE is not supported");
 			}
 			
 		}
+		
+		protected function onListenFailed(event:TorrentAlertEvent):void {
+			trace("Failed on",event.params.address+":"+event.params.port,event.params.type);
+			trace(event.params.message);
+		}
 
 		private function onTorrentCreate(event:InteractionEvent):void {
-			var savePath:String = libTorrentANE.saveAs("torrent",TorrentSettings.storage.torrentPath);
+			var savePath:String = bitTorrentANE.saveAs("torrent",TorrentSettings.storage.torrentPath);
 			if(savePath.length == 0){
 				torrentClientPanel.createTorrentScreen.hide();
 			}else{
-				libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATION_PROGRESS,torrentClientPanel.createTorrentScreen.onProgress);
-				libTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATED,torrentClientPanel.createTorrentScreen.onCreateComplete);
-				libTorrentANE.createTorrent(event.params.file,savePath,event.params.size,event.params.trackers,event.params.webSeeds,event.params.isPrivate,event.params.comments,event.params.seedNow);
+				bitTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATION_PROGRESS,torrentClientPanel.createTorrentScreen.onProgress);
+				bitTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATED,torrentClientPanel.createTorrentScreen.onCreateComplete);
+				bitTorrentANE.createTorrent(event.params.file,savePath,event.params.size,event.params.trackers,event.params.webSeeds,event.params.isPrivate,event.params.comments,event.params.seedNow);
 			}
 			
 		}
 		
+		
 		private function oTorrentSeedNow(event:InteractionEvent):void {
-			var meta:TorrentMeta = libTorrentANE.getTorrentMeta(event.params.fileName);
-			if(meta.status == "ok"){
-				torrentId = meta.infoHash; //it's a good idea to use the hash as the id
-				libTorrentANE.addTorrent(meta.torrentFile,torrentId,meta.infoHash,downloadAsSequential,false,null,true);
+			var torrentInfo:TorrentInfo = bitTorrentANE.getTorrentInfo(event.params.fileName);
+			if(torrentInfo.status == "ok"){
+				torrentId = torrentInfo.infoHash; //it's a good idea to use the hash as the id
+				bitTorrentANE.addTorrent(torrentId,torrentInfo.torrentFile,torrentInfo.infoHash,"",downloadAsSequential,null,null,true);
+				
 			}else{
 				trace("failed to load torrent");
 			}
@@ -169,15 +179,16 @@ package {
 		private function onMagnetListAdd(event:InteractionEvent):void {
 			var lst:Array = TextUtils.trim(event.params.value).split(String.fromCharCode(13));
 			var itm:String;
+			var file:File;
 			for (var i:int=0, l:int=lst.length; i<l; ++i){
 				itm = lst[i];
 				if(itm.length > 0){
 					if(itm.length > 8 && itm.substr(0,8) == "magnet:?"){
 						torrentId = MagnetParser.parse(itm).hash;
-						libTorrentANE.torrentFromMagnet(itm,torrentId,downloadAsSequential);
+						bitTorrentANE.addTorrent(torrentId,itm,torrentId,"",downloadAsSequential);
 					}else{
 						torrentId = itm;
-						libTorrentANE.torrentFromHash(torrentId,torrentId,"",downloadAsSequential);
+						bitTorrentANE.addTorrent(torrentId,"",torrentId,"",downloadAsSequential);
 					}
 				}
 			}
@@ -191,56 +202,63 @@ package {
 					this.setChildIndex(settingsPanel,this.numChildren-2);
 				}else{
 					updateTorrentSettings();
-					libTorrentANE.updateSettings();
+					bitTorrentANE.updateSettings();
 					settingsPanel.hideAllFields();
 				}
 			}
 		}
 
+		private function onMenuClick(event:InteractionEvent):void {
+			bitTorrentANE.queryForPeers((event.params.value == 2),torrentId,(event.params.value == 2));
+			if(event.params.value == 2){
+				bitTorrentANE.postPeersUpdate();
+			}else if(event.params.value == 1){
+				bitTorrentANE.postTrackersUpdate();
+			}
+		}
+		
 		private function onRightMenuClick(event:InteractionEvent):void {
-			var meta:TorrentMeta = TorrentsLibrary.meta[event.params.id];
+			var torrentInfo:TorrentInfo = TorrentsLibrary.meta[event.params.id];
 			switch(event.params.value){
 				case 0:
-					libTorrentANE.pauseTorrent(meta.infoHash);
-					onStatusTimer();
+					bitTorrentANE.pauseTorrent(torrentInfo.infoHash);
+					bitTorrentANE.postTorrentUpdates();
 					break;
 				case 8:
-					libTorrentANE.resumeTorrent(meta.infoHash);
-					onStatusTimer();
+					bitTorrentANE.resumeTorrent(torrentInfo.infoHash);
+					bitTorrentANE.postTorrentUpdates();
 					break;
 				case 1:
-					TorrentsLibrary.remove(meta.infoHash);
-					libTorrentANE.removeTorrent(meta.infoHash);
+					TorrentsLibrary.remove(torrentInfo.infoHash);
+					bitTorrentANE.removeTorrent(torrentInfo.infoHash);
 					break;
 				case 2:
-					libTorrentANE.setSequentialDownload(meta.infoHash,false);
+					bitTorrentANE.setSequentialDownload(torrentInfo.infoHash,false);
 					break;
 				case 9:
-					libTorrentANE.setSequentialDownload(meta.infoHash,true);
+					bitTorrentANE.setSequentialDownload(torrentInfo.infoHash,true);
 					break;
 				case 3:
-					libTorrentANE.setQueuePosition(meta.infoHash,QueuePosition.TOP);
-					onStatusTimer();
+					bitTorrentANE.setQueuePosition(torrentInfo.infoHash,QueuePosition.TOP);
+					bitTorrentANE.postTorrentUpdates();
 					break;
 				case 4:
-					libTorrentANE.setQueuePosition(meta.infoHash,QueuePosition.UP);
-					onStatusTimer();
+					bitTorrentANE.setQueuePosition(torrentInfo.infoHash,QueuePosition.UP);
+					bitTorrentANE.postTorrentUpdates();
 					break;
 				case 5:
-					libTorrentANE.setQueuePosition(meta.infoHash,QueuePosition.DOWN);
-					onStatusTimer();
+					bitTorrentANE.setQueuePosition(torrentInfo.infoHash,QueuePosition.DOWN);
+					bitTorrentANE.postTorrentUpdates();
 					break;
 				case 6:
-					libTorrentANE.setQueuePosition(meta.infoHash,QueuePosition.BOTTOM);
-					onStatusTimer();
+					bitTorrentANE.setQueuePosition(torrentInfo.infoHash,QueuePosition.BOTTOM);
+					bitTorrentANE.postTorrentUpdates();
 					break;
 				case 7:
 					Clipboard.generalClipboard.clear(); 
-					Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, libTorrentANE.getMagnetURI(meta.infoHash), false);
+					Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, bitTorrentANE.getMagnetURI(torrentInfo.infoHash), false);
 					break;
-			}
-			
-			onStatusTimer();
+			}	
 			
 		}
 		private function updateTorrentSettings():void {
@@ -302,9 +320,7 @@ package {
 		protected function onFilterListAdded(event:TorrentInfoEvent):void {
 			trace("number of filters added",event.params.numFilters);
 		}
-		protected function onRSSitem(event:TorrentInfoEvent):void {
-			    
-		}
+		
 		protected function onTorrentUnavailable(event:TorrentInfoEvent):void {
 			
 		}
@@ -313,10 +329,10 @@ package {
 		}
 		
 		protected function selectFile(event:Event):void {
-			var meta:TorrentMeta = libTorrentANE.getTorrentMeta(selectedFile.nativePath);	
-			if(meta.status == "ok"){
-				torrentId = meta.infoHash; //it's a good idea to use the hash as the id
-				libTorrentANE.addTorrent(meta.torrentFile,torrentId,meta.infoHash,downloadAsSequential);
+			var torrentInfo:TorrentInfo = bitTorrentANE.getTorrentInfo(selectedFile.nativePath);	
+			if(torrentInfo && torrentInfo.status == "ok"){
+				torrentId = torrentInfo.infoHash; //it's a good idea to use the hash as the id
+				bitTorrentANE.addTorrent(torrentId,torrentInfo.torrentFile,torrentInfo.infoHash,"",downloadAsSequential);
 			}else{
 				trace("failed to load torrent");
 			}
@@ -328,11 +344,11 @@ package {
 		
 		private function onPowerClick(event:InteractionEvent):void {
 			if(event.params.on){
-				libTorrentANE.initSession();
+				bitTorrentANE.initSession();
 			}else{
 				TorrentsLibrary.remove(torrentId);
-				stopStatusListener();
-				libTorrentANE.endSession();
+				//stopStatusListener();
+				bitTorrentANE.endSession();
 			}	
 		}
 		
@@ -343,60 +359,62 @@ package {
 				showSettings(!settingsPanel.visible);
 			}
 		}
-		protected function onFileComplete(event:TorrentInfoEvent):void {
+		
+		
+		protected function onPieceFinished(event:TorrentAlertEvent):void {
+			//trace(event);
+			if(torrentClientPanel.visible && torrentClientPanel.selectedMenu == 0)
+				torrentClientPanel.updatePieces();
+		}
+		protected function onFileComplete(event:TorrentAlertEvent):void {
 			trace(event);
 		}
-		protected function onTorrentAdded(event:TorrentInfoEvent):void {
-			var meta:TorrentMeta;
-			var torrentFileExists:Boolean = false;
-			if(!event.params.toQueue)
-				torrentId = event.params.id.toLowerCase();
-			if(event.params.fileName == ""){
-				var torrentFile:File = File.applicationDirectory.resolvePath(TorrentSettings.storage.torrentPath).resolvePath(event.params.id+".torrent");
-				torrentFileExists = torrentFile.exists;
-				if(torrentFileExists)
-					meta = libTorrentANE.getTorrentMeta(torrentFile.nativePath);
-			}else{
-				torrentFileExists = true;
-				meta = libTorrentANE.getTorrentMeta(event.params.fileName);
-			}
-			if(meta)
-				TorrentsLibrary.add(event.params.id.toLowerCase(),meta);
-			
-			startStatusListener();
-			onStatusTimer();
+		protected function onTorrentFinished(event:TorrentAlertEvent):void {
+			//trace(event);
 		}
-		
-		
-		protected function onMagnetSaved(event:TorrentInfoEvent):void {
-			var meta:TorrentMeta;
-			var torrentFileExists:Boolean = false;
-			var torrentFile:File = File.applicationDirectory.resolvePath(TorrentSettings.storage.torrentPath).resolvePath(event.params.id+".torrent");
-			torrentFileExists = torrentFile.exists;
-			if(torrentFileExists)
-				meta = libTorrentANE.getTorrentMeta(torrentFile.nativePath);
+		protected function onTorrentResumed(event:TorrentAlertEvent):void {
+			trace(TorrentStateCodes.getMessageFromCode(event.params.state));
+		}
+		protected function onTorrentPaused(event:TorrentAlertEvent):void {
+			trace(TorrentStateCodes.getMessageFromCode(event.params.state));
+		}
+		protected function onTorrentStateChanged(event:TorrentAlertEvent):void {
+			trace(TorrentStateCodes.getMessageFromCode(event.params.state));
+		}
+		protected function onTorrentTrackersUpdate(event:TorrentAlertEvent):void {
+			trace(event);
+			if(torrentClientPanel.visible)
+				if(torrentClientPanel.selectedMenu == 1)torrentClientPanel.updateTrackers();
+		}
+		protected function onTorrentPeersUpdate(event:TorrentAlertEvent):void {
+			trace(event);
+			if(torrentClientPanel.visible)
+				if(torrentClientPanel.selectedMenu == 2) torrentClientPanel.updatePeers();
+		}
+		protected function onTorrentStateUpdate(event:TorrentAlertEvent):void {
+			trace(event);
+			if(torrentClientPanel.visible){
+				torrentClientPanel.updateStatus();
+				if(torrentClientPanel.selectedMenu == 0) torrentClientPanel.updatePieces();
+			}
+			
+			currentStatus = TorrentsLibrary.status[torrentId] as TorrentStatus;
+			if(currentStatus){
 				
-			if(meta)
-				TorrentsLibrary.add(event.params.id,meta);
-			startStatusListener();
+			}
+			
 			
 		}
 		
-		private function startStatusListener():void {
-			if(statusTimer == null){
-				statusTimer = new Timer(1000);
-				statusTimer.addEventListener(TimerEvent.TIMER,onStatusTimer);
-				statusTimer.start();
-			}	
+		protected function onTorrentAdded(event:TorrentAlertEvent):void {
+			torrentId = event.params.id;
+			bitTorrentANE.queryForPeers((event.params.value == 2),torrentId,(event.params.value == 2));
 		}
-		private function stopStatusListener():void {
-			if(statusTimer){
-				statusTimer.removeEventListener(TimerEvent.TIMER,onStatusTimer);
-				statusTimer.stop();
-				statusTimer.reset();
-				statusTimer = null;
-			}
-		}
+		
+		
+		
+		/*
+		
 		private function onStatusTimer(event:TimerEvent=null):void {
 			libTorrentANE.getTorrentStatus((torrentClientPanel.selectedMenu == 4));
 			libTorrentANE.getTorrentPeers();
@@ -434,7 +452,7 @@ package {
 				}
 			}	
 		}
-		
+		*/
 		
 	}
 }

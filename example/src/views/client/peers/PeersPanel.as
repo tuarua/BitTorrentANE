@@ -131,12 +131,18 @@ package views.client.peers {
 				(txtHolder.getChildAt(rowIndex+9) as TextField).text = (_tp[i].uploaded > 0) ? TextUtils.bytesToString(_tp[i].uploaded) : "";
 				(txtHolder.getChildAt(rowIndex+10) as TextField).text = (_tp[i].relevance > 0) ? (_tp[i].relevance*100.0).toFixed(1)+"%" : "";
 				
-				//trace(_tp[i].country);
-				
 				if(_tp[i].country) {
 					try{
-						(imgHolder.getChildAt(i) as Image).texture = Assets.getAtlas().getTexture(_tp[i].country.toLowerCase());
-						(imgHolder.getChildAt(i) as Image).readjustSize();
+						//trace("ip",_tp[i].ip);
+						//trace("country",_tp[i].country.toLowerCase());
+						if(_tp[i].country.toLowerCase() != "!!"){
+							(imgHolder.getChildAt(i) as Image).visible = true;
+							(imgHolder.getChildAt(i) as Image).texture = Assets.getAtlas().getTexture(_tp[i].country.toLowerCase());
+							(imgHolder.getChildAt(i) as Image).readjustSize();
+						}else{
+							(imgHolder.getChildAt(i) as Image).visible = false;
+						}
+						
 					}catch(error:Error){trace("no flag for this country",_tp[i].country);}
 				}
 				

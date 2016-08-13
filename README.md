@@ -3,9 +3,7 @@
 Adobe Air Native Extension written in ActionScript 3 and C++ for working with .torrent files and magnet uris.
 Sample client included
 
-![alt tag](https://raw.githubusercontent.com/tuarua/BitTorrentANE/master/screenshots/screen-shot-1.PNG)
-
-![alt tag](https://raw.githubusercontent.com/tuarua/BitTorrentANE/master/screenshots/android-soon.png)
+![alt tag](https://raw.githubusercontent.com/tuarua/BitTorrentANE/master/screenshots/screen-shot-1.PNG
 
 ### Features
  - Supports Magnet uris
@@ -23,15 +21,18 @@ Sample client included
 
 ### Tech
 
-BitTorrentANE uses the following libraries:
-
-* [http://www.libtorrent.org] - C++ bittorrent implementation
+BitTorrentANE uses the following libraries: 
+C++  
+* [http://www.libtorrent.org] - C++ bittorrent implementation  
 * [http://www.boost.org] - C++ portable libraries
 * [https://www.openssl.org] - OpenSSL
 * [https://github.com/maxmind/geoip-api-c] - GeoIp
 * [http://www.frogtoss.com/labs] - Native File Dialog
-* [https://nlohmann.github.io/json] - JSON for Modern C++
+* [https://github.com/nlohmann/json/] - JSON for Modern C++
 
+Android 
+* [https://github.com/maxmind/GeoIP2-java] - GeoIP2 for Java
+* [https://github.com/frostwire/frostwire-jlibtorrent] - Java interface for libtorrent from Frostwire
 
 ### Prerequisites
 
@@ -42,6 +43,7 @@ You will need
  - Homebrew if you wish to modify the ANE code on OSX
  - XCode if you wish to modify the ANE code on OSX
  - MS Visual Studio 2015 if you wish to modify the ANE code on Windows
+ - Android Studio if you wish to modify the ANE code for Android
 
 
 ### OSX Preconfiguration to modify the ANE code:
@@ -59,13 +61,15 @@ You will need
  - Run native_library/win/dependencies/RUNME.bat from cmd as Administrator.
 This will download and build the remaining dependencies needed (boost, geoip, libtorrent, openssl)
 
+### Android Preconfiguration to modify the ANE code:
+to follow...
+
 ### Known Issues
  - The Visual Studio project only builds in Release mode. The Debug build throws errors.
  
 ### Todos
  - improve error reporting
  - Add ASDocs
- - Android Version
 
 ### License
 

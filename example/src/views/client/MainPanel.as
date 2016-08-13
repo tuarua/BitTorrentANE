@@ -1,5 +1,5 @@
 package views.client {
-	import com.tuarua.torrent.TorrentMeta;
+	import com.tuarua.torrent.TorrentInfo;
 	import com.tuarua.torrent.TorrentPeers;
 	import com.tuarua.torrent.TorrentPieces;
 	import com.tuarua.torrent.TorrentStatus;
@@ -50,7 +50,11 @@ package views.client {
 		private var addButton:Image = new Image(addButtonTexture);
 		private var powerButton:Image = new Image(powerOnButtonTexture);
 		private var createButton:Image = new Image(createButtonTexture);
-		private var sampleMagnet:String = "magnet:?xt=urn:btih:f3bf22593bd8c5b318c9fa41c7d507215ea67adc&dn=Cosmos%20Laundromat%20-%20Blender-short-movie&tr=udp%3a%2f%2fopen.demonii.com%3a1337%2fannounce&tr=udp%3a%2f%2ftracker.publicbt.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.openbittorrent.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.istole.it%3a80%2fannounce&tr=udp%3a%2f%2ftorrent.gresille.org%3a80%2fannounce&tr=udp%3a%2f%2ftracker.opentrackr.org%3a1337%2fannounce&tr=http%3a%2f%2ftracker.aletorrenty.pl%3a2710%2fannounce&tr=http%3a%2f%2fopen.acgtracker.com%3a1096%2fannounce&tr=udp%3a%2f%2f9.rarbg.me%3a2710%2fannounce";
+		//private var sampleMagnet:String = "magnet:?xt=urn:btih:2ef1ffb5ccb99ff4bef336ebeb12cc61f15bac64&dn=Beauty.and.the.Beast.2012.S01E02.HDTV.x264-ASAP.%5bVTV%5d.mp4&tr=udp%3a%2f%2ftracker.leechers-paradise.org%3a6969&tr=udp%3a%2f%2ftracker.ccc.de%3a80%2fannounce&tr=udp%3a%2f%2ftracker.coppersurfer.tk%3a80&tr=http%3a%2f%2ftracker.publicbt.com%3a80%2fannounce&tr=udp%3a%2f%2ftracker.istole.it%3a80%2fannounce&tr=http%3a%2f%2ftracker.ccc.de%2fannounce&tr=udp%3a%2f%2fexodus.desync.com%3a6969&tr=udp%3a%2f%2fopen.demonii.com%3a80&tr=udp%3a%2f%2ftracker.openbittorrent.com%3a80%2fannounce&tr=http%3a%2f%2fpow7.com%2fannounce";
+		
+		private var sampleMagnet:String = "magnet:?xt=urn:btih:88594aaacbde40ef3e2510c47374ec0aa396c08e&dn=bbb%5Fsunflower%5F1080p%5F30fps%5Fnormal.mp4&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80%2Fannounce&ws=http%3A%2F%2Fdistribution.bbb3d.renderfarming.net%2Fvideo%2Fmp4%2Fbbb%5Fsunflower%5F1080p%5F30fps%5Fnormal.mp4";
+
+		
 		private var magnetScreen:MagnetScreen = new MagnetScreen(sampleMagnet);
 		public var createTorrentScreen:CreateTorrentScreen = new CreateTorrentScreen();
 		private var selectedId:String;
@@ -313,10 +317,18 @@ package views.client {
 		}
 		protected function onMenuSelect(event:InteractionEvent):void {
 			_selectedMenu = event.params.type;
-			if(_selectedMenu == 2)
-				updatePeers();
-			else
+			
+			
+			if(_selectedMenu != 2)
 				(panelsVec[2] as PeersPanel).destroy();
+			
+			/*
+			if(_selectedMenu == 2)
+			updatePeers(); //not going to do anything
+			else
+			(panelsVec[2] as PeersPanel).destroy();
+			*/
+			
 			
 			var mi:MenuItem;
 			for (var ii:int=0, ll:int=menuItemsVec.length; ii<ll; ++ii){
@@ -324,6 +336,9 @@ package views.client {
 				mi.setSelected((event.params.type == ii));
 				panelsVec[ii].visible = (event.params.type == ii);
 			}
+			
+			//dispatch event with Menu Select
+			this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_MENU_ITEM_MENU,{value:_selectedMenu}));
 		}
 		protected function onItemSelect(event:InteractionEvent):void {
 			selectedId = event.params.id;
@@ -372,12 +387,12 @@ package views.client {
 		
 		private function updateFiles():void {
 			if(selectedId)
-				(panelsVec[4] as FilesPanel).populate((TorrentsLibrary.meta[selectedId] as TorrentMeta).files);
+				(panelsVec[4] as FilesPanel).populate((TorrentsLibrary.meta[selectedId] as TorrentInfo).files);
 		}
 		
 		private function updateHTTPsources():void {
 			if(selectedId)
-				(panelsVec[3] as HttpPanel).populate((TorrentsLibrary.meta[selectedId] as TorrentMeta).urlSeeds);
+				(panelsVec[3] as HttpPanel).populate((TorrentsLibrary.meta[selectedId] as TorrentInfo).urlSeeds);
 		}
 		
 		public function updatePieces():void {
@@ -391,12 +406,12 @@ package views.client {
 		
 		public function updateStatus():void {
 			var itm:TorrentItem;
-			var tm:TorrentMeta;
+			var tm:TorrentInfo;
 			var ts:TorrentStatus;
 			var numNonSeeding:int=0;
 			var arrSeeding:Array = new Array();
 			for (var key:String in TorrentsLibrary.meta) {
-				tm = TorrentsLibrary.meta[key] as TorrentMeta;
+				tm = TorrentsLibrary.meta[key] as TorrentInfo;
 				ts = TorrentsLibrary.status[key];
 				if(tm && ts){
 					if(itemSpriteDictionary[key] == undefined){
@@ -422,16 +437,20 @@ package views.client {
 				itm.y = (i*20)+(numNonSeeding*20);
 			}
 			if(selectedId){
-				if(!(TorrentsLibrary.status[selectedId] as TorrentStatus).isFinished)
-					(panelsVec[0] as InfoPanel).updatePartialPieces((TorrentsLibrary.status[selectedId] as TorrentStatus).partialPieces);
-				(panelsVec[0] as InfoPanel).updateStatus(TorrentsLibrary.status[selectedId]);
-				if(selectedMenu == 4){
-					if((TorrentsLibrary.status[selectedId] as TorrentStatus).isFinished){
-						if((panelsVec[4] as FilesPanel) && !(panelsVec[4] as FilesPanel).isFinished)
-							(panelsVec[4] as FilesPanel).finishStatus();
-						
-					}else{
-						(panelsVec[4] as FilesPanel).updateStatus(TorrentsLibrary.status[selectedId]);
+				var tsSelected:TorrentStatus = TorrentsLibrary.status[selectedId] as TorrentStatus;
+				if(tsSelected){
+					if(!tsSelected.isFinished)
+						(panelsVec[0] as InfoPanel).updatePartialPieces(tsSelected.partialPieces);
+					
+					(panelsVec[0] as InfoPanel).updateStatus(tsSelected);
+					if(selectedMenu == 4){
+						if(tsSelected.isFinished){
+							if((panelsVec[4] as FilesPanel) && !(panelsVec[4] as FilesPanel).isFinished)
+								(panelsVec[4] as FilesPanel).finishStatus();
+							
+						}else{
+							(panelsVec[4] as FilesPanel).updateStatus(tsSelected);
+						}
 					}
 				}
 			}
@@ -454,6 +473,8 @@ package views.client {
 		}
 		
 		public function updatePeers():void {
+			
+			
 			var d:Dictionary = TorrentsLibrary.peers;
 			if(selectedId){
 				var tp:TorrentPeers = TorrentsLibrary.peers[selectedId] as TorrentPeers;

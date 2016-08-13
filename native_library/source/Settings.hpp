@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 typedef struct {
-	bool timePieces = true;
+	bool queryFileProgress = true;
 	std::vector<std::string> priorityFileTypes = {};
 	typedef struct {
 		std::string outputPath;

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<platform xmlns="http://ns.adobe.com/air/extension/22.0">
+    <packagedDependencies>
+		<packagedDependency>jlibtorrent-1.1.0.36.jar</packagedDependency>
+		<packagedDependency>geoip2-2.7.0.jar</packagedDependency>
+		<packagedDependency>maxmind-db-1.2.1.jar</packagedDependency>
+		<packagedDependency>jackson-annotations-2.7.0.jar</packagedDependency>
+		<packagedDependency>jackson-core-2.7.3.jar</packagedDependency>
+		<packagedDependency>jackson-databind-2.7.3.jar</packagedDependency>
+    </packagedDependencies>
+	<packagedResources>
+		<packagedResource>
+			<packageName>com.tuarua.BitTorrentANE</packageName>
+			<folderName>res</folderName>
+		</packagedResource>
+	</packagedResources>
+</platform>

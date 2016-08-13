@@ -1,0 +1,42 @@
+//apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 11
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+def JLIBTORRENT_VERSION='1.1.0.36'
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile files('libs/FlashRuntimeExtensions.jar')
+    compile 'com.frostwire:jlibtorrent:' + JLIBTORRENT_VERSION
+    compile 'com.frostwire:jlibtorrent-android-arm:' + JLIBTORRENT_VERSION
+    compile 'com.frostwire:jlibtorrent-android-x86:' + JLIBTORRENT_VERSION
+    compile 'com.maxmind.geoip2:geoip2:2.8.0-rc1'
+    //compile files('libs/geoip2-2.7.0.jar')
+    //compile files('libs/maxmind-db-1.2.1.jar')
+    //compile files('libs/jackson-databind-2.7.3.jar')
+    //compile files('libs/jackson-annotations-2.7.0.jar')
+    //compile files('libs/jackson-core-2.7.3.jar')
+}

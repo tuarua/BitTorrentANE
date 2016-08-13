@@ -1,5 +1,5 @@
 package views.client {
-	import com.tuarua.torrent.TorrentMeta;
+	import com.tuarua.torrent.TorrentInfo;
 	import com.tuarua.torrent.TorrentStateCodes;
 	import com.tuarua.torrent.TorrentStatus;
 	
@@ -68,7 +68,7 @@ package views.client {
 			tween.animate("alpha",targetAlpha);
 			Starling.juggler.add(tween);
 		}
-		public function update(_tm:TorrentMeta,_ts:TorrentStatus,_isSelected:Boolean=false):void {
+		public function update(_tm:TorrentInfo,_ts:TorrentStatus,_isSelected:Boolean=false):void {
 			if(_tm && _ts){
 				_id = _ts.id;
 				(txtHolder.getChildAt(0) as TextField).text = (_ts.queuePosition == -1) ? "*" :(_ts.queuePosition+1).toString();

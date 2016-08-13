@@ -14,7 +14,7 @@ package com.tuarua.torrent {
 		public static var logLevel:int = LogLevel.INFO;
 		public static var prioritizedFileTypes:Array = new Array();
 		public static var clientName:String = "BitTorrentANE";
-		public static var timePieces:Boolean = true;
+		public static var queryFileProgress:Boolean = true;
 		public static var storage:Storage = new Storage();
 		public static var queueing:Queueing = new Queueing();
 		public static var privacy:Privacy = new Privacy();

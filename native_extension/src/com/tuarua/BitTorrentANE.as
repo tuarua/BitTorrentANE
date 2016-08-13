@@ -1,6 +1,6 @@
 package com.tuarua {
-	import com.tuarua.torrent.TorrentDownloader;
-	import com.tuarua.torrent.TorrentMeta;
+	import com.tuarua.torrent.PeerInfo;
+	import com.tuarua.torrent.TorrentInfo;
 	import com.tuarua.torrent.TorrentPeers;
 	import com.tuarua.torrent.TorrentPieces;
 	import com.tuarua.torrent.TorrentSettings;
@@ -9,8 +9,10 @@ package com.tuarua {
 	import com.tuarua.torrent.TorrentTrackers;
 	import com.tuarua.torrent.TorrentWebSeed;
 	import com.tuarua.torrent.TorrentsLibrary;
+	import com.tuarua.torrent.events.TorrentAlertEvent;
 	import com.tuarua.torrent.events.TorrentInfoEvent;
-	import com.tuarua.torrent.utils.MagnetParser;
+	import com.tuarua.torrent.utils.Magnet;
+	import com.tuarua.torrent.utils.MagnetBuilder;
 	
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
@@ -19,12 +21,30 @@ package com.tuarua {
 	import flash.external.ExtensionContext;
 	import flash.filesystem.File;
 	import flash.utils.Timer;
+	import flash.system.Capabilities;
+	
 	
 	public class BitTorrentANE extends EventDispatcher {
 		private var extensionContext:ExtensionContext;
-		private var alertListenerTimer:Timer;
 		private var _inited:Boolean = false;
-		private var alertInterval:int = 1000;
+		private var statusTimer:Timer;
+		private var peersTimer:Timer;
+		private var trackersTimer:Timer;
+		private var _statusUpdateInterval:int = 1000;
+		private var _peersUpdateInterval:int = 2000;
+		private var _trackersUpdateInterval:int = 5000;
+		
+		private var _queryForPeers:Boolean = false;
+		private var _queryForPeersFlags:Boolean = false;
+		private var _queryPeersForTorrentId:String = "";
+		
+		private var _queryForTrackers:Boolean = false;
+		private var _queryForTrackersAsync:Boolean = false;
+		private var _queryTrackersForTorrentId:String = "";
+		
+		public static var TRACKERS_FROM_JSON:String = "Torrent.Trackers.FromJSON";
+		public static var PEERS_FROM_JSON:String = "Torrent.Peers.FromJSON";
+		
 		public function BitTorrentANE(target:IEventDispatcher=null) {
 			initiate();
 		}
@@ -47,205 +67,297 @@ package com.tuarua {
 				case "INFO":
 					trace("INFO:",event.code);
 					break;
-				case TorrentInfoEvent.ON_ERROR:
-					trace(event.code);
-					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.ON_ERROR,{message:event.code}));
+				
+				//android only ?
+				case TRACKERS_FROM_JSON:
+					pObj = JSON.parse(event.code);
+					
+					if(pObj){
+						TorrentsLibrary.updateTrackersFromJSON(pObj);
+						this.dispatchEvent(new TorrentAlertEvent(TorrentAlertEvent.TRACKERS_UPDATE,{id:_queryTrackersForTorrentId}));	
+					}
 					break;
-				case TorrentInfoEvent.TORRENT_PIECE:
+				
+				case PEERS_FROM_JSON:
+					pObj = JSON.parse(event.code);
+					if(pObj){
+						TorrentsLibrary.updatePeersFromJSON(pObj);
+						this.dispatchEvent(new TorrentAlertEvent(TorrentAlertEvent.PEERS_UPDATE,{id:_queryPeersForTorrentId}));	
+					}
+					break;
+				
+				case TorrentAlertEvent.LISTEN_SUCCEEDED:
+					pObj = JSON.parse(event.code);
+					this.dispatchEvent(new TorrentAlertEvent(TorrentAlertEvent.LISTEN_SUCCEEDED,pObj));
+					break;
+				
+				case TorrentAlertEvent.LISTEN_FAILED:
+					pObj = JSON.parse(event.code);
+					this.dispatchEvent(new TorrentAlertEvent(TorrentAlertEvent.LISTEN_FAILED,pObj));
+					break;
+				
+				case TorrentAlertEvent.STATE_UPDATE:
+					pObj = JSON.parse(event.code);
+					if(pObj){
+						TorrentsLibrary.updateStatusFromJSON(pObj);
+						this.dispatchEvent(new TorrentAlertEvent(TorrentAlertEvent.STATE_UPDATE,null));
+					}
+					break;
+			
+				case TorrentAlertEvent.TORRENT_CHECKED: case TorrentAlertEvent.FILE_COMPLETED: case TorrentAlertEvent.SAVE_RESUME_DATA:
+					pObj = JSON.parse(event.code);
+					this.dispatchEvent(new TorrentAlertEvent(event.level,pObj));
+					break;
+			
+				case TorrentAlertEvent.FILE_COMPLETED:
+					pObj = JSON.parse(event.code);
+					this.dispatchEvent(new TorrentAlertEvent(event.level,pObj));
+					break;
+				
+				case TorrentAlertEvent.TORRENT_FINISHED:
+					pObj = JSON.parse(event.code);
+					(TorrentsLibrary.status[pObj.id] as TorrentStatus).isFinished = true;
+					this.dispatchEvent(new TorrentAlertEvent(TorrentAlertEvent.TORRENT_FINISHED,pObj));
+					break;
+				
+				case TorrentAlertEvent.TORRENT_ADDED:
+					pObj = JSON.parse(event.code);
+					startStatusTimer();
+					if(_queryForPeers && (peersTimer == null || !peersTimer.running))
+						startPeersTimer();
+					
+					if(_queryForTrackers && (trackersTimer == null || !trackersTimer.running))
+						startTrackersTimer();
+					
+					this.dispatchEvent(new TorrentAlertEvent(TorrentAlertEvent.TORRENT_ADDED,pObj));
+					break;
+				
+				case TorrentAlertEvent.TORRENT_PAUSED: case TorrentAlertEvent.TORRENT_RESUMED: case TorrentAlertEvent.STATE_CHANGED:
+					pObj = JSON.parse(event.code);
+					var ts:TorrentStatus = (TorrentsLibrary.status[pObj.id] as TorrentStatus);
+					if(ts)
+						ts.state = pObj.state;
+					this.dispatchEvent(new TorrentAlertEvent(event.level,pObj));
+					break;
+				
+				case TorrentInfoEvent.FILTER_LIST_ADDED:
+					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.FILTER_LIST_ADDED,JSON.parse(event.code)));
+					break;
+
+				case TorrentAlertEvent.PIECE_FINISHED:
 					pObj = JSON.parse(event.code);
 					tp = TorrentsLibrary.pieces[pObj.id] as TorrentPieces;
 					if(tp){
 						tp.setDownloaded(pObj.index);
 						tp.setTime(pObj.index,pObj.time);
 					}
+					this.dispatchEvent(new TorrentAlertEvent(TorrentAlertEvent.PIECE_FINISHED,pObj));
 					break;
-				case TorrentInfoEvent.TORRENT_CREATED_FROM_META:
-					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.TORRENT_CREATED_FROM_META,JSON.parse(event.code)));
+				
+				case TorrentAlertEvent.METADATA_RECEIVED:
+					try{
+						pObj = JSON.parse(event.code);
+						if(pObj && pObj.hasOwnProperty("id") && pObj.id){
+							var torrentFile:File = File.applicationDirectory.resolvePath(TorrentSettings.storage.torrentPath).resolvePath(pObj.id+".torrent");
+							if(torrentFile.exists)
+								addTorrent(pObj.id,torrentFile.nativePath,"","",pObj.isSequential); //todo need sequential
+						}
+					}catch(e:Error){
+						trace(e.message);
+					}
 					break;
+
+				case TorrentInfoEvent.ON_ERROR:
+					trace(event.code);
+					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.ON_ERROR,{message:event.code}));
+					break;
+				
 				case TorrentInfoEvent.TORRENT_CREATION_PROGRESS:
 					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.TORRENT_CREATION_PROGRESS,JSON.parse(event.code)));
 					break;
 				case TorrentInfoEvent.TORRENT_CREATED:
 					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.TORRENT_CREATED,JSON.parse(event.code)));
 					break;
-				case TorrentInfoEvent.TORRENT_FROM_RESUME:
-					break;
-				case TorrentInfoEvent.RESUME_SAVED:
-					break;
-				case TorrentInfoEvent.TORRENT_CHECKED:
-					pObj = JSON.parse(event.code);
-					tp = new TorrentPieces(pObj.pieces);
-					TorrentsLibrary.updatePieces(pObj.id,tp);
-					break;
-				case TorrentInfoEvent.TORRENT_FILE_COMPLETE:
-					pObj = JSON.parse(event.code);
-					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.TORRENT_FILE_COMPLETE,JSON.parse(event.code)));
-					break;
-				case TorrentInfoEvent.DHT_STARTED:
-					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.DHT_STARTED));
-					break;
-				case TorrentInfoEvent.FILTERLIST_ADDED:
-					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.FILTERLIST_ADDED,JSON.parse(event.code)));
-					break;
-				case TorrentInfoEvent.TORRENT_ADDED:
-					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.TORRENT_ADDED,JSON.parse(event.code)));
-					break;
-				case TorrentInfoEvent.RSS_STATE_CHANGE:
-					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.RSS_STATE_CHANGE,JSON.parse(event.code)));
-					break;
-				case TorrentInfoEvent.RSS_ITEM:
-					this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.RSS_ITEM,JSON.parse(event.code)));
-					break;
 			}
 		}
-		private function startAlertListener():void {
-			alertListenerTimer = new Timer(alertInterval);
-			alertListenerTimer.addEventListener(TimerEvent.TIMER,onAlertListenerTimer);
-			alertListenerTimer.start();
-		}
-		private function stopAlertListener():void {
-			if(alertListenerTimer){
-				alertListenerTimer.removeEventListener(TimerEvent.TIMER,onAlertListenerTimer);
-				alertListenerTimer.stop();
-				alertListenerTimer.reset();
-				alertListenerTimer = null;
+		
+		public function postTrackersUpdate():void {
+			var vecTrackers:Vector.<TorrentTrackers> = extensionContext.call("getTorrentTrackers",_queryTrackersForTorrentId) as Vector.<TorrentTrackers>;
+			if(vecTrackers){
+				for (var i:int=0, l:int=vecTrackers.length; i<l; ++i)
+					TorrentsLibrary.updateTrackers(vecTrackers[i].id,vecTrackers[i]);
+				this.dispatchEvent(new TorrentAlertEvent(TorrentAlertEvent.TRACKERS_UPDATE,{id:_queryTrackersForTorrentId}));	
 			}
+			
 		}
+		
+		public function postPeersUpdate():void {
+			var vecPeers:Vector.<TorrentPeers> = extensionContext.call("getTorrentPeers",_queryPeersForTorrentId,_queryForPeersFlags) as Vector.<TorrentPeers>;
+			if(vecPeers){
+				for (var i:int=0, l:int=vecPeers.length; i<l; ++i)
+					TorrentsLibrary.updatePeers(vecPeers[i].id,vecPeers[i]);
+				this.dispatchEvent(new TorrentAlertEvent(TorrentAlertEvent.PEERS_UPDATE,{id:_queryPeersForTorrentId}));
+			}	
+		}
+		
 		public function addDHTRouter(url:String):void {
 			extensionContext.call("addDHTRouter",url);
 		}
 		public function initSession():Boolean {
 			_inited = extensionContext.call("initSession");
-			startAlertListener();
 			return _inited;
 		}
 		public function saveSessionState():void {
 			extensionContext.call("saveSessionState");
 		}
 		public function endSession():void {
-			stopAlertListener();
 			extensionContext.call("endSession");
 			_inited = false;
 		}
-		public function getTorrentMeta(filename:String):TorrentMeta {
-			var torrentMeta:TorrentMeta = extensionContext.call("getTorrentMeta",filename) as TorrentMeta;
-			return torrentMeta;
+		public function getTorrentInfo(filename:String):TorrentInfo {
+			var torrentInfo:TorrentInfo;
+			if(extensionContext)
+				torrentInfo = extensionContext.call("getTorrentInfo",filename) as TorrentInfo;
+			return torrentInfo;
 		}
-		public function downloadTorrent(id:String,uri:String,sequential:Boolean,toQueue:Boolean=false,trackers:Vector.<TorrentTracker>=null):void {
-			var downloader:TorrentDownloader = new TorrentDownloader(id,uri,sequential,toQueue,trackers);
-			downloader.addEventListener(TorrentInfoEvent.TORRENT_DOWNLOADED,onFileDownloaded);
-		}
-		protected function onFileDownloaded(event:TorrentInfoEvent):void {
-			addTorrent(event.params.filename,event.params.id,getTorrentMeta(event.params.filename).infoHash,event.params.sequential,event.params.toQueue,event.params.trackers,false);
-			this.dispatchEvent(event);
-		}
-		public function addTorrent(filename:String,id:String,hash:String,sequential:Boolean,toQueue:Boolean=false,trackers:Vector.<TorrentTracker>=null,seedMode:Boolean=false):void {
-			extensionContext.call("addTorrent",filename,id,hash,sequential,toQueue,trackers,seedMode);
-		}
+		
 		public function setSequentialDownload(id:String,value:Boolean):void {
-			extensionContext.call("setSequentialDownload",id,value);
+			if(extensionContext){
+				var success:Boolean = extensionContext.call("setSequentialDownload",id,value);
+				if(success)
+					TorrentsLibrary.status[id.toLowerCase()].isSequential = value;
+			}	
 		}
-		public function pauseTorrent(id:String=null):void {
+		public function pauseTorrent(id:String):Boolean {
+			var ret:Boolean = false;
 			if(extensionContext)
-				extensionContext.call("pauseTorrent",(id) ? id : "");
+				ret = extensionContext.call("pauseTorrent",id.toLowerCase());
+			return ret;
 		}
-		public function forceRecheck(id:String=null):void {
+		public function resumeTorrent(id:String):Boolean {
+			var ret:Boolean = false;
 			if(extensionContext)
-				extensionContext.call("forceRecheck",(id) ? id : "");
+				ret = extensionContext.call("resumeTorrent",id.toLowerCase());
+			return ret;
 		}
-		public function forceAnnounce(id:String=null,trackerIndex:int=-1):void {
+		public function forceRecheck(id:String):void {
 			if(extensionContext)
-				extensionContext.call("forceAnnounce",(id) ? id : "",trackerIndex);
+				extensionContext.call("forceRecheck",id.toLowerCase());
 		}
-		public function forceDHTAnnounce(id:String=null):void {
+		public function forceAnnounce(id:String,trackerIndex:int=-1):void {
 			if(extensionContext)
-				extensionContext.call("forceDHTAnnounce",(id) ? id : "");
+				extensionContext.call("forceAnnounce",id.toLocaleLowerCase(),trackerIndex);
+		}
+		public function forceDHTAnnounce(id:String):void {
+			if(extensionContext)
+				extensionContext.call("forceDHTAnnounce",id.toLocaleLowerCase());
 		}
 		public function setPiecePriority(id:String,index:uint,priority:int):void {
 			if(extensionContext)
-				extensionContext.call("setPiecePriority",id,index,priority);
+				extensionContext.call("setPiecePriority",id.toLocaleLowerCase(),index,priority);
 		}
 		public function setPieceDeadline(id:String,index:uint,deadline:int):void {//deadline is in milliseconds
 			if(extensionContext)
-				extensionContext.call("setPieceDeadline",(id,index,deadline));
+				extensionContext.call("setPieceDeadline",(id.toLocaleLowerCase(),index,deadline));
+		}
+		public function addTracker(id:String,url:String):void {
+			if(extensionContext)
+				extensionContext.call("addTracker",(id.toLocaleLowerCase(),url));
+		}
+		public function addUrlSeed(id:String,url:String):void {
+			if(extensionContext)
+				extensionContext.call("addUrlSeed",(id.toLocaleLowerCase(),url));
+		}
+		public function removeUrlSeed(id:String,url:String):void {
+			if(extensionContext)
+				extensionContext.call("removeUrlSeed",(id.toLocaleLowerCase(),url));
 		}
 		public function getMagnetURI(id:String):String{
 			var ret:String;
 			if(extensionContext)
-				ret = extensionContext.call("getMagnetURI",id) as String;
+				ret = extensionContext.call("getMagnetURI",id.toLocaleLowerCase()) as String;
 			return ret;
 		}
-		public function resumeTorrent(id:String=null):void {
-			if(extensionContext)
-				extensionContext.call("resumeTorrent",(id) ? id : "");
-		}
+		
 		public function setQueuePosition(id:String,direction:int):void {
 			if(extensionContext)
-				extensionContext.call("setQueuePosition",id,direction);
+				extensionContext.call("setQueuePosition",id.toLocaleLowerCase(),direction);
 		}
 		public function removeTorrent(id:String):void {
-			TorrentsLibrary.remove(id);
+			TorrentsLibrary.remove(id.toLocaleLowerCase());
 			if(extensionContext)
-				extensionContext.call("removeTorrent",id);
+				extensionContext.call("removeTorrent",id.toLocaleLowerCase());
 		}
-		public function getTorrentStatus(queryFileProgress:Boolean=false):void {
-			var vecStatus:Vector.<TorrentStatus> = extensionContext.call("getTorrentStatus",queryFileProgress) as Vector.<TorrentStatus>;
-			for (var i:int=0, l:int=vecStatus.length; i<l; ++i)
-				TorrentsLibrary.updateStatus(vecStatus[i].id,vecStatus[i]);
+		
+		public function postTorrentUpdates():void {
+			extensionContext.call("postTorrentUpdates");
 		}
-		public function getTorrentPeers(queryFlags:Boolean=true):void {
-			var vecPeers:Vector.<TorrentPeers> = extensionContext.call("getTorrentPeers",queryFlags) as Vector.<TorrentPeers>;
-			for (var i:int=0, l:int=vecPeers.length; i<l; ++i)
-				TorrentsLibrary.updatePeers(vecPeers[i].id,vecPeers[i]);
-		}
+
+		
 		public function getTorrentTrackers():void {
 			var vecTrackers:Vector.<TorrentTrackers> = extensionContext.call("getTorrentTrackers") as Vector.<TorrentTrackers>;
 			for (var i:int=0, l:int=vecTrackers.length; i<l; ++i)
 				TorrentsLibrary.updateTrackers(vecTrackers[i].id,vecTrackers[i]);
 		}
-		public function torrentFromHash(id:String,hash:String,name:String,sequential:Boolean=false,toQueue:Boolean=false,trackers:Vector.<TorrentTracker>=null):void {
-			var torrentFile:File = File.applicationDirectory.resolvePath(TorrentSettings.storage.torrentPath).resolvePath(id+".torrent");
-			if(torrentFile.exists)
-				addTorrent(torrentFile.nativePath,id,hash,sequential,toQueue,trackers);
-			else if(!_inited)
-				this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.TORRENT_UNAVAILABLE));
-			else
-				extensionContext.call("torrentFromMagnet","magnet:?xt=urn:btih:"+encodeURIComponent(hash)+"&dn="+encodeURIComponent(name),id,hash,sequential,toQueue,trackers);
-		}
-		public function torrentFromMagnet(uri:String,id:String,sequential:Boolean=false,toQueue:Boolean=false,trackers:Vector.<TorrentTracker>=null):void {
-			var torrentFile:File = File.applicationDirectory.resolvePath(TorrentSettings.storage.torrentPath).resolvePath(id+".torrent");
-			if(torrentFile.exists)
-				addTorrent(torrentFile.nativePath,id,MagnetParser.parse(uri).hash,sequential,toQueue,trackers);
-			else if(!_inited)
-				this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.TORRENT_UNAVAILABLE));
-			else
-				extensionContext.call("torrentFromMagnet",uri,id,MagnetParser.parse(uri).hash,sequential,toQueue,trackers);
-		}
-		//pieceSize is in KiB
-		public function createTorrent(input:String,output:String,pieceSize:int,trackers:Vector.<TorrentTracker>,webSeeds:Vector.<TorrentWebSeed>,isPrivate:Boolean=false,comment:String=null,seedNow:Boolean=false,rootCert:String=null):void {
-			if(pieceSize % 16 > 0) throw new Error("pieceSize must be a multiple of 16");
-			extensionContext.call("createTorrent",input,output,trackers,webSeeds,pieceSize,isPrivate,comment,seedNow,rootCert);
+		
+		public function addTorrent(id:String,url:String="",hash:String="",name:String="",sequential:Boolean=false,
+									 trackers:Vector.<TorrentTracker>=null,webSeeds:Vector.<TorrentWebSeed>=null,
+									 seedMode:Boolean=false):void {//trackers and webseeds ignored if url is passed
+			var torrentInfo:TorrentInfo;
+			var _id:String = id.toLocaleLowerCase();
+			var _hash:String = hash.toLocaleLowerCase();
+			if(url == ""){
+				var magnet:Magnet = new Magnet();
+				magnet.name = name;
+				magnet.hash = hash;
+				extensionContext.call("addTorrent",_id,MagnetBuilder.getUri(magnet,trackers,webSeeds),_hash,sequential,seedMode) as TorrentInfo;
+			}else if(url.indexOf("http") == 0){
+				var downloader:TorrentDownloader = new TorrentDownloader(_id,url,sequential);
+				downloader.addEventListener(TorrentInfoEvent.TORRENT_DOWNLOADED,onFileDownloaded);
+			}else{
+				//if magnet check if we have the file already
+				if(url.indexOf("magnet") == 0){
+					var file:File = new File(File.applicationDirectory.resolvePath(TorrentSettings.storage.torrentPath).resolvePath(_id+".torrent").nativePath);
+					if(file.exists)
+						url = File.applicationDirectory.resolvePath(TorrentSettings.storage.torrentPath).resolvePath(_id+".torrent").nativePath;
+				}
+				torrentInfo = extensionContext.call("addTorrent",_id,url,_hash,sequential,seedMode) as TorrentInfo;
+				if(torrentInfo){
+					TorrentsLibrary.add(_id,torrentInfo);
+					var tp:TorrentPieces = new TorrentPieces(torrentInfo.numPieces);
+					TorrentsLibrary.updatePieces(_id,tp);
+				}
+					
+			}
+			
 		}
 		
-		protected function onAlertListenerTimer(event:TimerEvent):void {
-			if(extensionContext)
-				extensionContext.call("listenForAlert");
+		protected function onFileDownloaded(event:TorrentInfoEvent):void {
+			addTorrent(event.params.id,event.params.filename,"","",event.params.sequential);
+		}
+		
+		
+		//pieceSize is in KiB
+		public function createTorrent(input:String,output:String,pieceSize:int,trackers:Vector.<TorrentTracker>,
+									  webSeeds:Vector.<TorrentWebSeed>,isPrivate:Boolean=false,comment:String=null,
+									  seedNow:Boolean=false,rootCert:String=null):void {
+			
+			if(Capabilities.os.toLowerCase().indexOf("windows") == -1 && Capabilities.os.toLowerCase().indexOf("Mac") == -1)
+				throw new Error("this method is not yet available for Android");
+			
+			if(pieceSize % 16 > 0)
+				throw new Error("pieceSize must be a multiple of 16");
+			extensionContext.call("createTorrent",input,output,trackers,webSeeds,pieceSize,isPrivate,comment,seedNow,rootCert);
 		}
 		
 		public function isSupported():Boolean {
 			return extensionContext.call("isSupported"); 
 		}
 		
-		public function getPiecesFromByteRanges(filename:String,bytes:Vector.<Object>):Vector.<Object> {
-			return extensionContext.call("getPiecesFromByteRanges",filename,bytes) as Vector.<Object>; 
-		}
-		
 		public function updateSettings():void {
 			extensionContext.call("updateSettings",TorrentSettings);
 		}
-		public function addRSS(uri:String,refresh:int=30,autoDownload:Boolean=true):void {
-			extensionContext.call("addRSS",uri,refresh,autoDownload);
-		}
+		
 		public function addFilterList(filename:String,applyToTrackers:Boolean):void {
 			var validFile:Boolean;
 			var check:String = ".p2p";
@@ -259,16 +371,17 @@ package com.tuarua {
 				this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.ON_ERROR,{message:"only .p2p filters are allowed and file must exist"}));
 		}
 		public function setFilePriority(id:String,index:int,priority:int):void {
-			extensionContext.call("setFilePriority",id,index,priority);
+			extensionContext.call("setFilePriority",id.toLocaleLowerCase(),index,priority);
 		}
 		public function saveAs(fileType:String=null,defaultPath:String=null):String {
+			if(Capabilities.os.toLowerCase().indexOf("windows") == -1 && Capabilities.os.toLowerCase().indexOf("Mac") == -1)
+				throw new Error("this method is not yet available for Android");
 			var ret:String = extensionContext.call("saveAs",fileType,defaultPath) as String;
 			if(ret != "" && ret.lastIndexOf("."+fileType) == -1)
 				ret = ret + "." + fileType;
 			return ret;
 		}
 		public function dispose():void {
-			stopAlertListener();
 			if (!extensionContext) {
 				trace("[BitTorrentANE] Error. ANE Already in a disposed or failed state...");
 				return;
@@ -282,5 +395,106 @@ package com.tuarua {
 		public function get inited():Boolean {
 			return _inited;
 		}
+
+		private function onPeersTimer(event:TimerEvent):void {
+			postPeersUpdate();
+		}
+		private function onTrackersTimer(event:TimerEvent):void {
+			postTrackersUpdate();
+		}
+		private function startStatusTimer():void {
+			if(statusTimer == null){
+				statusTimer = new Timer(_statusUpdateInterval);
+				statusTimer.addEventListener(TimerEvent.TIMER,onStatusTimer);
+				statusTimer.start();
+			}	
+		}
+		private function stopStatusTimer():void {
+			if(statusTimer){
+				statusTimer.removeEventListener(TimerEvent.TIMER,onStatusTimer);
+				statusTimer.stop();
+				statusTimer.reset();
+				statusTimer = null;
+			}
+		}
+		
+		private function startPeersTimer():void {
+			if(peersTimer == null){
+				peersTimer = new Timer(_peersUpdateInterval);
+				peersTimer.addEventListener(TimerEvent.TIMER,onPeersTimer);
+				peersTimer.start();
+			}	
+		}
+		private function stopPeersTimer():void {
+			if(peersTimer){
+				peersTimer.removeEventListener(TimerEvent.TIMER,onPeersTimer);
+				peersTimer.stop();
+				peersTimer.reset();
+				peersTimer = null;
+			}
+		}
+		
+		private function onStatusTimer(event:TimerEvent):void {
+			postTorrentUpdates();
+		}
+		
+		
+		private function startTrackersTimer():void {
+			if(trackersTimer == null){
+				trackersTimer = new Timer(_trackersUpdateInterval);
+				trackersTimer.addEventListener(TimerEvent.TIMER,onTrackersTimer);
+				trackersTimer.start();
+			}	
+		}
+		private function stopTrackersTimer():void {
+			if(trackersTimer){
+				trackersTimer.removeEventListener(TimerEvent.TIMER,onTrackersTimer);
+				trackersTimer.stop();
+				trackersTimer.reset();
+				trackersTimer = null;
+			}
+		}
+		
+		
+		public function set statusUpdateInterval(value:int):void {
+			_statusUpdateInterval = value;
+		}
+
+		public function set peersUpdateInterval(value:int):void {
+			_peersUpdateInterval = value;
+		}
+
+		public function queryForPeers(value:Boolean,id:String="",flags:Boolean=false):void {
+			_queryForPeers = value;
+			_queryPeersForTorrentId = id.toLocaleLowerCase();
+			_queryForPeersFlags = flags;
+			if(_queryForPeers){
+				if(peersTimer == null || !peersTimer.running)
+					startPeersTimer();
+				postPeersUpdate();
+			}else{
+				if(peersTimer)
+					stopPeersTimer();
+			}
+		}
+
+		public function set trackersUpdateInterval(value:int):void {
+			_trackersUpdateInterval = value;
+		}
+
+		public function queryForTrackers(value:Boolean,id:String=""):void {
+			_queryForTrackers = value;
+			_queryTrackersForTorrentId = id.toLocaleLowerCase();
+			if(_queryForTrackers){
+				if(trackersTimer == null || !trackersTimer.running)
+					startTrackersTimer();
+				postTrackersUpdate();
+			}else{
+				if(trackersTimer)
+					stopTrackersTimer();
+			}
+		}
+
+
 	}
 }

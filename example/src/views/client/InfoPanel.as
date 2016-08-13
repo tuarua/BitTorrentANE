@@ -1,5 +1,5 @@
 package views.client {
-	import com.tuarua.torrent.TorrentMeta;
+	import com.tuarua.torrent.TorrentInfo;
 	import com.tuarua.torrent.TorrentPieces;
 	import com.tuarua.torrent.TorrentSettings;
 	import com.tuarua.torrent.TorrentStatus;
@@ -19,9 +19,8 @@ package views.client {
 		private var txtHolder:Sprite = new Sprite();
 		private var pieceBG:Quad = new Quad(1000,8,0x090909);
 		private var pieceQB:MeshBatch = new MeshBatch();
-		private var pieceParitalQB:MeshBatch = new MeshBatch();
+		private var piecePartialQB:MeshBatch = new MeshBatch();
 		private var numLastKnownPieces:int = 0;
-		private var pieceFactor:int = 1;
 		private var numPieces:int = 0;
 		private var pieceLength:int = 0;
 		public function InfoPanel() {
@@ -68,25 +67,23 @@ package views.client {
 				txtHolder.addChild(txt);
 			}
 			txtHolder.x = 130;
-			pieceParitalQB.x = pieceQB.x = pieceBG.x = 140;
-			pieceParitalQB.y = pieceQB.y = pieceBG.y = 31;
-			pieceParitalQB.alpha = pieceQB.alpha = 0.5;
+			piecePartialQB.x = pieceQB.x = pieceBG.x = 140;
+			piecePartialQB.y = pieceQB.y = pieceBG.y = 31;
 			
 			addChild(lblHolder);
 			addChild(txtHolder);
 			
 			addChild(pieceBG);
+			addChild(piecePartialQB);
 			addChild(pieceQB);
-			addChild(pieceParitalQB);
+			
 		}
 		
-		public function init(_tm:TorrentMeta):void {
+		public function init(_tm:TorrentInfo):void {
 			if(_tm){
 				numPieces = _tm.numPieces;
 				pieceLength = _tm.pieceLength;
-				pieceFactor = Math.ceil(numPieces/1000);
-				pieceBG.scaleX = _tm.numPieces/(1000*pieceFactor);
-				
+				piecePartialQB.scaleX = pieceQB.scaleX = 1000/_tm.numPieces;
 				(txtHolder.getChildAt(6) as TextField).text = TextUtils.bytesToString(_tm.size);
 				(txtHolder.getChildAt(8) as TextField).text = _tm.infoHash;
 				(txtHolder.getChildAt(10) as TextField).text = _tm.comment;
@@ -105,7 +102,7 @@ package views.client {
 				(txtHolder.getChildAt(5) as TextField).text = _ts.shareRatio.toFixed(2);
 				(txtHolder.getChildAt(7) as TextField).text = TimeUtils.unixToDate(_ts.addedOn);
 				(txtHolder.getChildAt(9) as TextField).text = _ts.savePath;
-				(txtHolder.getChildAt(11) as TextField).text = (_ts.ETA > 0) ? TimeUtils.secsToTimeCode(_ts.ETA) : "";
+				(txtHolder.getChildAt(11) as TextField).text = (_ts.ETA > 0 && _ts.ETA < (60*60*24*2)) ? TimeUtils.secsToTimeCode(_ts.ETA) : "";
 				(txtHolder.getChildAt(12) as TextField).text = TextUtils.bytesToString(_ts.uploaded) + " (" + TextUtils.bytesToString(_ts.uploadedSession)+" session)";
 				(txtHolder.getChildAt(13) as TextField).text = TextUtils.bytesToString(_ts.uploadRate) + "/s (" + TextUtils.bytesToString(_ts.uploadRateAverage)+"/s avg)";
 				(txtHolder.getChildAt(14) as TextField).text = (_ts.uploadMax > -1) ? TextUtils.bytesToString(_ts.uploadMax) : "∞";
@@ -123,11 +120,11 @@ package views.client {
 		
 		public function finishPieces(_tp:TorrentPieces):void {
 			pieceQB.clear()
-			pieceParitalQB.clear();
+			piecePartialQB.clear();
 			var q:Quad;
 			if(_tp && _tp.pieces && _tp.pieces.length > 0){
 				(txtHolder.getChildAt(16) as TextField).text = numPieces.toString() + " x " + TextUtils.bytesToString(pieceLength) + " (have "+numPieces+")";
-				q = new Quad(Math.ceil(_tp.pieces.length/pieceFactor),8,0x4DD2FF);
+				q = new Quad(_tp.pieces.length,8,0x4DD2FF);
 				pieceQB.addMesh(q);
 			}
 		}
@@ -161,82 +158,38 @@ package views.client {
 			(txtHolder.getChildAt(22) as TextField).text = "";
 			
 			pieceQB.clear();
-			pieceParitalQB.clear();
+			piecePartialQB.clear();
 		}
 		
-		public function updatePartialPieces(p:Vector.<int>):void {
-			
-			pieceParitalQB.clear();
+		public function updatePartialPieces(p:Array):void {
+			piecePartialQB.clear();
 			if(p != null){
-				var finalArr:Vector.<int> = new Vector.<int>();
-				var val:int;
-				for (var i:int=0, l:int=p.length; i<l; ++i){
-					val = Math.floor(p[i]/pieceFactor);
-					if(finalArr.lastIndexOf(val) == -1)
-						finalArr.push(val);
-				}
 				var q:Quad;
-				for (var ii:int=0, ll:int=finalArr.length; ii<ll; ++ii){
-					q = new Quad(1,8,0x6DD900);
-					q.x = finalArr[ii];
-					pieceParitalQB.addMesh(q);
+				for (var ii:int=0, ll:int=p.length; ii<ll; ++ii){
+					q = new Quad(1,8,0x3AA600);
+					q.x = p[ii];
+					piecePartialQB.addMesh(q);
 				}
 			}
 		}
 		
 		public function updatePieces(_tp:TorrentPieces):void {
-			//only render if I need to
-			//handle > 1000
-			
 			if(_tp == null){
 				pieceQB.clear();
 			}else if(_tp && _tp.numDownloaded > numLastKnownPieces){
 				(txtHolder.getChildAt(16) as TextField).text = numPieces.toString() + " x " + TextUtils.bytesToString(pieceLength) + " (have "+_tp.numDownloaded+")";
 				pieceQB.clear();
-				var fnlArr:Array = new Array();
-				var startIndex:int = 0;
-				var endIndex:int = 0;
-				
-				while(startIndex > -1 && endIndex > -1){
-					startIndex = _tp.pieces.indexOf(1,endIndex);
-					if(startIndex == -1) break;
-					endIndex = _tp.pieces.indexOf(0,startIndex);
-					if(endIndex == -1) {
-						fnlArr.push(new Array(_tp.pieces.length-1,1));
-						break;
-					}
-					fnlArr.push(new Array(startIndex,(endIndex-startIndex)));
-				}
-				
-				if(pieceFactor > 1){
-					var fnlArr2:Array = new Array();
-					var from:int;
-					var to:int;
-					for (var ii:int=0, ll:int=fnlArr.length; ii<ll; ++ii){
-						
-						if(fnlArr[ii][1] < pieceFactor)
-							continue;
-						
-						if(fnlArr[ii][0] == 0)
-							from = 0
-						else
-							from = Math.floor(fnlArr[ii][0]/pieceFactor);
-						to =  Math.floor(fnlArr[ii][1]/pieceFactor)
-						fnlArr2.push(new Array(from,to));
-					}
-					fnlArr = fnlArr2;
-				}
-				
 				var q:Quad;
-				for (var i:int=0, l:int=fnlArr.length; i<l; ++i){
-					q = new Quad(fnlArr[i][1],8,0x4DD2FF);
-					q.x = fnlArr[i][0];
+				for (var i:int=0, l:int=_tp.pieces.length; i<l; ++i){
+					if(_tp.pieces[i] == 0)
+						continue;
+					q = new Quad(1,8,0x0186B3);
+					q.x = i;
 					pieceQB.addMesh(q);
 				}
 			}
-			
-			
 		}
+		
 		
 	}
 }
