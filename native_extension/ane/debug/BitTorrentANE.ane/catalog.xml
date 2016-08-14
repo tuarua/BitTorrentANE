@@ -99,8 +99,8 @@
                 <def id="com.tuarua.torrent:TorrentPeers"/>
                 <dep id="Object" type="i"/>
                 <dep id="String" type="s"/>
-                <dep id="__AS3__.vec:Vector" type="s"/>
-                <dep id="com.tuarua.torrent:PeerInfo" type="s"/>
+                <dep id="__AS3__.vec:Vector" type="e"/>
+                <dep id="com.tuarua.torrent:PeerInfo" type="e"/>
             </script>
             <script name="com/tuarua/torrent/TorrentPieces" mod="1470522365222">
                 <def id="com.tuarua.torrent:TorrentPieces"/>
@@ -133,7 +133,7 @@
                 <dep id="String" type="s"/>
                 <dep id="int" type="s"/>
             </script>
-            <script name="com/tuarua/torrent/TorrentStatus" mod="1470611091684">
+            <script name="com/tuarua/torrent/TorrentStatus" mod="1471140079144">
                 <def id="com.tuarua.torrent:TorrentStatus"/>
                 <dep id="Array" type="s"/>
                 <dep id="Boolean" type="s"/>
@@ -326,7 +326,7 @@
                 <dep id="int" type="e"/>
             </script>
             <digests>
-                <digest type="SHA-256" signed="false" value="095282d9751d39c86be04c2791412afcbc189e3fd529fc0d4fcbe39384b8d2b3"/>
+                <digest type="SHA-256" signed="false" value="b6c065cd85d637c0e9394af3e22c4700cb6ca69c68760db42bec57a749d7fd19"/>
             </digests>
         </library>
     </libraries>

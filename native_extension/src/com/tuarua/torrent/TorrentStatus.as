@@ -8,7 +8,7 @@ package com.tuarua.torrent {
 		public var isSequential:Boolean;
 		public var state:int;
 		public var queuePosition:int=0;
-		public var progress:Number;
+		public var progress:Number=0.0;
 		public var downloadRate:uint=0;
 		public var downloadRateAverage:uint=0;
 		public var ETA:int = -1;
