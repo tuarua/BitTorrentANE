@@ -219,45 +219,45 @@ package {
 		}
 		
 		private function onRightMenuClick(event:InteractionEvent):void {
-			var torrentInfo:TorrentInfo = TorrentsLibrary.meta[event.params.id];
 			switch(event.params.value){
 				case 0:
-					bitTorrentANE.pauseTorrent(torrentInfo.infoHash);
+					bitTorrentANE.pauseTorrent(event.params.id);
 					bitTorrentANE.postTorrentUpdates();
 					break;
 				case 8:
-					bitTorrentANE.resumeTorrent(torrentInfo.infoHash);
+					bitTorrentANE.resumeTorrent(event.params.id);
 					bitTorrentANE.postTorrentUpdates();
 					break;
 				case 1:
-					TorrentsLibrary.remove(torrentInfo.infoHash);
-					bitTorrentANE.removeTorrent(torrentInfo.infoHash);
+					bitTorrentANE.removeTorrent(event.params.id);
+					bitTorrentANE.postTorrentUpdates();
+					torrentClientPanel.removeTorrent(event.params.id);
 					break;
 				case 2:
-					bitTorrentANE.setSequentialDownload(torrentInfo.infoHash,false);
+					bitTorrentANE.setSequentialDownload(event.params.id,false);
 					break;
 				case 9:
-					bitTorrentANE.setSequentialDownload(torrentInfo.infoHash,true);
+					bitTorrentANE.setSequentialDownload(event.params.id,true);
 					break;
 				case 3:
-					bitTorrentANE.setQueuePosition(torrentInfo.infoHash,QueuePosition.TOP);
+					bitTorrentANE.setQueuePosition(event.params.id,QueuePosition.TOP);
 					bitTorrentANE.postTorrentUpdates();
 					break;
 				case 4:
-					bitTorrentANE.setQueuePosition(torrentInfo.infoHash,QueuePosition.UP);
+					bitTorrentANE.setQueuePosition(event.params.id,QueuePosition.UP);
 					bitTorrentANE.postTorrentUpdates();
 					break;
 				case 5:
-					bitTorrentANE.setQueuePosition(torrentInfo.infoHash,QueuePosition.DOWN);
+					bitTorrentANE.setQueuePosition(event.params.id,QueuePosition.DOWN);
 					bitTorrentANE.postTorrentUpdates();
 					break;
 				case 6:
-					bitTorrentANE.setQueuePosition(torrentInfo.infoHash,QueuePosition.BOTTOM);
+					bitTorrentANE.setQueuePosition(event.params.id,QueuePosition.BOTTOM);
 					bitTorrentANE.postTorrentUpdates();
 					break;
 				case 7:
 					Clipboard.generalClipboard.clear(); 
-					Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, bitTorrentANE.getMagnetURI(torrentInfo.infoHash), false);
+					Clipboard.generalClipboard.setData(ClipboardFormats.TEXT_FORMAT, bitTorrentANE.getMagnetURI(event.params.id), false);
 					break;
 			}	
 			

@@ -2,8 +2,8 @@ package views.client {
 	import com.tuarua.torrent.TorrentInfo;
 	import com.tuarua.torrent.TorrentPeers;
 	import com.tuarua.torrent.TorrentPieces;
-	import com.tuarua.torrent.TorrentStatus;
 	import com.tuarua.torrent.TorrentStateCodes;
+	import com.tuarua.torrent.TorrentStatus;
 	import com.tuarua.torrent.TorrentTrackers;
 	import com.tuarua.torrent.TorrentsLibrary;
 	
@@ -26,9 +26,9 @@ package views.client {
 	import starling.utils.Align;
 	
 	import views.SrollableContent;
-	import views.client.peers.PeersPanel;
 	import views.client.files.FilesPanel;
 	import views.client.http.HttpPanel;
+	import views.client.peers.PeersPanel;
 	import views.client.trackers.TrackersPanel;
 
 	public class MainPanel extends Sprite {
@@ -393,13 +393,27 @@ package views.client {
 		
 		public function updatePieces():void {
 			if(selectedId){
-				if((TorrentsLibrary.status[selectedId] as TorrentStatus).isFinished)
-					(panelsVec[0] as InfoPanel).finishPieces(TorrentsLibrary.pieces[selectedId] as TorrentPieces);
-				else
-					(panelsVec[0] as InfoPanel).updatePieces(TorrentsLibrary.pieces[selectedId] as TorrentPieces);
+				var ts:TorrentStatus = TorrentsLibrary.status[selectedId] as TorrentStatus;
+				if(ts){
+					if(ts.isFinished)
+						(panelsVec[0] as InfoPanel).finishPieces(TorrentsLibrary.pieces[selectedId] as TorrentPieces);
+					else
+						(panelsVec[0] as InfoPanel).updatePieces(TorrentsLibrary.pieces[selectedId] as TorrentPieces);
+				}
+				
 			}			
 		}
-		
+		public function removeTorrent(id:String):void {
+			var spr:Sprite = itemSpriteDictionary[id] as Sprite;
+			if(spr){
+				itmHolder.removeChild(spr);
+				spr.dispose();
+				delete itemSpriteDictionary[id];
+			}
+			selectedId = null;
+			itemsList.fullHeight = (itmHolder.numChildren*20)+12;
+			itemsList.recalculate();
+		}
 		public function updateStatus():void {
 			var itm:TorrentItem;
 			var tm:TorrentInfo;
@@ -469,8 +483,6 @@ package views.client {
 		}
 		
 		public function updatePeers():void {
-			
-			
 			var d:Dictionary = TorrentsLibrary.peers;
 			if(selectedId){
 				var tp:TorrentPeers = TorrentsLibrary.peers[selectedId] as TorrentPeers;
