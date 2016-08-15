@@ -329,10 +329,8 @@ package com.tuarua {
 					TorrentsLibrary.add(_id,torrentInfo);
 					var tp:TorrentPieces = new TorrentPieces(torrentInfo.numPieces);
 					TorrentsLibrary.updatePieces(_id,tp);
-				}
-					
+				}	
 			}
-			
 		}
 		
 		protected function onFileDownloaded(event:TorrentInfoEvent):void {

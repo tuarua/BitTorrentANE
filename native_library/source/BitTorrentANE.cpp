@@ -112,6 +112,9 @@ typedef bimap<
 typedef AddedTorrents::value_type hashes;
 AddedTorrents addedTorrents;
 
+typedef std::map<uint32_t, std::string> AddedTorrentHandles;
+AddedTorrentHandles addedTorrentHandles;
+
 typedef std::map<std::string, std::string> AddedMagnetsUriMap;
 AddedMagnetsUriMap addedMagnetsUriMap;
 
@@ -827,9 +830,22 @@ extern "C" {
 			torrent_handle th = alert->handle;
 			if (th.is_valid()) {
 				torrent_info ti = th.get_torrent_info();
-				std::string id = getIdFromHash(boost::lexical_cast<std::string>(ti.info_hash())); //id from userdata instead
-				if (id.empty())
-					id = boost::lexical_cast<std::string>(ti.info_hash());
+
+				auto idFromHandleSearch = addedTorrentHandles.find(th.id());
+				std::string idFromHandle = idFromHandleSearch->second;
+				std::string id;
+				if (!idFromHandle.empty()) {
+					id = idFromHandle;
+					std::string existingHash = getHashFromId(id);
+				}
+				else {
+					id = getIdFromHash(boost::lexical_cast<std::string>(ti.info_hash()));
+					if (id.empty())
+						id = boost::lexical_cast<std::string>(ti.info_hash());
+				}
+				
+				addedTorrents.left.erase(id);
+				addedTorrents.insert(hashes(id, boost::lexical_cast<std::string>(ti.info_hash())));
 
 				auto search = addedMagnetsUriMap.find(id);
 				std::string sUri = search->second;
@@ -851,7 +867,7 @@ extern "C" {
 				libtorrent::bencode(std::back_inserter(data), te);
 				saveFile(filename, data);
 				ltsession->remove_torrent(th);
-				addedTorrents.erase(hashes(id, boost::lexical_cast<std::string>(th.info_hash())));
+				
 				addedMagnetsUriMap.erase(id);
 				json j;
 				j["id"] = id;
@@ -886,7 +902,8 @@ extern "C" {
 					std::string id = aUserData[0];
 					std::string hash = aUserData[1];
 					std::string uri = aUserData[2];
-					addedTorrents.insert(hashes(id, hash));
+
+					addedTorrentHandles.insert(make_pair(th.id(), id));
 					addedMagnetsUriMap.insert(make_pair(id, uri));
 				} else {
 					boost::shared_ptr<const torrent_info> ti = th.torrent_file();
@@ -901,7 +918,7 @@ extern "C" {
 #ifndef TORRENT_DISABLE_RESOLVE_COUNTRIES
 					th.resolve_countries(settingsContext.advanced.resolveCountries);
 #endif
-					addedTorrents.insert(hashes(id, hash));
+
 					json j;
 					j["id"] = id;
 					FREDispatchStatusEventAsync(dllContext, (uint8_t*)j.dump().c_str(), (const uint8_t*)torrentAlertEvent.TORRENT_ADDED.c_str());
@@ -970,7 +987,6 @@ extern "C" {
 		
 		add_torrent_params p;
 
-		
 		p.max_connections = settingsContext.connections.maxNumPerTorrent;
 		p.max_uploads = settingsContext.connections.maxUploadsPerTorrent;
 
@@ -1014,9 +1030,6 @@ extern "C" {
 		}
 		else {
 
-			trace("NOT A MAGNET - A FILE");
-
-			
 			torrent_info ti = readTorrentInfo(uri);
 			FREtorrentInfo = getFRETorrentInfo(ti, uri);
 			
@@ -1041,6 +1054,8 @@ extern "C" {
 				p.flags |= add_torrent_params::flag_seed_mode;
 			else
 				p.flags &= ~add_torrent_params::flag_seed_mode;
+
+			addedTorrents.insert(hashes(id, boost::lexical_cast<std::string>(ti.info_hash())));
 
 			ltsession->async_add_torrent(p);
 			
@@ -1134,7 +1149,6 @@ extern "C" {
 	}
 	
 	FREObject getTorrentInfo(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
-		trace("getTorrentInfo called");
 		std::string uri = getStringFromFREObject(argv[0]);
 		return getFRETorrentInfo(readTorrentInfo(uri), uri);
 	}

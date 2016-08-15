@@ -278,8 +278,6 @@ package views.client {
 							rightClickMenuDataList.push({value:5,label:"Move down"});
 							rightClickMenuDataList.push({value:6,label:"Move to bottom"});
 						}
-						
-						
 					}
 					
 					// + preview file
@@ -413,6 +411,9 @@ package views.client {
 			selectedId = null;
 			itemsList.fullHeight = (itmHolder.numChildren*20)+12;
 			itemsList.recalculate();
+			
+			clear();
+			
 		}
 		public function updateStatus():void {
 			var itm:TorrentItem;
