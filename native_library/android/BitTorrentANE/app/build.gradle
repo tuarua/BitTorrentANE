@@ -2,7 +2,7 @@
 apply plugin: 'com.android.library'
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '23.0.2'
 
     defaultConfig {
         minSdkVersion 11
@@ -23,7 +23,7 @@ repositories {
     jcenter()
 }
 
-def JLIBTORRENT_VERSION='1.1.0.36'
+def JLIBTORRENT_VERSION='1.1.1.37'
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')

@@ -269,12 +269,12 @@ package views.client {
 					rightClickMenuDataList.push({value:(ts.isSequential) ? 2 : 9,label:(ts.isSequential) ? "Sequential Off": "Sequential On"});
 					rightClickMenuDataList.push({value:7,label:"Copy magnet link"});
 					
-					if(TorrentsLibrary.length(TorrentsLibrary.meta) > 1){
+					if(TorrentsLibrary.length(TorrentsLibrary.info) > 1){
 						if(ts.queuePosition > 0){
 							rightClickMenuDataList.push({value:3,label:"Move to top"});
 							rightClickMenuDataList.push({value:4,label:"Move up"});
 						}
-						if((ts.queuePosition < TorrentsLibrary.length(TorrentsLibrary.meta)-1) && ts.queuePosition > -1){
+						if((ts.queuePosition < TorrentsLibrary.length(TorrentsLibrary.info)-1) && ts.queuePosition > -1){
 							rightClickMenuDataList.push({value:5,label:"Move down"});
 							rightClickMenuDataList.push({value:6,label:"Move to bottom"});
 						}
@@ -346,7 +346,7 @@ package views.client {
 				ti.select(selectedId == ti.id);
 			}
 			
-			(panelsVec[0] as InfoPanel).init(TorrentsLibrary.meta[selectedId]);
+			(panelsVec[0] as InfoPanel).init(TorrentsLibrary.info[selectedId]);
 			(panelsVec[1] as TrackersPanel).destroy();
 			(panelsVec[2] as PeersPanel).destroy();
 			(panelsVec[4] as FilesPanel).destroy();
@@ -381,12 +381,12 @@ package views.client {
 		
 		private function updateFiles():void {
 			if(selectedId)
-				(panelsVec[4] as FilesPanel).populate((TorrentsLibrary.meta[selectedId] as TorrentInfo).files);
+				(panelsVec[4] as FilesPanel).populate((TorrentsLibrary.info[selectedId] as TorrentInfo).files);
 		}
 		
 		private function updateHTTPsources():void {
 			if(selectedId)
-				(panelsVec[3] as HttpPanel).populate((TorrentsLibrary.meta[selectedId] as TorrentInfo).urlSeeds);
+				(panelsVec[3] as HttpPanel).populate((TorrentsLibrary.info[selectedId] as TorrentInfo).urlSeeds);
 		}
 		
 		public function updatePieces():void {
@@ -421,8 +421,8 @@ package views.client {
 			var ts:TorrentStatus;
 			var numNonSeeding:int=0;
 			var arrSeeding:Array = new Array();
-			for (var key:String in TorrentsLibrary.meta) {
-				tm = TorrentsLibrary.meta[key] as TorrentInfo;
+			for (var key:String in TorrentsLibrary.info) {
+				tm = TorrentsLibrary.info[key] as TorrentInfo;
 				ts = TorrentsLibrary.status[key];
 				if(tm && ts){
 					if(itemSpriteDictionary[key] == undefined){

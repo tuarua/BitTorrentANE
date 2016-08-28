@@ -20,7 +20,6 @@ package views.client {
 		private var pieceBG:Quad = new Quad(1000,8,0x090909);
 		private var pieceQB:MeshBatch = new MeshBatch();
 		private var piecePartialQB:MeshBatch = new MeshBatch();
-		private var numLastKnownPieces:int = 0;
 		private var numPieces:int = 0;
 		private var pieceLength:int = 0;
 		public function InfoPanel() {
@@ -176,7 +175,7 @@ package views.client {
 		public function updatePieces(_tp:TorrentPieces):void {
 			if(_tp == null){
 				pieceQB.clear();
-			}else if(_tp && _tp.numDownloaded > numLastKnownPieces){
+			}else if(_tp){
 				(txtHolder.getChildAt(16) as TextField).text = numPieces.toString() + " x " + TextUtils.bytesToString(pieceLength) + " (have "+_tp.numDownloaded+")";
 				pieceQB.clear();
 				var q:Quad;

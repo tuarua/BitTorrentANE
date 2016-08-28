@@ -98,20 +98,22 @@ package com.tuarua {
 				
 				case TorrentAlertEvent.STATE_UPDATE:
 					pObj = JSON.parse(event.code);
+					//trace(TorrentAlertEvent.STATE_UPDATE);
+					//trace(event.code);
 					if(pObj){
 						TorrentsLibrary.updateStatusFromJSON(pObj);
 						this.dispatchEvent(new TorrentAlertEvent(TorrentAlertEvent.STATE_UPDATE,null));
 					}
 					break;
 			
-				case TorrentAlertEvent.TORRENT_CHECKED: case TorrentAlertEvent.FILE_COMPLETED: case TorrentAlertEvent.SAVE_RESUME_DATA:
+				case TorrentAlertEvent.TORRENT_CHECKED: case TorrentAlertEvent.SAVE_RESUME_DATA:
 					pObj = JSON.parse(event.code);
 					this.dispatchEvent(new TorrentAlertEvent(event.level,pObj));
 					break;
 			
 				case TorrentAlertEvent.FILE_COMPLETED:
 					pObj = JSON.parse(event.code);
-					this.dispatchEvent(new TorrentAlertEvent(event.level,pObj));
+					this.dispatchEvent(new TorrentAlertEvent(TorrentAlertEvent.FILE_COMPLETED,pObj));
 					break;
 				
 				case TorrentAlertEvent.TORRENT_FINISHED:
@@ -160,7 +162,7 @@ package com.tuarua {
 						if(pObj && pObj.hasOwnProperty("id") && pObj.id){
 							var torrentFile:File = File.applicationDirectory.resolvePath(TorrentSettings.storage.torrentPath).resolvePath(pObj.id+".torrent");
 							if(torrentFile.exists)
-								addTorrent(pObj.id,torrentFile.nativePath,"","",pObj.isSequential); //todo need sequential
+								addTorrent(pObj.id,torrentFile.nativePath,"","",pObj.isSequential);
 						}
 					}catch(e:Error){
 						trace(e.message);
@@ -246,47 +248,53 @@ package com.tuarua {
 		}
 		public function forceAnnounce(id:String,trackerIndex:int=-1):void {
 			if(extensionContext)
-				extensionContext.call("forceAnnounce",id.toLocaleLowerCase(),trackerIndex);
+				extensionContext.call("forceAnnounce",id.toLowerCase(),trackerIndex);
 		}
 		public function forceDHTAnnounce(id:String):void {
 			if(extensionContext)
-				extensionContext.call("forceDHTAnnounce",id.toLocaleLowerCase());
+				extensionContext.call("forceDHTAnnounce",id.toLowerCase());
 		}
 		public function setPiecePriority(id:String,index:uint,priority:int):void {
 			if(extensionContext)
-				extensionContext.call("setPiecePriority",id.toLocaleLowerCase(),index,priority);
+				extensionContext.call("setPiecePriority",id.toLowerCase(),index,priority);
 		}
 		public function setPieceDeadline(id:String,index:uint,deadline:int):void {//deadline is in milliseconds
 			if(extensionContext)
-				extensionContext.call("setPieceDeadline",(id.toLocaleLowerCase(),index,deadline));
+				extensionContext.call("setPieceDeadline",id.toLowerCase(),index,deadline);
+		}
+		public function resetPieceDeadline(id:String,index:uint):void {
+			if(extensionContext){
+				extensionContext.call("resetPieceDeadline",id.toLowerCase(),index);
+			}
+				
 		}
 		public function addTracker(id:String,url:String):void {
 			if(extensionContext)
-				extensionContext.call("addTracker",(id.toLocaleLowerCase(),url));
+				extensionContext.call("addTracker",id.toLowerCase(),url);
 		}
 		public function addUrlSeed(id:String,url:String):void {
 			if(extensionContext)
-				extensionContext.call("addUrlSeed",(id.toLocaleLowerCase(),url));
+				extensionContext.call("addUrlSeed",id.toLowerCase(),url);
 		}
 		public function removeUrlSeed(id:String,url:String):void {
 			if(extensionContext)
-				extensionContext.call("removeUrlSeed",(id.toLocaleLowerCase(),url));
+				extensionContext.call("removeUrlSeed",id.toLowerCase(),url);
 		}
 		public function getMagnetURI(id:String):String{
 			var ret:String;
 			if(extensionContext)
-				ret = extensionContext.call("getMagnetURI",id.toLocaleLowerCase()) as String;
+				ret = extensionContext.call("getMagnetURI",id.toLowerCase()) as String;
 			return ret;
 		}
 		
 		public function setQueuePosition(id:String,direction:int):void {
 			if(extensionContext)
-				extensionContext.call("setQueuePosition",id.toLocaleLowerCase(),direction);
+				extensionContext.call("setQueuePosition",id.toLowerCase(),direction);
 		}
 		public function removeTorrent(id:String):void {
 			TorrentsLibrary.remove(id.toLocaleLowerCase());
 			if(extensionContext)
-				extensionContext.call("removeTorrent",id.toLocaleLowerCase());
+				extensionContext.call("removeTorrent",id.toLowerCase());
 		}
 		
 		public function postTorrentUpdates():void {
@@ -307,8 +315,8 @@ package com.tuarua {
 									 trackers:Vector.<TorrentTracker>=null,webSeeds:Vector.<TorrentWebSeed>=null,
 									 seedMode:Boolean=false):void {//trackers and webseeds ignored if url is passed
 			var torrentInfo:TorrentInfo;
-			var _id:String = id.toLocaleLowerCase();
-			var _hash:String = hash.toLocaleLowerCase();
+			var _id:String = id.toLowerCase();
+			var _hash:String = hash.toLowerCase();
 			if(url == null || url == ""){
 				var magnet:Magnet = new Magnet();
 				magnet.name = name;
@@ -372,7 +380,7 @@ package com.tuarua {
 				this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.ON_ERROR,{message:"only .p2p filters are allowed and file must exist"}));
 		}
 		public function setFilePriority(id:String,index:int,priority:int):void {
-			extensionContext.call("setFilePriority",id.toLocaleLowerCase(),index,priority);
+			extensionContext.call("setFilePriority",id.toLowerCase(),index,priority);
 		}
 		public function saveAs(fileType:String=null,defaultPath:String=null):String {
 			if(Capabilities.os.toLowerCase().indexOf("windows") == -1 && Capabilities.os.toLowerCase().indexOf("Mac") == -1)
@@ -473,7 +481,7 @@ package com.tuarua {
 
 		public function queryForPeers(value:Boolean,id:String="",flags:Boolean=false):void {
 			_queryForPeers = value;
-			_queryPeersForTorrentId = id.toLocaleLowerCase();
+			_queryPeersForTorrentId = id.toLowerCase();
 			_queryForPeersFlags = flags;
 			if(_queryForPeers){
 				if(peersTimer == null || !peersTimer.running)
@@ -491,7 +499,7 @@ package com.tuarua {
 
 		public function queryForTrackers(value:Boolean,id:String=""):void {
 			_queryForTrackers = value;
-			_queryTrackersForTorrentId = id.toLocaleLowerCase();
+			_queryTrackersForTorrentId = id.toLowerCase();
 			if(_queryForTrackers){
 				if(trackersTimer == null || !trackersTimer.running)
 					startTrackersTimer();

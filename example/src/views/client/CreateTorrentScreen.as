@@ -242,7 +242,8 @@ package views.client {
 				
 				var webSeeds:Vector.<TorrentWebSeed> = new Vector.<TorrentWebSeed>();
 				var arrWebSeeds:Array = TextUtils.trim(webInput.text).split(String.fromCharCode(13));
-				for (var i2:int=0, l2:int=arrTrackers.length; i2<l2; ++i2)
+				
+				for (var i2:int=0, l2:int=arrWebSeeds.length; i2<l2; ++i2)
 					webSeeds.push(new TorrentWebSeed(arrWebSeeds[i2]));
 				
 				obj.webSeeds = webSeeds;
@@ -257,15 +258,6 @@ package views.client {
 				circularLoader.visible = true;
 				
 				this.dispatchEvent(new InteractionEvent(InteractionEvent.ON_TORRRENT_CREATE,obj,true));
-				
-				
-				
-				//var outputFile:File = new File();
-				//outputFile.addEventListener(Event.SELECT, onOutputSelected);
-				
-				//var savePath:String = avANE.saveAs(containerDataList[containerDrop.selected].value);
-				
-				//outputFile.browseForSave("Save torrent as...");
 				
 			}
 		}

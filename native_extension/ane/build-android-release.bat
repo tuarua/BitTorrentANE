@@ -23,14 +23,14 @@ copy /Y %pathtome%..\..\native_library\android\%projectName%\app\build\outputs\a
 
 echo "GETTING ANDROID JAR"
 call %SZIP% x %pathtome%platforms\android\app-release.aar -o%pathtome%platforms\android\ classes.jar
-call %SZIP% x %pathtome%platforms\android\app-release.aar -o%pathtome%platforms\android\ libs\jlibtorrent-1.1.0.36.jar
+call %SZIP% x %pathtome%platforms\android\app-release.aar -o%pathtome%platforms\android\ libs\jlibtorrent-1.1.1.37.jar
 call %SZIP% x %pathtome%platforms\android\app-release.aar -o%pathtome%platforms\android\ libs\geoip2-2.7.0.jar
 call %SZIP% x %pathtome%platforms\android\app-release.aar -o%pathtome%platforms\android\ libs\maxmind-db-1.2.1.jar
 call %SZIP% x %pathtome%platforms\android\app-release.aar -o%pathtome%platforms\android\ libs\jackson-annotations-2.7.0.jar
 call %SZIP% x %pathtome%platforms\android\app-release.aar -o%pathtome%platforms\android\ libs\jackson-core-2.7.3.jar
 call %SZIP% x %pathtome%platforms\android\app-release.aar -o%pathtome%platforms\android\ libs\jackson-databind-2.7.3.jar
 
-move %pathtome%platforms\android\libs\jlibtorrent-1.1.0.36.jar %pathtome%platforms\android
+move %pathtome%platforms\android\libs\jlibtorrent-1.1.1.37.jar %pathtome%platforms\android
 move %pathtome%platforms\android\libs\geoip2-2.7.0.jar %pathtome%platforms\android
 move %pathtome%platforms\android\libs\maxmind-db-1.2.1.jar %pathtome%platforms\android
 move %pathtome%platforms\android\libs\jackson-annotations-2.7.0.jar %pathtome%platforms\android
@@ -44,7 +44,7 @@ call adt.bat -package -target ane %projectName%-android.ane extension-android.xm
 -C platforms/android library.swf classes.jar libs/armeabi/libjlibtorrent.so ^
 libs/armeabi-v7a/libjlibtorrent.so ^
 -platformoptions platforms/android/platform.xml res/values/strings.xml ^
-jlibtorrent-1.1.0.36.jar ^
+jlibtorrent-1.1.1.37.jar ^
 geoip2-2.7.0.jar ^
 maxmind-db-1.2.1.jar ^
 jackson-annotations-2.7.0.jar ^
@@ -54,7 +54,7 @@ jackson-databind-2.7.3.jar ^
 -C platforms/android library.swf classes.jar ^
 libs/x86/libjlibtorrent.so ^
 -platformoptions platforms/android/platform.xml res/values/strings.xml ^
-jlibtorrent-1.1.0.36.jar ^
+jlibtorrent-1.1.1.37.jar ^
 geoip2-2.7.0.jar ^
 maxmind-db-1.2.1.jar ^
 jackson-annotations-2.7.0.jar ^
@@ -63,7 +63,7 @@ jackson-databind-2.7.3.jar
 
 del platforms\\android\\library.swf
 del platforms\\android\\classes.jar
-del platforms\\android\\jlibtorrent-1.1.0.36.jar
+del platforms\\android\\jlibtorrent-1.1.1.37.jar
 del platforms\\android\\geoip2-2.7.0.jar
 del platforms\\android\\maxmind-db-1.2.1.jar
 del platforms\\android\\jackson-annotations-2.7.0.jar

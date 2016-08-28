@@ -10,7 +10,7 @@
     </features>
     <libraries>
         <library path="library.swf">
-            <script name="com/tuarua/BitTorrentANE" mod="1471216498056">
+            <script name="com/tuarua/BitTorrentANE" mod="1472335794304">
                 <def id="com.tuarua:BitTorrentANE"/>
                 <dep id="Boolean" type="s"/>
                 <dep id="Error" type="e"/>
@@ -99,15 +99,15 @@
                 <def id="com.tuarua.torrent:TorrentPeers"/>
                 <dep id="Object" type="i"/>
                 <dep id="String" type="s"/>
-                <dep id="__AS3__.vec:Vector" type="e"/>
-                <dep id="com.tuarua.torrent:PeerInfo" type="e"/>
+                <dep id="__AS3__.vec:Vector" type="s"/>
+                <dep id="com.tuarua.torrent:PeerInfo" type="s"/>
             </script>
             <script name="com/tuarua/torrent/TorrentPieces" mod="1470522365222">
                 <def id="com.tuarua.torrent:TorrentPieces"/>
                 <dep id="Boolean" type="s"/>
                 <dep id="Object" type="i"/>
                 <dep id="__AS3__.vec:Vector" type="e"/>
-                <dep id="int" type="e"/>
+                <dep id="int" type="s"/>
             </script>
             <script name="com/tuarua/torrent/TorrentSettings" mod="1470697212907">
                 <def id="com.tuarua.torrent:TorrentSettings"/>
@@ -160,7 +160,7 @@
                 <dep id="Object" type="i"/>
                 <dep id="String" type="s"/>
             </script>
-            <script name="com/tuarua/torrent/TorrentsLibrary" mod="1471041552467">
+            <script name="com/tuarua/torrent/TorrentsLibrary" mod="1471637736541">
                 <def id="com.tuarua.torrent:TorrentsLibrary"/>
                 <dep id="Math" type="e"/>
                 <dep id="Object" type="i"/>
@@ -326,7 +326,7 @@
                 <dep id="int" type="e"/>
             </script>
             <digests>
-                <digest type="SHA-256" signed="false" value="9be9e63696b250875b860a41b829923f4332041c68a29d3b308ef29db39702ee"/>
+                <digest type="SHA-256" signed="false" value="e4dc8d90a427f60899a3a873ffdb223536764fcc1d9feaccb409bbfa3cb0044c"/>
             </digests>
         </library>
     </libraries>

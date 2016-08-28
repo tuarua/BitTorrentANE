@@ -406,8 +406,8 @@ package {
 			currentStatus = TorrentsLibrary.status[torrentId] as TorrentStatus;
 			currentPieces = TorrentsLibrary.pieces[torrentId] as TorrentPieces;
 			if(currentStatus){
-				if(TorrentsLibrary.meta[torrentId])
-					currentVideoFile = TorrentsLibrary.meta[torrentId].getFileByExtension(["mp4"]);
+				if(TorrentsLibrary.info[torrentId])
+					currentVideoFile = TorrentsLibrary.info[torrentId].getFileByExtension(["mp4"]);
 				
 				if(currentVideoFile && currentStatus && currentPieces){
 					if(isVideoPlaying){

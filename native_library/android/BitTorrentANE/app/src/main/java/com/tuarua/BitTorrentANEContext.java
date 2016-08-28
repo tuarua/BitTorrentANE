@@ -21,6 +21,7 @@ import com.frostwire.jlibtorrent.AnnounceEntry;
 import com.frostwire.jlibtorrent.Bitfield;
 import com.frostwire.jlibtorrent.Dht;
 import com.frostwire.jlibtorrent.Entry;
+import com.frostwire.jlibtorrent.ErrorCode;
 import com.frostwire.jlibtorrent.FileStorage;
 import com.frostwire.jlibtorrent.LibTorrent;
 import com.frostwire.jlibtorrent.PartialPieceInfo;
@@ -41,6 +42,7 @@ import com.frostwire.jlibtorrent.alerts.FileCompletedAlert;
 import com.frostwire.jlibtorrent.alerts.ListenFailedAlert;
 import com.frostwire.jlibtorrent.alerts.ListenSucceededAlert;
 import com.frostwire.jlibtorrent.alerts.MetadataReceivedAlert;
+import com.frostwire.jlibtorrent.alerts.PeerAlert;
 import com.frostwire.jlibtorrent.alerts.PieceFinishedAlert;
 import com.frostwire.jlibtorrent.alerts.SaveResumeDataAlert;
 import com.frostwire.jlibtorrent.alerts.StateChangedAlert;
@@ -148,6 +150,9 @@ public class BitTorrentANEContext extends FREContext {
             AlertType.TORRENT_ADDED.swig(),
             AlertType.TORRENT_PAUSED.swig(),
             AlertType.TORRENT_FINISHED.swig(),
+            AlertType.PEER_ERROR.swig(),
+            AlertType.TORRENT_ERROR.swig(),
+            AlertType.PORTMAP_ERROR.swig(),
             AlertType.TORRENT_RESUMED.swig()
     };
 
@@ -173,6 +178,7 @@ public class BitTorrentANEContext extends FREContext {
         functionsToSet.put("getTorrentTrackers",new getTorrentTrackers());
         functionsToSet.put("setSequentialDownload",new setSequentialDownload());
         functionsToSet.put("setPieceDeadline",new setPieceDeadline());
+        functionsToSet.put("resetPieceDeadline",new resetPieceDeadline());
         functionsToSet.put("setPiecePriority",new setPiecePriority());
         functionsToSet.put("setFilePriority",new setFilePriority());
         functionsToSet.put("addTracker",new addTracker());
@@ -218,6 +224,9 @@ public class BitTorrentANEContext extends FREContext {
 
             JSONObject jsonObject;
             switch (type) {
+
+                case PEER_ERROR:
+                    break;
                 case FASTRESUME_REJECTED:
                     break;
                 case STATE_CHANGED:
@@ -245,22 +254,24 @@ public class BitTorrentANEContext extends FREContext {
                     break;
                 case TORRENT_ADDED:
                     th = ((TorrentAddedAlert) alert).handle();
-                    if(th.isValid()) {
+                    if(th != null && th.isValid()) {
                         infoHash = th.getInfoHash();
                         id = addedTorrentsHashMap.get(infoHash.toString());
                         ti = th.getTorrentInfo();
-                        jsonObject = new JSONObject();
-                        prioritizeFileTypes(th, ti);
-                        try {
-                            jsonObject.put("id",id);
-                            jsonObject.put("hash",infoHash.toString());
-                        } catch (JSONException e) {
-                            trace(e.getMessage());
-                            e.printStackTrace();
+                        if(ti != null){
+                            jsonObject = new JSONObject();
+                            if(TorrentSettings.priorityFileTypes.size() > 0) prioritizeFileTypes(th, ti);
+                            try {
+                                jsonObject.put("id",id);
+                                jsonObject.put("hash",infoHash.toString());
+                            } catch (JSONException e) {
+                                trace(e.getMessage());
+                                e.printStackTrace();
+                            }
+                            ltsession.removeListener(stateUpdateAlertListener);
+                            ltsession.addListener(stateUpdateAlertListener);
+                            dispatchStatusEventAsync(jsonObject.toString(),FRETorrentAlert.TORRENT_ADDED);
                         }
-                        ltsession.removeListener(stateUpdateAlertListener);
-                        ltsession.addListener(stateUpdateAlertListener);
-                        dispatchStatusEventAsync(jsonObject.toString(),FRETorrentAlert.TORRENT_ADDED);
                     }
 
                     break;
@@ -329,7 +340,7 @@ public class BitTorrentANEContext extends FREContext {
                             infoHash = th.getInfoHash();
                             id = addedTorrentsHashMap.get(infoHash.toString());
                             jsonObject.put("id",addedTorrentsHashMap.get(id));
-                            jsonObject.put("index",addedTorrentsHashMap.get(((FileCompletedAlert) alert).getIndex()));
+                            jsonObject.put("index",((FileCompletedAlert) alert).getIndex());
                             dispatchStatusEventAsync(jsonObject.toString(),FRETorrentAlert.FILE_COMPLETED);
                         } catch (JSONException e) {
                             trace(e.getMessage());
@@ -409,7 +420,7 @@ public class BitTorrentANEContext extends FREContext {
                     th = ((TrackerReplyAlert) alert).handle();
                     infoHash = th.getInfoHash();
                     id = addedTorrentsHashMap.get(infoHash.toString());
-                    if(th.isValid()){
+                    if(th != null && th.isValid()){
                         ti = th.getTorrentInfo();
                         if(ti.isValid()){
                             Map<String,Integer> resp = torrentTrackerPeerMap.get(id);
@@ -695,6 +706,8 @@ public class BitTorrentANEContext extends FREContext {
                 });
             }
 
+            trace("Libtorrent version: "+LibTorrent.version());
+
             return aneHelper.getReturnTrue();
         }
     }
@@ -886,8 +899,11 @@ public class BitTorrentANEContext extends FREContext {
                     jitm.put("id",addedTorrentsHashMap.get(status.getInfoHash().toString()));
                     jitm.put("numPieces",status.getNumPieces());
                     jitm.put("isSequential",status.isSequentialDownload()); //need this ?
+
+
+
                     jitm.put("queuePosition",status.getQueuePosition());
-                    jitm.put("progress",status.getProgress());
+                    jitm.put("progress",status.getProgress() * 100);
                     jitm.put("downloadRate",status.getDownloadPayloadRate());
                     jitm.put("downloadRateAverage",status.getAllTimeDownload() / (1+ status.getActiveTime()- status.getFinishedTime()));
                     jitm.put("allTimeDownload",status.getAllTimeDownload());
@@ -1040,10 +1056,6 @@ public class BitTorrentANEContext extends FREContext {
             }
             th.setPieceDeadline(last,0);
         }
-        Priority[] priorities = new Priority[ti.numPieces()];
-        for (int i = 0; i < priorities.length; i++) {
-            priorities[i] = Priority.NORMAL;
-        }
     }
 
 
@@ -1150,8 +1162,6 @@ public class BitTorrentANEContext extends FREContext {
 
                                        String flgsAsString = "";
                                        JSONObject jsonFlags = new JSONObject();
-
-
 
                                        if(isInteresting){
                                            if(isRemoteChoked)
@@ -1385,7 +1395,6 @@ public class BitTorrentANEContext extends FREContext {
             }
         }
         aneHelper.setFREObjectProperty(torrentMeta,"files",vecTorrents);
-
         ArrayList<WebSeedEntry> webSeeds = ti.webSeeds();
         FREArray vecUrlSeeds = null;
         vecUrlSeeds = (FREArray) aneHelper.createFREObject("Vector.<String>",null);
@@ -1394,7 +1403,7 @@ public class BitTorrentANEContext extends FREContext {
         } catch (FREInvalidObjectException | FREReadOnlyException e) {
             e.printStackTrace();
         }
-        trace("number of webseeds: "+String.valueOf(webSeeds.size()));
+        //trace("number of webseeds: "+String.valueOf(webSeeds.size()));
         for (int i = 0; i < webSeeds.size(); ++i) {
             try {
                 vecUrlSeeds.setObjectAt(i,aneHelper.getFREObjectFromString(webSeeds.get(i).url()));
@@ -1431,6 +1440,7 @@ public class BitTorrentANEContext extends FREContext {
                         add_torrent_params p = add_torrent_params.create_instance_disabled_storage();
                         error_code ec = new error_code();
                         libtorrent.parse_magnet_uri(uri, p, ec);
+
                         p.setUrl(uri);
 
                         if (ec.value() != 0) {
@@ -1445,6 +1455,13 @@ public class BitTorrentANEContext extends FREContext {
 
                         long flags = p.get_flags();
                         flags &= ~add_torrent_params.flags_t.flag_auto_managed.swigValue();
+
+                        if (isSeq)
+                            flags |= add_torrent_params.flags_t.flag_sequential_download.swigValue();
+                        else
+                            flags &= ~add_torrent_params.flags_t.flag_sequential_download.swigValue();
+
+
                         p.set_flags(flags);
 
                         ec.clear();
@@ -1525,6 +1542,7 @@ public class BitTorrentANEContext extends FREContext {
                     else
                         storageMode = StorageMode.fromSwig(storage_mode_t.storage_mode_allocate.swigValue());
                     p.storageMode(storageMode);
+
 
                     ltsession.asyncAddTorrent(p);
                 }
@@ -1669,6 +1687,23 @@ public class BitTorrentANEContext extends FREContext {
                     ret = true;
                     Priority p = Priority.fromSwig(priority);
                     th.piecePriority(index,p);
+                }
+            }
+            return aneHelper.getFREObjectFromBool(ret);
+        }
+    }
+
+    private class resetPieceDeadline implements FREFunction {
+        @Override
+        public FREObject call(FREContext freContext, FREObject[] freObjects) {
+            final String id = aneHelper.getStringFromFREObject(freObjects[0]);
+            final int index = aneHelper.getIntFromFREObject(freObjects[1]);
+            Boolean ret = false;
+            TorrentHandle th =  ltsession.findTorrent(addedTorrentsIdMap.get(id));
+            if(th != null) {
+                if(th.isValid() && th.getStatus().hasMetadata()){
+                    ret = true;
+                    th.resetPieceDeadline(index);
                 }
             }
             return aneHelper.getFREObjectFromBool(ret);
@@ -2079,5 +2114,6 @@ public class BitTorrentANEContext extends FREContext {
             return aneHelper.getFREObjectFromBool(ret);
         }
     }
+
 
 }

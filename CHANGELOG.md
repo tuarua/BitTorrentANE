@@ -1,3 +1,11 @@
+### 1.3.1
+- Android: Updated example
+- Android: Updated jlibtorrent to 1.1.1.37
+- Win/OSX/Android: Added resetPieceDeadline method
+- Win/OSX: Fix BUG with url seeds when creating torrent
+- Win/OSX: Added setPieceDeadline method
+- Win/OSX: Minor fixes
+
 ### 1.3.0
 - Android: Added support.
 - Win/OSX: reworked addTorrent to remove complexity from the client. Magnets, downloads and local files are all now handled by the one method

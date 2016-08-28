@@ -2,26 +2,26 @@ package com.tuarua.torrent {
 	import flash.utils.Dictionary;
 	
 	public class TorrentsLibrary{
-		public static var meta:Dictionary = new Dictionary();
+		public static var info:Dictionary = new Dictionary();
 		public static var status:Dictionary = new Dictionary();
 		public static var pieces:Dictionary = new Dictionary();
 		public static var peers:Dictionary = new Dictionary();
 		public static var trackers:Dictionary = new Dictionary();
-		public static function add(name:String,tm:TorrentInfo):void {
-			if(meta[name] == undefined){
-				meta[name] = tm;
-				initStatus(name,tm);
+		public static function add(name:String,ti:TorrentInfo):void {
+			if(info[name] == undefined){
+				info[name] = ti;
+				initStatus(name,ti);
 				pieces[name] = null;
 				peers[name] = null;
 			}
 		}
-		private static function initStatus(name:String,tm:TorrentInfo):void {
+		private static function initStatus(name:String,ti:TorrentInfo):void {
 			status[name] = new TorrentStatus();
 			status[name].id = name;
-			status[name].infoHash = tm.infoHash;
+			status[name].infoHash = ti.infoHash;
 		}
 		public static function remove(name:String):void {
-			delete meta[name];
+			delete info[name];
 			delete status[name];
 			delete pieces[name];
 			delete peers[name];
@@ -44,9 +44,9 @@ package com.tuarua.torrent {
 				statusInternal.activeTime = statusJSON.activeTime;
 				statusInternal.addedOn = statusJSON.addedOn;
 				
-				if(statusInternal.state == TorrentStateCodes.DOWNLOADING && (meta[statusJSON.id] as TorrentInfo).size > 0 
+				if(statusInternal.state == TorrentStateCodes.DOWNLOADING && (info[statusJSON.id] as TorrentInfo).size > 0 
 					&& statusJSON.allTimeDownload > 0 && statusJSON.downloadPayloadRate > 1024){
-					statusInternal.ETA = Math.round(((meta[statusJSON.id] as TorrentInfo).size - statusJSON.allTimeDownload)/statusJSON.downloadPayloadRate);
+					statusInternal.ETA = Math.round(((info[statusJSON.id] as TorrentInfo).size - statusJSON.allTimeDownload)/statusJSON.downloadPayloadRate);
 				}
 				
 				statusInternal.downloaded = statusJSON.downloaded;

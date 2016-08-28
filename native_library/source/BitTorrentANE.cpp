@@ -1490,6 +1490,26 @@ extern "C" {
 		}
 		return getFREObjectFromBool(false);
 	}
+
+	FREObject resetPieceDeadline(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
+		using namespace libtorrent;
+		using namespace std;
+		std::string id = getStringFromFREObject(argv[0]);
+		unsigned int index = getUInt32FromFREObject(argv[1]);
+		std::string hash = getHashFromId(id);
+		torrent_handle fh = findHandle(hash);
+		if (fh.is_valid()) {
+			if (fh.is_valid() && fh.status().has_metadata)
+				fh.reset_piece_deadline(index);
+			return getFREObjectFromBool(true);
+		}
+		else {
+			return getFREObjectFromBool(false);
+		}
+		return getFREObjectFromBool(false);
+	}
+	
+
 	FREObject setPiecePriority(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
 		using namespace libtorrent;
 		using namespace std;
@@ -2069,6 +2089,8 @@ extern "C" {
 			,{ (const uint8_t*) "forceAnnounce",NULL, &forceAnnounce }
 			,{ (const uint8_t*) "forceDHTAnnounce",NULL, &forceDHTAnnounce }
 			,{ (const uint8_t*) "setPiecePriority",NULL, &setPiecePriority }
+			,{ (const uint8_t*) "setPieceDeadline",NULL, &setPieceDeadline }
+			,{ (const uint8_t*) "resetPieceDeadline",NULL, &resetPieceDeadline }
 			,{ (const uint8_t*) "addTracker",NULL, &addTracker }
 			,{ (const uint8_t*) "addUrlSeed",NULL, &addUrlSeed }
 			,{ (const uint8_t*) "removeUrlSeed",NULL, &removeUrlSeed }
