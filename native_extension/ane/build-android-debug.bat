@@ -38,7 +38,7 @@ move %pathtome%platforms\android\libs\jackson-core-2.7.3.jar %pathtome%platforms
 move %pathtome%platforms\android\libs\jackson-databind-2.7.3.jar %pathtome%platforms\android
 
 echo "GENERATING ANE"
-call adt.bat -package -target ane %projectName%-android.ane extension-android.xml ^
+call adt.bat -package -target ane %projectName%-android.ane extension_android.xml ^
 -swc %projectName%.swc ^
 -platform Android-ARM ^
 -C platforms/android library.swf classes.jar libs/armeabi/libjlibtorrent.so ^

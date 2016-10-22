@@ -135,7 +135,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(OPEN_SSL_LIBRARYDIR);$(BOOST_LIBRARYDIR);$(LIBTORRENT_LIBRARYDIR);$(GEOIP_LIBRARYDIR);C:\Program Files\Adobe\Adobe Flash Builder 4.7 %2864 Bit%29\sdks\4.6.0\lib\win</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libcrypto.lib;libssl.lib;libtorrent.lib;Iphlpapi.lib;FlashRuntimeExtensions.lib;amf-cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcrypto.lib;libssl.lib;libtorrent.lib;Iphlpapi.lib;FlashRuntimeExtensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
       <Command>

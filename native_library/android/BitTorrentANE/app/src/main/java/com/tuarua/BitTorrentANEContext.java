@@ -865,10 +865,6 @@ public class BitTorrentANEContext extends FREContext {
                     try {
                         FREObject address = networkAddresses.getObjectAt(j);
                         Map<String,String> addressMap = new HashMap<>();
-
-                        trace(aneHelper.getStringFromFREObject(aneHelper.getFREObjectProperty(address,"address")));
-                        trace(aneHelper.getStringFromFREObject(aneHelper.getFREObjectProperty(address,"ipVersion")));
-
                         addressMap.put(aneHelper.getStringFromFREObject(aneHelper.getFREObjectProperty(address,"address")),
                                 aneHelper.getStringFromFREObject(aneHelper.getFREObjectProperty(address,"ipVersion")));
                         TorrentSettings.advanced.networkInterface.putAll(addressMap);
@@ -1497,7 +1493,7 @@ public class BitTorrentANEContext extends FREContext {
                         p = new AddTorrentParams().createInstanceZeroStorage();
 
                    // p.savePath(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath());
-                    p.savePath(TorrentSettings.storage.torrentPath);
+                    p.savePath(TorrentSettings.storage.outputPath);
 
                     p.torrentInfo(ti);
                     p.swig().setMax_connections(TorrentSettings.connections.maxNumPerTorrent);

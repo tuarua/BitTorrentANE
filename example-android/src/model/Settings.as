@@ -11,7 +11,7 @@ package model {
 	import model.settings.Speed;
 
 	public class Settings extends Object {
-		public var outputPath:String = File.applicationDirectory.resolvePath("output").nativePath; //default
+		public var outputPath:String = File.applicationStorageDirectory.resolvePath("output").nativePath; //default
 		public var speed:Speed = new Speed();
 		public var privacy:Privacy = new Privacy();
 		public var queueing:Queueing = new Queueing();

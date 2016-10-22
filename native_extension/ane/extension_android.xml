@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension xmlns="http://ns.adobe.com/air/extension/19.0">
+    <id>com.tuarua.BitTorrentANE</id>
+	<name>BitTorrent ANE Android</name>
+    <versionNumber>1.3.2</versionNumber>
+    <platforms>
+		<platform name="Android-ARM"> 
+           <applicationDeployment>
+				<nativeLibrary>classes.jar</nativeLibrary>
+				<initializer>com.tuarua.BitTorrentANE</initializer>
+				<finalizer>com.tuarua.BitTorrentANE</finalizer>
+			</applicationDeployment>
+        </platform>
+		<platform name="Android-x86"> 
+           <applicationDeployment>
+				<nativeLibrary>classes.jar</nativeLibrary>
+				<initializer>com.tuarua.BitTorrentANE</initializer>
+				<finalizer>com.tuarua.BitTorrentANE</finalizer>
+			</applicationDeployment>
+        </platform>
+    </platforms>
+</extension>

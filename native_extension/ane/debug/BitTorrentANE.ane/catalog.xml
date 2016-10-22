@@ -2,8 +2,8 @@
 <swc xmlns="http://www.adobe.com/flash/swccatalog/9">
     <versions>
         <swc version="1.2"/>
-        <flex version="4.7.0" build="354188" minimumSupportedVersion="3.0.0"/>
-        <compiler name="ActionScript Compiler" version="2.0.0" build="354188"/>
+        <flex version="4.7.0" build="354194" minimumSupportedVersion="3.0.0"/>
+        <compiler name="ActionScript Compiler" version="2.0.0" build="354194"/>
     </versions>
     <features>
         <feature-script-deps/>
@@ -99,15 +99,15 @@
                 <def id="com.tuarua.torrent:TorrentPeers"/>
                 <dep id="Object" type="i"/>
                 <dep id="String" type="s"/>
-                <dep id="__AS3__.vec:Vector" type="s"/>
-                <dep id="com.tuarua.torrent:PeerInfo" type="s"/>
+                <dep id="__AS3__.vec:Vector" type="e"/>
+                <dep id="com.tuarua.torrent:PeerInfo" type="e"/>
             </script>
             <script name="com/tuarua/torrent/TorrentPieces" mod="1470522365222">
                 <def id="com.tuarua.torrent:TorrentPieces"/>
                 <dep id="Boolean" type="s"/>
                 <dep id="Object" type="i"/>
                 <dep id="__AS3__.vec:Vector" type="e"/>
-                <dep id="int" type="s"/>
+                <dep id="int" type="e"/>
             </script>
             <script name="com/tuarua/torrent/TorrentSettings" mod="1470697212907">
                 <def id="com.tuarua.torrent:TorrentSettings"/>
@@ -326,7 +326,7 @@
                 <dep id="int" type="e"/>
             </script>
             <digests>
-                <digest type="SHA-256" signed="false" value="e4dc8d90a427f60899a3a873ffdb223536764fcc1d9feaccb409bbfa3cb0044c"/>
+                <digest type="SHA-256" signed="false" value="0cc99336356ec10b2d3155937cc82e28b78db4fcca59b155e5e7764070ed75b2"/>
             </digests>
         </library>
     </libraries>

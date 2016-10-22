@@ -35,8 +35,8 @@ package install {
 			geoipSource.addEventListener(Event.COMPLETE, fileCopyCompleteHandler);
 			geoipSource.copyToAsync(geoipDest, true);
 			
-			var torrentSource:File = File.applicationDirectory.resolvePath("torrents").resolvePath("c8436d8b114319a55e8fa75fe12177f6c13f09d9.torrent");
-			var torrentpDest:File = File.applicationStorageDirectory.resolvePath("torrents").resolvePath("c8436d8b114319a55e8fa75fe12177f6c13f09d9.torrent");
+			var torrentSource:File = File.applicationDirectory.resolvePath("torrents").resolvePath("bbb_sunflower_1080p_30fps_normal.mp4.torrent");
+			var torrentpDest:File = File.applicationStorageDirectory.resolvePath("torrents").resolvePath("bbb_sunflower_1080p_30fps_normal.mp4.torrent");
 			torrentSource.addEventListener(Event.COMPLETE, fileCopyCompleteHandler);
 			torrentSource.copyToAsync(torrentpDest, true);
 		}

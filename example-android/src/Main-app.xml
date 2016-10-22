@@ -115,7 +115,7 @@
 
 		<!-- Display Resolution for the app (either "standard" or "high"). Optional, OSX-only. Default "standard" -->
 		<!-- <requestedDisplayResolution></requestedDisplayResolution> -->
-	<depthAndStencil>true</depthAndStencil>
+		<depthAndStencil>false</depthAndStencil>
 		<renderMode>direct</renderMode>
 		<autoOrients>false</autoOrients>
         <fullScreen>true</fullScreen>
@@ -300,11 +300,11 @@
 			</manifest>
 			
 		]]></manifestAdditions>
-		<containsVideo>true</containsVideo>
+		 <containsVideo>true</containsVideo>
     </android>
     
+
 <extensions>
         <extensionID>com.tuarua.BitTorrentANE</extensionID>
-    
     </extensions>
 </application>
