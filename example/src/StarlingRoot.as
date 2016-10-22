@@ -413,7 +413,7 @@ package {
 					if(isVideoPlaying){
 						
 					}else{
-						numRequiredPieces = Math.ceil((currentVideoFile.lastPiece - currentVideoFile.firstPiece)/1000)*50;
+						numRequiredPieces = Math.ceil((currentVideoFile.lastPiece - currentVideoFile.firstPiece)/1000)*5;
 						var initialPieces:Number = 0;
 						if(currentPieces && currentPieces.pieces.length > 0){
 							initialPieces = currentPieces.numSequential - currentVideoFile.firstPiece;
