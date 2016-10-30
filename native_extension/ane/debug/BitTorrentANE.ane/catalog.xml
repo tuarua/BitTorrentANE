@@ -10,7 +10,7 @@
     </features>
     <libraries>
         <library path="library.swf">
-            <script name="com/tuarua/BitTorrentANE" mod="1477836460000">
+            <script name="com/tuarua/BitTorrentANE" mod="1477840096000">
                 <def id="com.tuarua:BitTorrentANE"/>
                 <dep id="Boolean" type="s"/>
                 <dep id="Error" type="e"/>
@@ -326,7 +326,7 @@
                 <dep id="int" type="e"/>
             </script>
             <digests>
-                <digest type="SHA-256" signed="false" value="5469d7c8161132978bd37da39ed0bf1bf123ffeb3abd1026a0048077ba0298d3"/>
+                <digest type="SHA-256" signed="false" value="25ff318a05be9402958c450944a5af08882dc6e2b2d37238ef7bc87313a2a3da"/>
             </digests>
         </library>
     </libraries>

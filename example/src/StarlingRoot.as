@@ -18,6 +18,7 @@ package {
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
 	import flash.events.Event;
+	import flash.events.TimerEvent;
 	import flash.filesystem.File;
 	import flash.net.FileFilter;
 	import flash.utils.Timer;
@@ -161,14 +162,19 @@ package {
 		}
 
 		private function onTorrentCreate(event:InteractionEvent):void {
-			var savePath:String = saveAsANE.saveAs("torrent",TorrentSettings.storage.torrentPath);
-			if(savePath.length == 0){
-				torrentClientPanel.createTorrentScreen.hide();
-			}else{
-				bitTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATION_PROGRESS,torrentClientPanel.createTorrentScreen.onProgress);
-				bitTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATED,torrentClientPanel.createTorrentScreen.onCreateComplete);
-				bitTorrentANE.createTorrent(event.params.file,savePath,event.params.size,event.params.trackers,event.params.webSeeds,event.params.isPrivate,event.params.comments,event.params.seedNow);
-			}
+			var saveAsTimer:Timer;
+			saveAsTimer = new Timer(50,1);
+			saveAsTimer.addEventListener(TimerEvent.TIMER,function(te:TimerEvent):void {
+				var savePath:String = saveAsANE.saveAs("torrent",TorrentSettings.storage.torrentPath);
+				if(savePath.length == 0){
+					torrentClientPanel.createTorrentScreen.hide();
+				}else{
+					bitTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATION_PROGRESS,torrentClientPanel.createTorrentScreen.onProgress);
+					bitTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATED,torrentClientPanel.createTorrentScreen.onCreateComplete);
+					bitTorrentANE.createTorrent(event.params.file,savePath,event.params.size,event.params.trackers,event.params.webSeeds,event.params.isPrivate,event.params.comments,event.params.seedNow);
+				}
+			});
+			saveAsTimer.start();	
 		}
 		
 		

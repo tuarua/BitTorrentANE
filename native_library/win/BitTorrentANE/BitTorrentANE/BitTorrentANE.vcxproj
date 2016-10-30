@@ -173,8 +173,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\source\ANEhelper.cpp" />
     <ClCompile Include="..\..\..\source\BitTorrentANE.cpp" />
-    <ClCompile Include="..\..\..\source\nfd_common.c" />
-    <ClCompile Include="..\..\..\source\nfd_win.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

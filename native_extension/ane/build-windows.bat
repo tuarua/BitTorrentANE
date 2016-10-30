@@ -50,9 +50,9 @@ call adt.bat -package -target ane %pathtome%%projectName%-debug.ane %pathtome%ex
 
 call %SZIP% x %pathtome%%projectName%-debug.ane -o%pathtome%debug\%projectName%.ane\ -aoa
 
-call DEL /F /Q /A %pathtome%BitTorrentANE-debug.ane
-call DEL /F /Q /A %pathtome%BitTorrentANE.swc
+call DEL /F /Q /A %pathtome%%projectName%-debug.ane
+call DEL /F /Q /A %pathtome%%projectName%.swc
 call DEL /F /Q /A %pathtome%library.swf
 call DEL /F /Q /A %pathtome%catalog.xml
 
-REM call %pathtome%clean.bat
+echo FIN
