@@ -350,8 +350,7 @@ package com.tuarua {
 		public function createTorrent(input:String,output:String,pieceSize:int,trackers:Vector.<TorrentTracker>,
 									  webSeeds:Vector.<TorrentWebSeed>,isPrivate:Boolean=false,comment:String=null,
 									  seedNow:Boolean=false,rootCert:String=null):void {
-			
-			if(Capabilities.os.toLowerCase().indexOf("windows") == -1 && Capabilities.os.toLowerCase().indexOf("Mac") == -1)
+			if(Capabilities.os.toLowerCase().indexOf("windows") == -1 && Capabilities.os.toLowerCase().indexOf("mac") == -1)
 				throw new Error("this method is not yet available for Android");
 			
 			if(pieceSize % 16 > 0)
@@ -382,14 +381,7 @@ package com.tuarua {
 		public function setFilePriority(id:String,index:int,priority:int):void {
 			extensionContext.call("setFilePriority",id.toLowerCase(),index,priority);
 		}
-		public function saveAs(fileType:String=null,defaultPath:String=null):String {
-			if(Capabilities.os.toLowerCase().indexOf("windows") == -1 && Capabilities.os.toLowerCase().indexOf("Mac") == -1)
-				throw new Error("this method is not yet available for Android");
-			var ret:String = extensionContext.call("saveAs",fileType,defaultPath) as String;
-			if(ret != "" && ret.lastIndexOf("."+fileType) == -1)
-				ret = ret + "." + fileType;
-			return ret;
-		}
+		
 		public function dispose():void {
 			
 			//remove listeners 

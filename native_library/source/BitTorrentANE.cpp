@@ -32,7 +32,7 @@
 #include <array>
 #include <math.h>
 #include <map>
-#include "nfd.h"
+
 #include <boost/lexical_cast.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -2049,20 +2049,6 @@ extern "C" {
 		return getFREObjectFromBool(isSupportedInOS);
 	}
 
-	FREObject saveAs(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]) {
-		nfdchar_t *outPath = NULL;
-		nfdresult_t result = NFD_SaveDialog(getStringFromFREObject(argv[0]).c_str(), getStringFromFREObject(argv[1]).c_str(), &outPath);
-		if (result == NFD_OKAY) {
-		}
-		else if (result == NFD_CANCEL) {
-			outPath = "";
-		}
-		else {
-			outPath = "";
-			trace(NFD_GetError());
-		}
-		return getFREObjectFromString(outPath);
-	}
 	void contextInitializer(void* extData, const uint8_t* ctxType, FREContext ctx, uint32_t* numFunctionsToSet, const FRENamedFunction** functionsToSet) {
 		static FRENamedFunction extensionFunctions[] = {
 			{ (const uint8_t*) "isSupported",NULL, &isSupported }
@@ -2094,7 +2080,6 @@ extern "C" {
 			,{ (const uint8_t*) "addTracker",NULL, &addTracker }
 			,{ (const uint8_t*) "addUrlSeed",NULL, &addUrlSeed }
 			,{ (const uint8_t*) "removeUrlSeed",NULL, &removeUrlSeed }
-			,{ (const uint8_t*) "saveAs",NULL, &saveAs }
 		};
 
 		*numFunctionsToSet = sizeof(extensionFunctions) / sizeof(FRENamedFunction);

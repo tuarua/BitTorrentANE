@@ -1,5 +1,6 @@
 package {
 	import com.tuarua.BitTorrentANE;
+	import com.tuarua.SaveAsANE;
 	import com.tuarua.torrent.TorrentFileMeta;
 	import com.tuarua.torrent.TorrentInfo;
 	import com.tuarua.torrent.TorrentPeers;
@@ -13,14 +14,19 @@ package {
 	import com.tuarua.torrent.events.TorrentAlertEvent;
 	import com.tuarua.torrent.events.TorrentInfoEvent;
 	import com.tuarua.torrent.utils.MagnetParser;
+	
 	import flash.desktop.Clipboard;
 	import flash.desktop.ClipboardFormats;
 	import flash.events.Event;
 	import flash.filesystem.File;
 	import flash.net.FileFilter;
 	import flash.utils.Timer;
+	
 	import events.InteractionEvent;
+	
 	import model.SettingsLocalStore;
+	
+	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Quad;
 	import starling.display.Sprite;
@@ -29,7 +35,6 @@ package {
 	import starling.events.TouchPhase;
 	import starling.text.TextField;
 	import starling.textures.Texture;
-	import starling.core.Starling
 	
 	import utils.TextUtils;
 	
@@ -38,6 +43,7 @@ package {
 
 	public class StarlingRoot extends Sprite {
 		private var starlingVideo:StarlingVideo = new StarlingVideo();
+		private var saveAsANE:SaveAsANE = new SaveAsANE();
 		private var bitTorrentANE:BitTorrentANE = new BitTorrentANE();
 		private var statusTimer:Timer;
 		private var currentStatus:TorrentStatus;
@@ -59,6 +65,7 @@ package {
 		public function StarlingRoot() {
 			super();
 			TextField.registerBitmapFont(Fonts.getFont("fira-sans-semi-bold-13"));
+			
 		}
 
 		
@@ -154,7 +161,7 @@ package {
 		}
 
 		private function onTorrentCreate(event:InteractionEvent):void {
-			var savePath:String = bitTorrentANE.saveAs("torrent",TorrentSettings.storage.torrentPath);
+			var savePath:String = saveAsANE.saveAs("torrent",TorrentSettings.storage.torrentPath);
 			if(savePath.length == 0){
 				torrentClientPanel.createTorrentScreen.hide();
 			}else{
@@ -162,7 +169,6 @@ package {
 				bitTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATED,torrentClientPanel.createTorrentScreen.onCreateComplete);
 				bitTorrentANE.createTorrent(event.params.file,savePath,event.params.size,event.params.trackers,event.params.webSeeds,event.params.isPrivate,event.params.comments,event.params.seedNow);
 			}
-			
 		}
 		
 		
@@ -354,6 +360,7 @@ package {
 		}
 		
 		private function onSettingsClick(event:TouchEvent):void {
+			event.stopPropagation();
 			var touch:Touch = event.getTouch(settingsButton);
 			if(touch != null && touch.phase == TouchPhase.ENDED){
 			if(settingsPanel)

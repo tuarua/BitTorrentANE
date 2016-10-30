@@ -16,6 +16,8 @@ echo "Making directories."
 
 if [ ! -d "$pathtome/platforms" ]; then
 mkdir "$pathtome/platforms"
+fi
+if [ ! -d "$pathtome/platforms/mac" ]; then
 mkdir "$pathtome/platforms/mac"
 mkdir "$pathtome/platforms/mac/release"
 mkdir "$pathtome/platforms/mac/debug"

@@ -252,7 +252,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -294,7 +294,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -343,7 +343,6 @@
 					/usr/local/opt/openssl/lib/libcrypto.a,
 					/usr/local/opt/openssl/lib/libssl.a,
 					/usr/local/opt/geoip/lib/libGeoIP.a,
-					../../lib/libnfd.a,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tuarua.BitTorrentANE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -393,7 +392,6 @@
 					/usr/local/opt/openssl/lib/libcrypto.a,
 					/usr/local/opt/openssl/lib/libssl.a,
 					/usr/local/opt/geoip/lib/libGeoIP.a,
-					../../lib/libnfd.a,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tuarua.BitTorrentANE;
 				PRODUCT_NAME = "$(TARGET_NAME)";

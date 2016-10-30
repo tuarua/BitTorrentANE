@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <actionScriptProperties analytics="false" mainApplicationPath="BitTorrentANESample.as" projectUUID="b5946d4c-9962-4eb5-aaa5-928fe1ec2a46" version="11">
-  <compiler additionalCompilerArguments="-locale en_US" advancedTelemetry="true" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin-debug" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="true" useDebugRSLSwfs="true" useFlashSDK="true" verifyDigests="true" warn="true">
+  <compiler additionalCompilerArguments="-locale en_US" advancedTelemetry="false" autoRSLOrdering="true" copyDependentFiles="true" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin-debug" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="true" useDebugRSLSwfs="true" useFlashSDK="true" verifyDigests="true" warn="true">
     <compilerSourcePath/>
     <libraryPath defaultLinkType="0">
       <libraryPathEntry kind="4" path="">
@@ -31,7 +31,8 @@
         </excludedEntries>
       </libraryPathEntry>
       <libraryPathEntry kind="1" linkType="1" path="libs"/>
-      <libraryPathEntry kind="5" linkType="2" path="${DOCUMENTS}/BitTorrentANE/native_extension/ane/BitTorrentANE.ane"/>
+      <libraryPathEntry kind="5" linkType="2" path="/Users/User/flash/BitTorrentANE/native_extension/ane/BitTorrentANE.ane"/>
+      <libraryPathEntry kind="5" linkType="2" path="/Users/User/flash/BitTorrentANE/native_extension/ane/SaveAsANE.ane"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
@@ -46,10 +47,11 @@
   <flashCatalyst validateFlashCatalystCompatibility="false"/>
   <buildTargets>
     <buildTarget buildTargetName="default" platformId="default">
-      <airSettings airCertificatePath="D:/dev/flash/tuaruaWin.p12" airTimestamp="true" anePathSet="true" version="1">
+      <airSettings airCertificatePath="/Users/User/flash/tuaruaWin.p12" airTimestamp="true" anePathSet="true" version="1">
         <airExcludes/>
         <anePaths>
-          <anePathEntry path="${DOCUMENTS}/BitTorrentANE/native_extension/ane/BitTorrentANE.ane"/>
+          <anePathEntry path="/Users/User/flash/BitTorrentANE/native_extension/ane/BitTorrentANE.ane"/>
+          <anePathEntry path="/Users/User/flash/BitTorrentANE/native_extension/ane/SaveAsANE.ane"/>
         </anePaths>
         <newLaunchParams/>
         <modifiedLaunchParams/>
