@@ -2,7 +2,7 @@ package com.tuarua.torrent.events {
 	import flash.events.Event;
 
 	public class TorrentAlertEvent extends Event {
-		public static var TRACKERS_UPDATE:String = "Torrent.Alert.TrackersUpdate";
+		public static const TRACKERS_UPDATE:String = "Torrent.Alert.TrackersUpdate";
 		public static const PEERS_UPDATE:String = "Torrent.Alert.PeersUpdate";
 		public static const STATE_UPDATE:String = "Torrent.Alert.StateUpdate";
 		public static const STATE_CHANGED:String = "Torrent.Alert.StateChanged";
@@ -17,6 +17,7 @@ package com.tuarua.torrent.events {
 		public static const SAVE_RESUME_DATA:String = "Torrent.Alert.SaveResumeData";
 		public static const LISTEN_FAILED:String = "Torrent.Alert.ListenFailed";
 		public static const LISTEN_SUCCEEDED:String = "Torrent.Alert.ListenSucceeded";
+		
 		public var params:Object;
 		
 		public function TorrentAlertEvent(type:String, _params:Object=null, bubbles:Boolean=false, cancelable:Boolean=false) {

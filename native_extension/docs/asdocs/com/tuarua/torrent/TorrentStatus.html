@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><!-- saved from url=(0014)about:internet --><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><link rel="stylesheet" href="../../../style.css" type="text/css" media="screen"><link rel="stylesheet" href="../../../print.css" type="text/css" media="print"><link rel="stylesheet" href="../../../override.css" type="text/css"><meta name="keywords" content="TorrentStatus,com.tuarua.torrent.TorrentStatus,ALLOCATING,CHECKING_FILES,CHECKING_RESUME_DATA,DOWNLOADING,DOWNLOADING_METADATA,ETA,FINISHED,PAUSED,QUEUED,QUEUED_FOR_CHECKING,SEEDING,activeTime,addedOn,advanced,client,clientName,comment,completedOn,connection,connections,country,creationDate,creator,downSpeed,downloadMax,downloadRate,downloadRateAverage,downloaded,downloaded,downloadedSession,filePriority,fileProgress,files,firstPiece,flagsAsString,flags,fromDHT,fromIncoming,fromLSD,fromPEX,fromResumeData,fromTracker,hasLast,id,id,id,infoHash,infoHash,info,ip,isChoked,isEndGameMode,isFinished,isHolePunched,isInteresting,isLocalConnection,isOptimisticUnchoke,isPlainTextEncrypted,isPrivate,isRC4encrypted,isRemoteChoked,isRemoteInterested,isSeed,isSequential,isSnubbed,isUploadOnly,lastPiece,lastSeenComplete,listening,localPort,logLevel,message,name,name,nextAnnounce,numConnections,numDownloaded,numPeers,numPeers,numPeersTotal,numPieces,numPieces,numPieces,numSeeds,numSeedsTotal,numSequential,offset,onParole,partialPieces,path,peersInfo,peers,pieceLength,piecesTime,pieces,pieces,port,prioritizedFileTypes,privacy,progress,progress,proxy,queryFileProgress,queuePosition,queueing,relevance,savePath,shareRatio,size,size,speed,state,status,status,status,storage,supportsExtensions,tier,torrentFile,trackersInfo,trackers,upSpeed,uploadMax,uploadRate,uploadRateAverage,uploaded,uploaded,uploadedSession,uri,uri,url,urlSeeds,wasted"><title>com.tuarua.torrent.TorrentStatus</title></head><body><script language="javascript" type="text/javascript" src="../../../asdoc.js"></script><script language="javascript" type="text/javascript" src="../../../help.js"></script><script language="javascript" type="text/javascript" src="../../../cookies.js"></script><script language="javascript" type="text/javascript"><!--
+				asdocTitle = 'TorrentStatus - Tua Rua BitTorrentANE';
+				var baseRef = '../../../';
+				window.onload = configPage;
+			--></script>
+<script type="text/javascript">
+			scrollToNameAnchor();
+		</script><table class="titleTable" cellpadding="0" cellspacing="0" id="titleTable" style="display:none"><tr><td class="titleTableTitle" align="left">Tua Rua BitTorrentANE Documentation</td><td class="titleTableTopNav" align="right"><a href="../../../package-summary.html" onclick="loadClassListFrame('../../../all-classes.html')">All Packages</a>&nbsp;|&nbsp;<a href="../../../class-summary.html" onclick="loadClassListFrame('../../../all-classes.html')">All Classes</a>&nbsp;|&nbsp;<a href="../../../all-index-A.html" onclick="loadClassListFrame('../../../index-list.html')">Index</a>&nbsp;|&nbsp;<a id="framesLink1" href="../../../index.html?com/tuarua/torrent/TorrentStatus.html&amp;com/tuarua/torrent/class-list.html">Frames</a><a id="noFramesLink1" style="display:none" href="" onclick="parent.location=document.location"> No Frames </a></td><td class="titleTableLogo" align="right" rowspan="3"><img src="../../../images/logo.jpg" class="logoImage" alt=" Adobe Logo " title=" Adobe Logo "></td></tr><tr class="titleTableRow2"><td class="titleTableSubTitle" id="subTitle" align="left">TorrentStatus</td><td class="titleTableSubNav" id="subNav" align="right"><a href="#propertySummary">Properties</a></td></tr><tr class="titleTableRow3"><td colspan="3">&nbsp;</td></tr></table><script language="javascript" type="text/javascript" xml:space="preserve">
+				<!--
+				
+					if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("TorrentStatus"); titleBar_setSubNav(false,true,false,false,false,false,false,false,false,false,false	,false,false,false,false,false);}	
+				-->
+			</script><div xmlns:fn="http://www.w3.org/2005/xpath-functions" class="MainContent"><table class="classHeaderTable" cellpadding="0" cellspacing="0"><tr><td class="classHeaderTableLabel">Package</td><td><a href="package-detail.html" onclick="javascript:loadClassListFrame('class-list.html')">com.tuarua.torrent</a></td></tr><tr><td class="classHeaderTableLabel">Class</td><td class="classSignature">public  class  TorrentStatus</td></tr><tr><td class="classHeaderTableLabel">Inheritance</td><td class="inheritanceList">TorrentStatus  <img src="../../../images/inherit-arrow.gif" title="Inheritance" alt="Inheritance" class="inheritArrow"> Object</td></tr></table><p></p><p></p><p></p><br/><hr></div><a name="propertySummary"></a><div class="summarySection"><div class="summaryTableTitle">Public Properties</div><table cellspacing="0" cellpadding="3" class="summaryTable " id="summaryTableProperty"><tr><th>&nbsp;</th><th colspan="2">Property</th><th class="summaryTableOwnerCol">Defined By</th></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#activeTime" class="signatureLink">activeTime</a> : uint = 0<div class="summaryTableDescription">
+		 These keep track of the number of seconds this torrent has been active
+		 (not paused) and the number of seconds it has been active while being
+		 finished and active while being a seed.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#addedOn" class="signatureLink">addedOn</a> : int = -1<div class="summaryTableDescription">
+		 the posix-time when this torrent was added. 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#completedOn" class="signatureLink">completedOn</a> : int = -1<div class="summaryTableDescription">
+		 The posix-time when this torrent was finished.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#downloaded" class="signatureLink">downloaded</a> : uint = 0<div class="summaryTableDescription">
+		 Download payload byte counters.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#downloadedSession" class="signatureLink">downloadedSession</a> : uint = 0<div class="summaryTableDescription">
+		 counts the amount of bytes received this session, but only
+		 the actual payload data (i.e the interesting data), these counters
+		 ignore any protocol overhead.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#downloadMax" class="signatureLink">downloadMax</a> : int = -1<div class="summaryTableDescription">
+		 The current limit setting 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#downloadRate" class="signatureLink">downloadRate</a> : uint = 0<div class="summaryTableDescription">
+		 The total transfer rate of payload only, not counting protocol
+		 chatter.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#downloadRateAverage" class="signatureLink">downloadRateAverage</a> : uint = 0<div class="summaryTableDescription">
+		 Download rate average 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#ETA" class="signatureLink">ETA</a> : int = -1<div class="summaryTableDescription">
+		 Number of seconds until the torrent finishes downloading (Estimated) 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#filePriority" class="signatureLink">filePriority</a> : Array<div class="summaryTableDescription">
+		 Returns an array with the priorities of all files. 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#fileProgress" class="signatureLink">fileProgress</a> : Array<div class="summaryTableDescription">
+		 The the number of bytes downloaded of each file in this torrent.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#id" class="signatureLink">id</a> : String<div class="summaryTableDescription">
+		 The id of the torrent.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#infoHash" class="signatureLink">infoHash</a> : String<div class="summaryTableDescription">
+		 The info-hash of the torrent. 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#isFinished" class="signatureLink">isFinished</a> : Boolean<div class="summaryTableDescription">
+		 Is the torrent isFinished downloading 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#isSequential" class="signatureLink">isSequential</a> : Boolean<div class="summaryTableDescription">
+		 true when the torrent is in sequential download mode.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#lastSeenComplete" class="signatureLink">lastSeenComplete</a> : int = -1<div class="summaryTableDescription">
+		 The time when we, or one of our peers, last saw a complete copy of
+		 this torrent. 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#nextAnnounce" class="signatureLink">nextAnnounce</a> : uint = 0<div class="summaryTableDescription">
+		 The time in seconds until the torrent will announce itself to the tracker. 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#numConnections" class="signatureLink">numConnections</a> : uint = 0<div class="summaryTableDescription">
+		 the number of peer connections this torrent has, including half-open
+		 connections that hasn't completed the bittorrent handshake yet.
+		 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#numPeers" class="signatureLink">numPeers</a> : uint = 0<div class="summaryTableDescription">
+		 The number of peers this torrent currently is connected to.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#numPeersTotal" class="signatureLink">numPeersTotal</a> : uint = 0<div class="summaryTableDescription">
+		 The total number of peers
+		 (including seeds).</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#numPieces" class="signatureLink">numPieces</a> : uint = 0<div class="summaryTableDescription">
+		 the number of pieces that has been downloaded.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#numSeeds" class="signatureLink">numSeeds</a> : uint = 0<div class="summaryTableDescription">
+		 The number of peers that are seeding that this client is
+		 currently connected to. 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#numSeedsTotal" class="signatureLink">numSeedsTotal</a> : uint = 0<div class="summaryTableDescription">
+		 The number of seeds in our peer list. 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#partialPieces" class="signatureLink">partialPieces</a> : Array<div class="summaryTableDescription">
+		 Returns an array with the piece indexes of pieces which are partially downloaded 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#progress" class="signatureLink">progress</a> : Number = 0.0<div class="summaryTableDescription">
+		 A value in the range [0, 100], that represents the progress of the
+		 torrent's current task.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#queuePosition" class="signatureLink">queuePosition</a> : int = 0<div class="summaryTableDescription">
+		 The position this torrent has in the download
+		 queue.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#savePath" class="signatureLink">savePath</a> : String<div class="summaryTableDescription">
+		 the path to the directory where this torrent's files are stored.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#shareRatio" class="signatureLink">shareRatio</a> : Number<div class="summaryTableDescription">
+		 Share ratio. 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#state" class="signatureLink">state</a> : int<div class="summaryTableDescription">
+		 The current state of the torrent.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#uploaded" class="signatureLink">uploaded</a> : uint = 0<div class="summaryTableDescription">
+		 Upload payload byte counters.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#uploadedSession" class="signatureLink">uploadedSession</a> : uint = 0<div class="summaryTableDescription">
+		 counts the amount of bytes sent this session, but only
+		 the actual payload data (i.e the interesting data), these counters
+		 ignore any protocol overhead.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#uploadMax" class="signatureLink">uploadMax</a> : int = -1<div class="summaryTableDescription">
+		 The set limit of upload slots (unchoked peers) for this torrent. 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#uploadRate" class="signatureLink">uploadRate</a> : uint = 0<div class="summaryTableDescription">
+		 The total transfer rate of payload only, not counting protocol
+		 chatter.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#uploadRateAverage" class="signatureLink">uploadRateAverage</a> : uint = 0<div class="summaryTableDescription">
+		 Upload rate average 
+		 </div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr><tr class=""><td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a href="#wasted" class="signatureLink">wasted</a> : uint = 0<div class="summaryTableDescription">
+		 The number of bytes that has been downloaded and that has failed the
+		 piece hash test.</div></td><td class="summaryTableOwnerCol">TorrentStatus</td></tr></table></div><script language="javascript" type="text/javascript"><!--
+										showHideInherited();
+										--></script><div class="MainContent"><div class="detailSectionHeader">Property Detail</div><a name="propertyDetail"></a><a name="activeTime"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">activeTime</td><td class="detailHeaderType">property</td></tr></table><div class="detailBody"><code>public var activeTime:uint = 0</code><p></p><p></p><p>
+		 <p>These keep track of the number of seconds this torrent has been active
+		 (not paused) and the number of seconds it has been active while being
+		 finished and active while being a seed. It is saved in and restored 
+		 from resume data, to keep totals across sessions.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="addedOn"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">addedOn</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var addedOn:int = -1</code><p></p><p></p><p>
+		 <p>the posix-time when this torrent was added.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="completedOn"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">completedOn</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var completedOn:int = -1</code><p></p><p></p><p>
+		 <p>The posix-time when this torrent was finished. If the torrent is not
+		 yet finished, this is 0.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="downloaded"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">downloaded</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var downloaded:uint = 0</code><p></p><p></p><p>
+		 <p>Download payload byte counters. They are
+		 saved in and restored from resume data to keep totals across sessions.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="downloadedSession"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">downloadedSession</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var downloadedSession:uint = 0</code><p></p><p></p><p>
+		 <p>counts the amount of bytes received this session, but only
+		 the actual payload data (i.e the interesting data), these counters
+		 ignore any protocol overhead. The session is considered to restart
+		 when a torrent is paused and restarted again. When a torrent is
+		 paused, these counters are reset to 0.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="downloadMax"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">downloadMax</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var downloadMax:int = -1</code><p></p><p></p><p>
+		 <p>The current limit setting</p> 
+		 </p></div><a name="propertyDetail"></a><a name="downloadRate"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">downloadRate</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var downloadRate:uint = 0</code><p></p><p></p><p>
+		 <p>The total transfer rate of payload only, not counting protocol
+		 chatter. This might be slightly smaller than the other rates, but if
+		 projected over a long time (e.g. when calculating ETA:s) the
+		 difference may be noticeable.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="downloadRateAverage"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">downloadRateAverage</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var downloadRateAverage:uint = 0</code><p></p><p></p><p>
+		 <p>Download rate average</p> 
+		 </p></div><a name="propertyDetail"></a><a name="ETA"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">ETA</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var ETA:int = -1</code><p></p><p></p><p>
+		 <p>Number of seconds until the torrent finishes downloading (Estimated)</p> 
+		 </p></div><a name="propertyDetail"></a><a name="filePriority"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">filePriority</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var filePriority:Array</code><p></p><p></p><p>
+		 <p>Returns an array with the priorities of all files.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="fileProgress"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">fileProgress</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var fileProgress:Array</code><p></p><p></p><p>
+		 <p>The the number of bytes downloaded of each file in this torrent.
+		 The progress values are ordered the same as the files</p> 
+		 </p></div><a name="propertyDetail"></a><a name="id"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">id</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var id:String</code><p></p><p></p><p>
+		 <p>The id of the torrent. Assigned by user when calling <code>addTorrent()</code></p> 
+		 </p></div><a name="propertyDetail"></a><a name="infoHash"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">infoHash</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var infoHash:String</code><p></p><p></p><p>
+		 <p>The info-hash of the torrent.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="isFinished"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">isFinished</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var isFinished:Boolean</code><p></p><p></p><p>
+		 <p>Is the torrent isFinished downloading</p> 
+		 </p></div><a name="propertyDetail"></a><a name="isSequential"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">isSequential</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var isSequential:Boolean</code><p></p><p></p><p>
+		 <p><code>true</code> when the torrent is in sequential download mode. In this mode
+		 pieces are downloaded in order rather than rarest first.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="lastSeenComplete"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">lastSeenComplete</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var lastSeenComplete:int = -1</code><p></p><p></p><p>
+		 <p>The time when we, or one of our peers, last saw a complete copy of
+		 this torrent.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="nextAnnounce"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">nextAnnounce</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var nextAnnounce:uint = 0</code><p></p><p></p><p>
+		 <p>The time in seconds until the torrent will announce itself to the tracker.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="numConnections"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">numConnections</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var numConnections:uint = 0</code><p></p><p></p><p>
+		 <p>the number of peer connections this torrent has, including half-open
+		 connections that hasn't completed the bittorrent handshake yet.</p>
+		 
+		 </p></div><a name="propertyDetail"></a><a name="numPeers"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">numPeers</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var numPeers:uint = 0</code><p></p><p></p><p>
+		 <p>The number of peers this torrent currently is connected to. Peer
+		 connections that are in the half-open state (is attempting to connect)
+		 or are queued for later connection attempt do not count.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="numPeersTotal"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">numPeersTotal</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var numPeersTotal:uint = 0</code><p></p><p></p><p>
+		 <p>The total number of peers
+		 (including seeds). We are not necessarily connected to all the peers
+		 in our peer list. This is the number of peers we know of in total,
+		 including banned peers and peers that we have failed to connect to.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="numPieces"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">numPieces</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var numPieces:uint = 0</code><p></p><p></p><p>
+		 <p>the number of pieces that has been downloaded. 
+		 This can be used to see if anything has updated
+		 since last time if you want to keep a graph of 
+		 the pieces up to date.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="numSeeds"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">numSeeds</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var numSeeds:uint = 0</code><p></p><p></p><p>
+		 <p>The number of peers that are seeding that this client is
+		 currently connected to.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="numSeedsTotal"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">numSeedsTotal</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var numSeedsTotal:uint = 0</code><p></p><p></p><p>
+		 <p>The number of seeds in our peer list.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="partialPieces"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">partialPieces</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var partialPieces:Array</code><p></p><p></p><p>
+		 <p>Returns an array with the piece indexes of pieces which are partially downloaded</p> 
+		 </p></div><a name="propertyDetail"></a><a name="progress"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">progress</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var progress:Number = 0.0</code><p></p><p></p><p>
+		 <p>A value in the range [0, 100], that represents the progress of the
+		 torrent's current task. It may be checking files or downloading.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="queuePosition"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">queuePosition</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var queuePosition:int = 0</code><p></p><p></p><p>
+		 <p>The position this torrent has in the download
+		 queue. If the torrent is a seed or finished, this is -1.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="savePath"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">savePath</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var savePath:String</code><p></p><p></p><p>
+		 <p>the path to the directory where this torrent's files are stored.
+		 It's typically the path as was given to addTorrent() when this 
+		 torrent was started.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="shareRatio"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">shareRatio</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var shareRatio:Number</code><p></p><p></p><p>
+		 <p>Share ratio.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="state"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">state</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var state:int</code><p></p><p></p><p>
+		 <p>The current state of the torrent. See TorrentStateCodes for meaning</p> 
+		 </p></div><a name="propertyDetail"></a><a name="uploaded"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">uploaded</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var uploaded:uint = 0</code><p></p><p></p><p>
+		 <p>Upload payload byte counters. They are
+		 saved in and restored from resume data to keep totals across sessions.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="uploadedSession"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">uploadedSession</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var uploadedSession:uint = 0</code><p></p><p></p><p>
+		 <p>counts the amount of bytes sent this session, but only
+		 the actual payload data (i.e the interesting data), these counters
+		 ignore any protocol overhead. The session is considered to restart
+		 when a torrent is paused and restarted again. When a torrent is
+		 paused, these counters are reset to 0.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="uploadMax"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">uploadMax</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var uploadMax:int = -1</code><p></p><p></p><p>
+		 <p>The set limit of upload slots (unchoked peers) for this torrent.</p> 
+		 </p></div><a name="propertyDetail"></a><a name="uploadRate"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">uploadRate</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var uploadRate:uint = 0</code><p></p><p></p><p>
+		 <p>The total transfer rate of payload only, not counting protocol
+		 chatter. This might be slightly smaller than the other rates, but if
+		 projected over a long time (e.g. when calculating ETA:s) the
+		 difference may be noticeable.</p> 
+		 
+		 </p></div><a name="propertyDetail"></a><a name="uploadRateAverage"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">uploadRateAverage</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var uploadRateAverage:uint = 0</code><p></p><p></p><p>
+		 <p>Upload rate average</p> 
+		 </p></div><a name="propertyDetail"></a><a name="wasted"></a><table class="detailHeader" cellpadding="0" cellspacing="0"><tr><td class="detailHeaderName">wasted</td><td class="detailHeaderType">property</td><td class="detailHeaderRule">&nbsp;</td></tr></table><div class="detailBody"><code>public var wasted:uint = 0</code><p></p><p></p><p>
+		 <p>The number of bytes that has been downloaded and that has failed the
+		 piece hash test. In other words, this is just how much crap that has
+		 been downloaded since the torrent was last started. If a torrent is
+		 paused and then restarted again, this counter will be reset.</p>
+		 <p>+</p>
+		 <p>the number of bytes that has been downloaded even though that data
+		 already was downloaded. The reason for this is that in some situations
+		 the same data can be downloaded by mistake. When libtorrent sends
+		 requests to a peer, and the peer doesn't send a response within a
+		 certain timeout, libtorrent will re-request that block. Another
+		 situation when libtorrent may re-request blocks is when the requests
+		 it sends out are not replied in FIFO-order (it will re-request blocks
+		 that are skipped by an out of order block). This is supposed to be as
+		 low as possible. This only counts bytes since the torrent was last
+		 started. If a torrent is paused and then restarted again, this counter
+		 will be reset.</p>
+		 </p></div><br/><br/><hr><br/><p></p><center class="copyright"><footer></footer><br/>Mon Nov 21 2016, 09:18 PM Z  </center></div></body></html><!--<br/>Mon Nov 21 2016, 09:18 PM Z  -->

@@ -15,7 +15,6 @@ Sample client included
  - Supports PeerGuardian .p2p filter lists
  - Filetype prioritization
  - Supports torrent queue ordering
- - Supports RSS feeds
  - Allow port forwarding UPnP
  - Ability to create .torrent files
 

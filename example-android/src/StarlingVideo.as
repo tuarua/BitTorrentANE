@@ -38,7 +38,7 @@ package {
 			
 		}
 		protected function onTextureComplete():void {videoImage = new Image(videoTexture);
-			//videoImage.blendMode = BlendMode.NONE;
+			videoImage.blendMode = BlendMode.NONE;
 			videoImage.touchable = false;
 			videoImage.width = 1280;
 			videoImage.height = 720;

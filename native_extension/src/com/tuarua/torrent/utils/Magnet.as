@@ -18,7 +18,9 @@ package com.tuarua.torrent.utils {
 		public function set hash(value:String):void {
 			_hash = value;
 		}
-
-
+		/** 
+		 * This method is omitted from the output. * * @private 
+		 */ 
+		public function Magnet(){}
 	}
 }

@@ -41,14 +41,19 @@ package com.tuarua {
 		private var _queryForTrackers:Boolean = false;
 		private var _queryForTrackersAsync:Boolean = false;
 		private var _queryTrackersForTorrentId:String = "";
-		
+		/** 
+		 * This method is omitted from the output. * * @private 
+		 */
 		public static var TRACKERS_FROM_JSON:String = "Torrent.Trackers.FromJSON";
+		/** 
+		 * This method is omitted from the output. * * @private 
+		 */
 		public static var PEERS_FROM_JSON:String = "Torrent.Peers.FromJSON";
 		
 		public function BitTorrentANE(target:IEventDispatcher=null) {
 			initiate();
 		}
-		protected function initiate():void {
+		private function initiate():void {
 			trace("[BitTorrentANE] Initalizing ANE...");
 			try {
 				extensionContext = ExtensionContext.createExtensionContext("com.tuarua.BitTorrentANE", null);
@@ -57,7 +62,7 @@ package com.tuarua {
 				trace("[BitTorrentANE] ANE Not loaded properly.  Future calls will fail.");
 			}
 		}
-		protected function gotEvent(event:StatusEvent):void {
+		private function gotEvent(event:StatusEvent):void {
 			var tp:TorrentPieces;
 			var pObj:Object;
 			switch (event.level) {
@@ -182,7 +187,10 @@ package com.tuarua {
 					break;
 			}
 		}
-		
+		/**
+		 * 
+		 * 
+		 */		
 		public function postTrackersUpdate():void {
 			var vecTrackers:Vector.<TorrentTrackers> = extensionContext.call("getTorrentTrackers",_queryTrackersForTorrentId) as Vector.<TorrentTrackers>;
 			if(vecTrackers){
@@ -192,7 +200,10 @@ package com.tuarua {
 			}
 			
 		}
-		
+		/**
+		 * 
+		 * 
+		 */		
 		public function postPeersUpdate():void {
 			var vecPeers:Vector.<TorrentPeers> = extensionContext.call("getTorrentPeers",_queryPeersForTorrentId,_queryForPeersFlags) as Vector.<TorrentPeers>;
 			if(vecPeers){
@@ -201,28 +212,56 @@ package com.tuarua {
 				this.dispatchEvent(new TorrentAlertEvent(TorrentAlertEvent.PEERS_UPDATE,{id:_queryPeersForTorrentId}));
 			}	
 		}
-		
+		/**
+		 * 
+		 * @param url
+		 * 
+		 */		
 		public function addDHTRouter(url:String):void {
 			extensionContext.call("addDHTRouter",url);
 		}
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */		
 		public function initSession():Boolean {
 			_inited = extensionContext.call("initSession");
 			return _inited;
 		}
+		/**
+		 * 
+		 * 
+		 */		
 		public function saveSessionState():void {
 			extensionContext.call("saveSessionState");
 		}
+		/**
+		 * 
+		 * 
+		 */		
 		public function endSession():void {
 			extensionContext.call("endSession");
 			_inited = false;
 		}
+		/**
+		 * 
+		 * @param filename
+		 * @return 
+		 * 
+		 */		
 		public function getTorrentInfo(filename:String):TorrentInfo {
 			var torrentInfo:TorrentInfo;
 			if(extensionContext)
 				torrentInfo = extensionContext.call("getTorrentInfo",filename) as TorrentInfo;
 			return torrentInfo;
 		}
-		
+		/**
+		 * 
+		 * @param id
+		 * @param value
+		 * 
+		 */		
 		public function setSequentialDownload(id:String,value:Boolean):void {
 			if(extensionContext){
 				var success:Boolean = extensionContext.call("setSequentialDownload",id,value);
@@ -230,79 +269,167 @@ package com.tuarua {
 					TorrentsLibrary.status[id.toLowerCase()].isSequential = value;
 			}	
 		}
+		/**
+		 * 
+		 * @param id
+		 * @return 
+		 * 
+		 */		
 		public function pauseTorrent(id:String):Boolean {
 			var ret:Boolean = false;
 			if(extensionContext)
 				ret = extensionContext.call("pauseTorrent",id.toLowerCase());
 			return ret;
 		}
+		/**
+		 * 
+		 * @param id
+		 * @return 
+		 * 
+		 */		
 		public function resumeTorrent(id:String):Boolean {
 			var ret:Boolean = false;
 			if(extensionContext)
 				ret = extensionContext.call("resumeTorrent",id.toLowerCase());
 			return ret;
 		}
+		/**
+		 * 
+		 * @param id
+		 * 
+		 */		
 		public function forceRecheck(id:String):void {
 			if(extensionContext)
 				extensionContext.call("forceRecheck",id.toLowerCase());
 		}
+		/**
+		 * 
+		 * @param id
+		 * @param trackerIndex
+		 * 
+		 */		
 		public function forceAnnounce(id:String,trackerIndex:int=-1):void {
 			if(extensionContext)
 				extensionContext.call("forceAnnounce",id.toLowerCase(),trackerIndex);
 		}
+		/**
+		 * 
+		 * @param id
+		 * 
+		 */		
 		public function forceDHTAnnounce(id:String):void {
 			if(extensionContext)
 				extensionContext.call("forceDHTAnnounce",id.toLowerCase());
 		}
+		/**
+		 * 
+		 * @param id
+		 * @param index
+		 * @param priority
+		 * 
+		 */		
 		public function setPiecePriority(id:String,index:uint,priority:int):void {
 			if(extensionContext)
 				extensionContext.call("setPiecePriority",id.toLowerCase(),index,priority);
 		}
+		/**
+		 * 
+		 * @param id
+		 * @param index
+		 * @param deadline
+		 * 
+		 */		
 		public function setPieceDeadline(id:String,index:uint,deadline:int):void {//deadline is in milliseconds
 			if(extensionContext)
 				extensionContext.call("setPieceDeadline",id.toLowerCase(),index,deadline);
 		}
+		/**
+		 * 
+		 * @param id
+		 * @param index
+		 * 
+		 */		
 		public function resetPieceDeadline(id:String,index:uint):void {
 			if(extensionContext){
 				extensionContext.call("resetPieceDeadline",id.toLowerCase(),index);
 			}
 				
 		}
+		/**
+		 * 
+		 * @param id
+		 * @param url
+		 * 
+		 */		
 		public function addTracker(id:String,url:String):void {
 			if(extensionContext)
 				extensionContext.call("addTracker",id.toLowerCase(),url);
 		}
+		/**
+		 * 
+		 * @param id
+		 * @param url
+		 * 
+		 */		
 		public function addUrlSeed(id:String,url:String):void {
 			if(extensionContext)
 				extensionContext.call("addUrlSeed",id.toLowerCase(),url);
 		}
+		/**
+		 * 
+		 * @param id
+		 * @param url
+		 * 
+		 */		
 		public function removeUrlSeed(id:String,url:String):void {
 			if(extensionContext)
 				extensionContext.call("removeUrlSeed",id.toLowerCase(),url);
 		}
+		/**
+		 * 
+		 * @param id
+		 * @return 
+		 * 
+		 */		
 		public function getMagnetURI(id:String):String{
 			var ret:String;
 			if(extensionContext)
 				ret = extensionContext.call("getMagnetURI",id.toLowerCase()) as String;
 			return ret;
 		}
-		
+		/**
+		 * 
+		 * @param id
+		 * @param direction
+		 * 
+		 */		
 		public function setQueuePosition(id:String,direction:int):void {
 			if(extensionContext)
 				extensionContext.call("setQueuePosition",id.toLowerCase(),direction);
 		}
+		/**
+		 * 
+		 * @param id
+		 * 
+		 */		
 		public function removeTorrent(id:String):void {
 			TorrentsLibrary.remove(id.toLocaleLowerCase());
 			if(extensionContext)
 				extensionContext.call("removeTorrent",id.toLowerCase());
 		}
-		
+		/**
+		 * 
+		 * 
+		 */		
 		public function postTorrentUpdates():void {
 			if(extensionContext)
 				extensionContext.call("postTorrentUpdates");
 		}
 
-		
+		/**
+		 * 
+		 * 
+		 */		
 		public function getTorrentTrackers():void {
 			if(extensionContext){
 				var vecTrackers:Vector.<TorrentTrackers> = extensionContext.call("getTorrentTrackers") as Vector.<TorrentTrackers>;
@@ -310,7 +437,18 @@ package com.tuarua {
 					TorrentsLibrary.updateTrackers(vecTrackers[i].id,vecTrackers[i]);
 			}	
 		}
-		
+		/**
+		 * 
+		 * @param id
+		 * @param url
+		 * @param hash
+		 * @param name
+		 * @param sequential
+		 * @param trackers
+		 * @param webSeeds
+		 * @param seedMode
+		 * 
+		 */		
 		public function addTorrent(id:String,url:String="",hash:String="",name:String="",sequential:Boolean=false,
 									 trackers:Vector.<TorrentTracker>=null,webSeeds:Vector.<TorrentWebSeed>=null,
 									 seedMode:Boolean=false):void {//trackers and webseeds ignored if url is passed
@@ -339,14 +477,27 @@ package com.tuarua {
 					TorrentsLibrary.updatePieces(_id,tp);
 				}	
 			}
-		}
-		
-		protected function onFileDownloaded(event:TorrentInfoEvent):void {
+		}	
+		private function onFileDownloaded(event:TorrentInfoEvent):void {
 			addTorrent(event.params.id,event.params.filename,"","",event.params.sequential);
 		}
 		
 		
 		//pieceSize is in KiB
+		
+		/**
+		 * 
+		 * @param input
+		 * @param output
+		 * @param pieceSize
+		 * @param trackers
+		 * @param webSeeds
+		 * @param isPrivate
+		 * @param comment
+		 * @param seedNow
+		 * @param rootCert
+		 * 
+		 */		
 		public function createTorrent(input:String,output:String,pieceSize:int,trackers:Vector.<TorrentTracker>,
 									  webSeeds:Vector.<TorrentWebSeed>,isPrivate:Boolean=false,comment:String=null,
 									  seedNow:Boolean=false,rootCert:String=null):void {
@@ -358,14 +509,27 @@ package com.tuarua {
 			extensionContext.call("createTorrent",input,output,trackers,webSeeds,pieceSize,isPrivate,comment,seedNow,rootCert);
 		}
 		
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */		
 		public function isSupported():Boolean {
 			return extensionContext.call("isSupported"); 
 		}
-		
+		/**
+		 * 
+		 * 
+		 */		
 		public function updateSettings():void {
 			extensionContext.call("updateSettings",TorrentSettings);
 		}
-		
+		/**
+		 * 
+		 * @param filename
+		 * @param applyToTrackers
+		 * 
+		 */		
 		public function addFilterList(filename:String,applyToTrackers:Boolean):void {
 			var validFile:Boolean;
 			var check:String = ".p2p";
@@ -378,10 +542,21 @@ package com.tuarua {
 			else
 				this.dispatchEvent(new TorrentInfoEvent(TorrentInfoEvent.ON_ERROR,{message:"only .p2p filters are allowed and file must exist"}));
 		}
+		/**
+		 * 
+		 * @param id
+		 * @param index
+		 * @param priority
+		 * 
+		 */		
 		public function setFilePriority(id:String,index:int,priority:int):void {
 			extensionContext.call("setFilePriority",id.toLowerCase(),index,priority);
 		}
 		
+		/**
+		 * 
+		 * 
+		 */		
 		public function dispose():void {
 			
 			//remove listeners 
@@ -399,10 +574,14 @@ package com.tuarua {
 			extensionContext = null;
 		}
 		
+		/**
+		 * 
+		 * @return 
+		 * 
+		 */		
 		public function get inited():Boolean {
 			return _inited;
 		}
-
 		private function onPeersTimer(event:TimerEvent):void {
 			postPeersUpdate();
 		}
@@ -462,15 +641,29 @@ package com.tuarua {
 			}
 		}
 		
-		
+		/**
+		 * 
+		 * @param value
+		 * 
+		 */		
 		public function set statusUpdateInterval(value:int):void {
 			_statusUpdateInterval = value;
 		}
-
+		/**
+		 * 
+		 * @param value
+		 * 
+		 */		
 		public function set peersUpdateInterval(value:int):void {
 			_peersUpdateInterval = value;
 		}
-
+		/**
+		 * 
+		 * @param value
+		 * @param id
+		 * @param flags
+		 * 
+		 */		
 		public function queryForPeers(value:Boolean,id:String="",flags:Boolean=false):void {
 			_queryForPeers = value;
 			_queryPeersForTorrentId = id.toLowerCase();
@@ -484,11 +677,20 @@ package com.tuarua {
 					stopPeersTimer();
 			}
 		}
-
+		/**
+		 * 
+		 * @param value
+		 * 
+		 */		
 		public function set trackersUpdateInterval(value:int):void {
 			_trackersUpdateInterval = value;
 		}
-
+		/**
+		 * 
+		 * @param value
+		 * @param id
+		 * 
+		 */		
 		public function queryForTrackers(value:Boolean,id:String=""):void {
 			_queryForTrackers = value;
 			_queryTrackersForTorrentId = id.toLowerCase();
