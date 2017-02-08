@@ -65,8 +65,7 @@ package {
 
 		public function StarlingRoot() {
 			super();
-			TextField.registerBitmapFont(Fonts.getFont("fira-sans-semi-bold-13"));
-			
+			TextField.registerCompositor(Fonts.getFont("fira-sans-semi-bold-13"), "Fira Sans Semi-Bold 13");
 		}
 
 		
@@ -410,7 +409,6 @@ package {
 			bitTorrentANE.queryForPeers((torrentClientPanel.selectedMenu == 2),torrentId,(torrentClientPanel.selectedMenu == 2));
 		}
 		protected function onTorrentStateUpdate(event:TorrentAlertEvent):void {
-			trace(event);
 			if(torrentClientPanel.visible){
 				torrentClientPanel.updateStatus();
 				if(torrentClientPanel.selectedMenu == 0) torrentClientPanel.updatePieces();
@@ -418,6 +416,9 @@ package {
 			
 			currentStatus = TorrentsLibrary.status[torrentId] as TorrentStatus;
 			currentPieces = TorrentsLibrary.pieces[torrentId] as TorrentPieces;
+			
+			var info:TorrentInfo = TorrentsLibrary.info[torrentId];
+			
 			if(currentStatus){
 				if(TorrentsLibrary.info[torrentId])
 					currentVideoFile = TorrentsLibrary.info[torrentId].getFileByExtension(["mp4"]);
