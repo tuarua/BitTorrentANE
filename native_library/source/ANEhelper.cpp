@@ -23,45 +23,45 @@ SOFTWARE.*/
 #include "ANEHelper.h"
 
 FREObject ANEHelper::getFREObject(std::string arg) {
-    FREObject result;
-    FRENewObjectFromUTF8(uint32_t(arg.length()), reinterpret_cast<const uint8_t *>(arg.data()), &result);
-    return result;
+	FREObject result;
+	FRENewObjectFromUTF8(uint32_t(arg.length()), reinterpret_cast<const uint8_t *>(arg.data()), &result);
+	return result;
 }
 
 FREObject ANEHelper::getFREObject(const char *arg) {
-    FREObject result;
-    FRENewObjectFromUTF8(uint32_t(strlen(arg)) + 1, reinterpret_cast<const uint8_t *>(arg), &result);
-    return result;
+	FREObject result;
+	FRENewObjectFromUTF8(uint32_t(strlen(arg)) + 1, reinterpret_cast<const uint8_t *>(arg), &result);
+	return result;
 }
 
 FREObject ANEHelper::getFREObject(double arg) {
-    FREObject result;
-    FRENewObjectFromDouble(arg, &result);
-    return result;
+	FREObject result;
+	FRENewObjectFromDouble(arg, &result);
+	return result;
 }
 
 FREObject ANEHelper::getFREObject(bool arg) {
-    FREObject result;
-    FRENewObjectFromBool(arg, &result);
-    return result;
+	FREObject result;
+	FRENewObjectFromBool(arg, &result);
+	return result;
 }
 
 FREObject ANEHelper::getFREObject(int32_t arg) {
-    FREObject result;
-    FRENewObjectFromInt32(arg, &result);
-    return result;
+	FREObject result;
+	FRENewObjectFromInt32(arg, &result);
+	return result;
 }
 
 FREObject ANEHelper::getFREObject(int64_t arg) {
 	FREObject result;
-	FRENewObjectFromInt32(static_cast<int32_t>(arg), &result);
+	FRENewObjectFromDouble(double(arg), &result);
 	return result;
 }
 
 FREObject ANEHelper::getFREObject(uint32_t arg) {
-    FREObject result;
-    FRENewObjectFromUint32(arg, &result);
-    return result;
+	FREObject result;
+	FRENewObjectFromUint32(arg, &result);
+	return result;
 }
 
 FREObject ANEHelper::getFREObject(uint8_t arg) {
@@ -71,79 +71,111 @@ FREObject ANEHelper::getFREObject(uint8_t arg) {
 }
 
 FREObject ANEHelper::getProperty(FREObject objAS, std::string propertyName) {
-    FREObject result = nullptr;
-    FREObject thrownException = nullptr;
-    FREGetObjectProperty(objAS, reinterpret_cast<const uint8_t *>(propertyName.data()), &result, &thrownException);
-    return result;
+	FREObject result = nullptr;
+	FREObject thrownException = nullptr;
+	FREGetObjectProperty(objAS, reinterpret_cast<const uint8_t *>(propertyName.data()), &result, &thrownException);
+	return result;
 }
 
 void ANEHelper::setProperty(FREObject objAS, std::string name, FREObject value) {
-    FRESetObjectProperty(objAS, reinterpret_cast<const uint8_t *>(name.c_str()), value, nullptr);
+	FRESetObjectProperty(objAS, reinterpret_cast<const uint8_t *>(name.c_str()), value, nullptr);
+}
+
+void ANEHelper::setProperty(FREObject objAS, std::string name, const char* value) {
+	FRESetObjectProperty(objAS, reinterpret_cast<const uint8_t *>(name.c_str()), getFREObject(value), nullptr);
+}
+
+void ANEHelper::setProperty(FREObject objAS, std::string name, std::string value) {
+	FRESetObjectProperty(objAS, reinterpret_cast<const uint8_t *>(name.c_str()), getFREObject(value), nullptr);
+}
+
+void ANEHelper::setProperty(FREObject objAS, std::string name, double value) {
+	FRESetObjectProperty(objAS, reinterpret_cast<const uint8_t *>(name.c_str()), getFREObject(value), nullptr);
+}
+
+void ANEHelper::setProperty(FREObject objAS, std::string name, bool value) {
+	FRESetObjectProperty(objAS, reinterpret_cast<const uint8_t *>(name.c_str()), getFREObject(value), nullptr);
+}
+
+void ANEHelper::setProperty(FREObject objAS, std::string name, int32_t value) {
+	FRESetObjectProperty(objAS, reinterpret_cast<const uint8_t *>(name.c_str()), getFREObject(value), nullptr);
+}
+
+void ANEHelper::setProperty(FREObject objAS, std::string name, int64_t value) {
+	FRESetObjectProperty(objAS, reinterpret_cast<const uint8_t *>(name.c_str()), getFREObject(value), nullptr);
+}
+
+void ANEHelper::setProperty(FREObject objAS, std::string name, uint32_t value) {
+	FRESetObjectProperty(objAS, reinterpret_cast<const uint8_t *>(name.c_str()), getFREObject(value), nullptr);
+}
+
+void ANEHelper::setProperty(FREObject objAS, std::string name, uint8_t value) {
+	FRESetObjectProperty(objAS, reinterpret_cast<const uint8_t *>(name.c_str()), getFREObject(value), nullptr);
 }
 
 uint32_t ANEHelper::getUInt32(FREObject uintAS) {
-    uint32_t result = 0;
-    FREGetObjectAsUint32(uintAS, &result);
-    return result;
+	uint32_t result = 0;
+	FREGetObjectAsUint32(uintAS, &result);
+	return result;
 }
 
 int32_t ANEHelper::getInt32(FREObject intAS) {
-    auto result = 0;
-    FREGetObjectAsInt32(intAS, &result);
-    return result;
+	auto result = 0;
+	FREGetObjectAsInt32(intAS, &result);
+	return result;
 }
 
 double ANEHelper::getDouble(FREObject arg) {
-    auto result = 0.0;
-    FREGetObjectAsDouble(arg, &result);
-    return result;
+	auto result = 0.0;
+	FREGetObjectAsDouble(arg, &result);
+	return result;
 }
 
 bool ANEHelper::getBool(FREObject val) {
-    uint32_t result = 0;
-    auto ret = false;
-    FREGetObjectAsBool(val, &result);
-    if (result > 0) ret = true;
-    return ret;
+	uint32_t result = 0;
+	auto ret = false;
+	FREGetObjectAsBool(val, &result);
+	if (result > 0) ret = true;
+	return ret;
 }
 
 std::string ANEHelper::getString(FREObject arg) {
-    uint32_t string1Length;
-    const uint8_t *val;
-    FREGetObjectAsUTF8(arg, &string1Length, &val);
-    std::string s(val, val + string1Length);
-    return s;
+	uint32_t string1Length;
+	const uint8_t *val;
+	FREGetObjectAsUTF8(arg, &string1Length, &val);
+	std::string s(val, val + string1Length);
+	return s;
 }
 
 uint32_t ANEHelper::getArrayLength(FREObject arrayAS) {
-    auto arrayLengthAS = getProperty(arrayAS, "length");
-    return getUInt32(arrayLengthAS);
+	auto arrayLengthAS = getProperty(arrayAS, "length");
+	return getUInt32(arrayLengthAS);
 }
 
 std::vector<std::string> ANEHelper::getStringVector(FREObject arg, std::string propertyName) {
-    auto numItems = getArrayLength(arg);
-    std::vector<std::string> ret;
-    for (unsigned int k = 0; k < numItems; ++k) {
-        FREObject elemAS = nullptr;
-        FREGetArrayElementAt(arg, k, &elemAS);
-        std::string elem;
-        if (propertyName.empty())
-            elem = getString(elemAS);
-        else
-            elem = getString(getProperty(elemAS, propertyName));
-        ret.push_back(elem);
-    }
+	auto numItems = getArrayLength(arg);
+	std::vector<std::string> ret;
+	for (unsigned int k = 0; k < numItems; ++k) {
+		FREObject elemAS = nullptr;
+		FREGetArrayElementAt(arg, k, &elemAS);
+		std::string elem;
+		if (propertyName.empty())
+			elem = getString(elemAS);
+		else
+			elem = getString(getProperty(elemAS, propertyName));
+		ret.push_back(elem);
+	}
 
-    return ret;
+	return ret;
 }
 
 FREObject ANEHelper::createFREObject(std::string className) {
-    FREObject ret;
-    FRENewObject(reinterpret_cast<const uint8_t *>(className.data()), 0, nullptr, &ret, nullptr);
-    return ret;
+	FREObject ret;
+	FRENewObject(reinterpret_cast<const uint8_t *>(className.data()), 0, nullptr, &ret, nullptr);
+	return ret;
 }
 
 void ANEHelper::dispatchEvent(FREContext ctx, std::string name, std::string value) {
-    FREDispatchStatusEventAsync(ctx, reinterpret_cast<const uint8_t *>(value.data()), reinterpret_cast<const uint8_t *>(name.data()));
+	FREDispatchStatusEventAsync(ctx, reinterpret_cast<const uint8_t *>(value.data()), reinterpret_cast<const uint8_t *>(name.data()));
 }
 

@@ -97,7 +97,7 @@ SOFTWARE.*/
 #include "libtorrent/add_torrent_params.hpp"
 
 #include <ANEhelper.h>
-
+const std::string ANE_NAME = "BitTorrentANE";
 ANEHelper aneHelper = ANEHelper();
 
 #include "json.hpp"
@@ -274,20 +274,20 @@ std::string urldecode(const std::string &str) {
 FREObject getFRETorrentInfo(libtorrent::torrent_info ti, std::string filename) {
     using namespace libtorrent;
     auto torrentMeta = aneHelper.createFREObject("com.tuarua.torrent.TorrentInfo");
-    aneHelper.setProperty(torrentMeta, "status", aneHelper.getFREObject("ok"));
+    aneHelper.setProperty(torrentMeta, "status", "ok");
 
-    aneHelper.setProperty(torrentMeta, "isPrivate", aneHelper.getFREObject(ti.priv()));
-    aneHelper.setProperty(torrentMeta, "torrentFile", aneHelper.getFREObject(filename));
-    aneHelper.setProperty(torrentMeta, "numPieces", aneHelper.getFREObject(ti.num_pieces()));
+    aneHelper.setProperty(torrentMeta, "isPrivate", ti.priv());
+    aneHelper.setProperty(torrentMeta, "torrentFile", filename);
+    aneHelper.setProperty(torrentMeta, "numPieces", ti.num_pieces());
 
-    aneHelper.setProperty(torrentMeta, "size", aneHelper.getFREObject(ti.total_size()));
-    aneHelper.setProperty(torrentMeta, "pieceLength", aneHelper.getFREObject(ti.piece_length()));
-    aneHelper.setProperty(torrentMeta, "infoHash", aneHelper.getFREObject(boost::lexical_cast<std::string>(ti.info_hash())));
+    aneHelper.setProperty(torrentMeta, "size", ti.total_size());
+    aneHelper.setProperty(torrentMeta, "pieceLength", ti.piece_length());
+    aneHelper.setProperty(torrentMeta, "infoHash", boost::lexical_cast<std::string>(ti.info_hash()));
 
-    aneHelper.setProperty(torrentMeta, "name", aneHelper.getFREObject(ti.name()));
-    aneHelper.setProperty(torrentMeta, "comment", aneHelper.getFREObject(ti.comment()));
-    aneHelper.setProperty(torrentMeta, "creator", aneHelper.getFREObject(ti.creator()));
-    aneHelper.setProperty(torrentMeta, "creationDate", aneHelper.getFREObject(boost::numeric_cast<uint32_t>(ti.creation_date().get())));
+    aneHelper.setProperty(torrentMeta, "name", ti.name());
+    aneHelper.setProperty(torrentMeta, "comment", ti.comment());
+    aneHelper.setProperty(torrentMeta, "creator", ti.creator());
+    aneHelper.setProperty(torrentMeta, "creationDate", boost::numeric_cast<uint32_t>(ti.creation_date().get()));
 
 
     auto const &sto = ti.files();
@@ -300,12 +300,12 @@ FREObject getFRETorrentInfo(libtorrent::torrent_info ti, std::string filename) {
         auto last = sto.map_file(i, (std::max)(int64_t(sto.file_size(i)) - 1, int64_t(0)), 0).piece;
 
 	    auto meta = aneHelper.createFREObject("com.tuarua.torrent.TorrentFileMeta");
-        aneHelper.setProperty(meta, "path", aneHelper.getFREObject(sto.file_path(i)));
-        aneHelper.setProperty(meta, "name", aneHelper.getFREObject(sto.file_name(i)));
-        aneHelper.setProperty(meta, "offset", aneHelper.getFREObject(sto.file_offset(i)));
-        aneHelper.setProperty(meta, "size", aneHelper.getFREObject(sto.file_size(i)));
-        aneHelper.setProperty(meta, "firstPiece", aneHelper.getFREObject(first));
-        aneHelper.setProperty(meta, "lastPiece", aneHelper.getFREObject(last));
+        aneHelper.setProperty(meta, "path", sto.file_path(i));
+        aneHelper.setProperty(meta, "name", sto.file_name(i));
+        aneHelper.setProperty(meta, "offset", sto.file_offset(i));
+        aneHelper.setProperty(meta, "size", sto.file_size(i));
+        aneHelper.setProperty(meta, "firstPiece", first);
+        aneHelper.setProperty(meta, "lastPiece", last);
 
         FRESetArrayElementAt(vecTorrents, i, meta);
     }
@@ -549,6 +549,7 @@ unsigned int logLevel = 0;
 std::vector<std::string> dhtRouters = {};
 
 extern void trace(std::string msg) {
+	auto value = "[" + ANE_NAME + "] " + msg;
 	if (logLevel > 0)
 		aneHelper.dispatchEvent(dllContext, "TRACE", msg);
 }
@@ -1209,40 +1210,40 @@ FRE_FUNCTION(getTorrentTrackers) {
 
         auto freTracker = aneHelper.createFREObject("com.tuarua.torrent.TrackerInfo");
 
-        aneHelper.setProperty(freTracker, "url", aneHelper.getFREObject("**[DHT]**"));
+        aneHelper.setProperty(freTracker, "url", "**[DHT]**");
         if (settingsContext.privacy.useDHT && !i->torrent_file()->priv())
-            aneHelper.setProperty(freTracker, "status", aneHelper.getFREObject("Working"));
+            aneHelper.setProperty(freTracker, "status", "Working");
         else
-            aneHelper.setProperty(freTracker, "status", aneHelper.getFREObject("Disabled"));
+            aneHelper.setProperty(freTracker, "status", "Disabled");
         if (i->torrent_file()->priv())
-            aneHelper.setProperty(freTracker, "message", aneHelper.getFREObject("This torrent is private"));
+            aneHelper.setProperty(freTracker, "message", "This torrent is private");
 
-        aneHelper.setProperty(freTracker, "numPeers", aneHelper.getFREObject(numDHT));
+        aneHelper.setProperty(freTracker, "numPeers", numDHT);
         FRESetArrayElementAt(vecTrackers, 0, freTracker);
 
 
         freTracker = aneHelper.createFREObject("com.tuarua.torrent.TrackerInfo");
 
-        aneHelper.setProperty(freTracker, "url", aneHelper.getFREObject("**[PeX]**"));
+        aneHelper.setProperty(freTracker, "url", "**[PeX]**");
         if (settingsContext.privacy.usePEX && !i->torrent_file()->priv())
-            aneHelper.setProperty(freTracker, "status", aneHelper.getFREObject("Working"));
+            aneHelper.setProperty(freTracker, "status", "Working");
         else
-            aneHelper.setProperty(freTracker, "status", aneHelper.getFREObject("Disabled"));
+            aneHelper.setProperty(freTracker, "status", "Disabled");
         if (i->torrent_file()->priv())
-            aneHelper.setProperty(freTracker, "message", aneHelper.getFREObject("This torrent is private"));
-        aneHelper.setProperty(freTracker, "numPeers", aneHelper.getFREObject(numPEX));
+            aneHelper.setProperty(freTracker, "message", "This torrent is private");
+        aneHelper.setProperty(freTracker, "numPeers", numPEX);
         FRESetArrayElementAt(vecTrackers, 1, freTracker);
 
         freTracker = aneHelper.createFREObject("com.tuarua.torrent.TrackerInfo");
-        aneHelper.setProperty(freTracker, "url", aneHelper.getFREObject("**[LSD]**"));
+        aneHelper.setProperty(freTracker, "url", "**[LSD]**");
         if (settingsContext.privacy.useLSD && !i->torrent_file()->priv())
-            aneHelper.setProperty(freTracker, "status", aneHelper.getFREObject("Working"));
+            aneHelper.setProperty(freTracker, "status", "Working");
         else
-            aneHelper.setProperty(freTracker, "status", aneHelper.getFREObject("Disabled"));
+            aneHelper.setProperty(freTracker, "status", "Disabled");
         if (i->torrent_file()->priv())
-            aneHelper.setProperty(freTracker, "message", aneHelper.getFREObject("This torrent is private"));
+            aneHelper.setProperty(freTracker, "message", "This torrent is private");
 
-        aneHelper.setProperty(freTracker, "numPeers", aneHelper.getFREObject(numLSD));
+        aneHelper.setProperty(freTracker, "numPeers", numLSD);
         FRESetArrayElementAt(vecTrackers, 2, freTracker);
 
         auto tr = i->trackers();
@@ -1260,24 +1261,24 @@ FRE_FUNCTION(getTorrentTrackers) {
 
             auto freTracker2 = aneHelper.createFREObject("com.tuarua.torrent.TrackerInfo");
 
-            aneHelper.setProperty(freTracker2, "tier", aneHelper.getFREObject(t->tier));
-            aneHelper.setProperty(freTracker2, "url", aneHelper.getFREObject(t->url));
+            aneHelper.setProperty(freTracker2, "tier", t->tier);
+            aneHelper.setProperty(freTracker2, "url", t->url);
 
 
             if (t->verified) {
-                aneHelper.setProperty(freTracker2, "status", aneHelper.getFREObject("Working"));
+                aneHelper.setProperty(freTracker2, "status", "Working");
             } else if (t->updating && t->fails == 0) {
-                aneHelper.setProperty(freTracker2, "status", aneHelper.getFREObject("Updating"));
+                aneHelper.setProperty(freTracker2, "status", "Updating");
             } else if (t->fails > 0) {
-                aneHelper.setProperty(freTracker2, "status", aneHelper.getFREObject("Not Working"));
-                aneHelper.setProperty(freTracker2, "message", aneHelper.getFREObject(t->last_error.message()));
+                aneHelper.setProperty(freTracker2, "status", "Not Working");
+                aneHelper.setProperty(freTracker2, "message", t->last_error.message());
             } else {
-                aneHelper.setProperty(freTracker2, "status", aneHelper.getFREObject("Not contacted yet"));
+                aneHelper.setProperty(freTracker2, "status", "Not contacted yet");
             }
 
             auto search = torrentTrackerPeerMap[id].find(t->url);
             if (search != torrentTrackerPeerMap[id].end())
-                aneHelper.setProperty(freTracker2, "numPeers", aneHelper.getFREObject(search->second));
+                aneHelper.setProperty(freTracker2, "numPeers", search->second);
 
             FRESetArrayElementAt(vecTrackers, trackercnt, freTracker2);
             trackercnt++;
@@ -1285,7 +1286,7 @@ FRE_FUNCTION(getTorrentTrackers) {
 
         FRESetArrayLength(vecTrackers, trackercnt);
 
-        aneHelper.setProperty(torrentTrackers, "id", aneHelper.getFREObject(id));
+        aneHelper.setProperty(torrentTrackers, "id", id);
         aneHelper.setProperty(torrentTrackers, "trackersInfo", vecTrackers);
         FRESetArrayElementAt(vecTorrentTrackers, cnt, torrentTrackers);
         cnt++;
@@ -1324,7 +1325,7 @@ FRE_FUNCTION(getTorrentPeers) {
 
         auto torrentPeers = aneHelper.createFREObject("com.tuarua.torrent.TorrentPeers");
 
-        aneHelper.setProperty(torrentPeers, "id", aneHelper.getFREObject(id));
+        aneHelper.setProperty(torrentPeers, "id", id);
         auto vecPeers = aneHelper.createFREObject("Vector.<com.tuarua.torrent.PeerInfo>");
 
         if (i->status().state != torrent_status::seeding) {
@@ -1341,12 +1342,12 @@ FRE_FUNCTION(getTorrentPeers) {
 					boost::system::error_code ec;
 
                     auto frePeer = aneHelper.createFREObject("com.tuarua.torrent.PeerInfo");
-                    aneHelper.setProperty(frePeer, "ip", aneHelper.getFREObject(addr.to_string(ec)));
+                    aneHelper.setProperty(frePeer, "ip", addr.to_string(ec));
 #ifndef TORRENT_DISABLE_RESOLVE_COUNTRIES
                     if (settingsContext.advanced.resolveCountries && p->country[0] != 0) {
                         std::stringstream ss;
                         ss << boost::format("%c%c") % p->country[0] % p->country[1];
-                        aneHelper.setProperty(frePeer, "country", aneHelper.getFREObject(ss.str()));
+                        aneHelper.setProperty(frePeer, "country", ss.str());
                     }
 #endif
 #ifndef TORRENT_DISABLE_GEO_IP
@@ -1355,25 +1356,25 @@ FRE_FUNCTION(getTorrentPeers) {
 
 
 #endif
-                    aneHelper.setProperty(frePeer, "client", aneHelper.getFREObject(p->client));
-                    aneHelper.setProperty(frePeer, "port", aneHelper.getFREObject(p->ip.port()));
-                    aneHelper.setProperty(frePeer, "localPort", aneHelper.getFREObject(p->local_endpoint.port()));
+                    aneHelper.setProperty(frePeer, "client", p->client);
+                    aneHelper.setProperty(frePeer, "port", p->ip.port());
+                    aneHelper.setProperty(frePeer, "localPort", p->local_endpoint.port());
 
 
                     if (p->flags & peer_info::utp_socket)
-                        aneHelper.setProperty(frePeer, "connection", aneHelper.getFREObject("uTP"));
+                        aneHelper.setProperty(frePeer, "connection", "uTP");
                     else if (p->flags & peer_info::i2p_socket)
-                        aneHelper.setProperty(frePeer, "connection", aneHelper.getFREObject("i2P"));
+                        aneHelper.setProperty(frePeer, "connection", "i2P");
                     else if (p->connection_type == peer_info::standard_bittorrent)
-                        aneHelper.setProperty(frePeer, "connection", aneHelper.getFREObject("BT"));
+                        aneHelper.setProperty(frePeer, "connection","BT");
                     else if (p->connection_type == peer_info::web_seed)
-                        aneHelper.setProperty(frePeer, "connection", aneHelper.getFREObject("Web"));
+                        aneHelper.setProperty(frePeer, "connection", "Web");
 
-                    aneHelper.setProperty(frePeer, "downSpeed", aneHelper.getFREObject(p->down_speed));
-                    aneHelper.setProperty(frePeer, "downloaded", aneHelper.getFREObject(p->total_download));
+                    aneHelper.setProperty(frePeer, "downSpeed", p->down_speed);
+                    aneHelper.setProperty(frePeer, "downloaded", p->total_download);
 
-                    aneHelper.setProperty(frePeer, "upSpeed", aneHelper.getFREObject(p->up_speed));
-                    aneHelper.setProperty(frePeer, "uploaded", aneHelper.getFREObject(p->total_upload));
+                    aneHelper.setProperty(frePeer, "upSpeed", p->up_speed);
+                    aneHelper.setProperty(frePeer, "uploaded", p->total_upload);
 
                     if (queryFlags) {
                         std::stringstream flgsAsString;
@@ -1412,53 +1413,52 @@ FRE_FUNCTION(getTorrentPeers) {
                         auto freFlags = aneHelper.createFREObject("com.tuarua.torrent.PeerFlags");
 
                         if (isInteresting)
-                            aneHelper.setProperty(freFlags, "isInteresting", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "isInteresting", true);
                         if (isChoked)
-                            aneHelper.setProperty(freFlags, "isChoked", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "isChoked", true);
                         if (isRemoteInterested)
-                            aneHelper.setProperty(freFlags, "isRemoteInterested", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "isRemoteInterested", true);
                         if (isRemoteChoked)
-                            aneHelper.setProperty(freFlags, "isRemoteChoked", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "isRemoteChoked", true);
                         if (p->flags & peer_info::supports_extensions)
-                            aneHelper.setProperty(freFlags, "supportsExtensions", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "supportsExtensions", true);
                         if (p->flags & peer_info::local_connection)
-                            aneHelper.setProperty(freFlags, "isLocalConnection", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "isLocalConnection", true);
                         if (p->flags & peer_info::seed)
-                            aneHelper.setProperty(freFlags, "isSeed", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "isSeed", true);
                         if (p->flags & peer_info::on_parole)
-                            aneHelper.setProperty(freFlags, "onParole", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "onParole", true);
                         if (p->flags & peer_info::optimistic_unchoke)
-                            aneHelper.setProperty(freFlags, "isOptimisticUnchoke", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "isOptimisticUnchoke", true);
                         if (p->flags & peer_info::snubbed)
-                            aneHelper.setProperty(freFlags, "isSnubbed", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "isSnubbed", true);
                         if (p->flags & peer_info::upload_only)
-                            aneHelper.setProperty(freFlags, "isUploadOnly", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "isUploadOnly",true);
                         if (p->flags & peer_info::endgame_mode)
-                            aneHelper.setProperty(freFlags, "isEndGameMode", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "isEndGameMode", true);
 #ifndef TORRENT_DISABLE_ENCRYPTION
                         if (p->flags & peer_info::rc4_encrypted)
-                            aneHelper.setProperty(freFlags, "isRC4encrypted", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "isRC4encrypted", true);
                         if (p->flags & peer_info::plaintext_encrypted)
-                            aneHelper.setProperty(freFlags, "isPlainTextEncrypted", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "isPlainTextEncrypted", true);
 #endif
                         if (p->flags & peer_info::holepunched)
-                            aneHelper.setProperty(freFlags, "isHolePunched", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "isHolePunched", true);
                         if (p->source & peer_info::tracker)
-                            aneHelper.setProperty(freFlags, "fromTracker", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "fromTracker", true);
                         if (p->source & peer_info::pex)
-                            aneHelper.setProperty(freFlags, "fromPEX", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "fromPEX", true);
                         if (p->source & peer_info::dht)
-                            aneHelper.setProperty(freFlags, "fromDHT", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "fromDHT", true);
                         if (p->source & peer_info::lsd)
-                            aneHelper.setProperty(freFlags, "fromLSD", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "fromLSD", true);
                         if (p->source & peer_info::resume_data)
-                            aneHelper.setProperty(freFlags, "fromResumeData", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "fromResumeData", true);
                         if (p->source & peer_info::incoming)
-                            aneHelper.setProperty(freFlags, "fromIncoming", aneHelper.getFREObject(true));
+                            aneHelper.setProperty(freFlags, "fromIncoming", true);
 
                         aneHelper.setProperty(frePeer, "flags", freFlags);
-                        aneHelper.setProperty(frePeer, "flagsAsString", aneHelper.getFREObject(flgsAsString.str()));
-
+                        aneHelper.setProperty(frePeer, "flagsAsString", flgsAsString.str());
                     }
 
                     //relevance
@@ -1473,9 +1473,8 @@ FRE_FUNCTION(getTorrentPeers) {
                         }
                     }
 
-                    aneHelper.setProperty(frePeer, "relevance", 
-						aneHelper.getFREObject((localMissing == 0) ? 0.0 : static_cast<double>(remoteHaves / localMissing)));
-                    aneHelper.setProperty(frePeer, "progress", aneHelper.getFREObject(p->progress));
+                    aneHelper.setProperty(frePeer, "relevance", localMissing == 0 ? 0.0 : static_cast<double>(remoteHaves / localMissing));
+                    aneHelper.setProperty(frePeer, "progress", p->progress);
 
                     FRESetArrayElementAt(vecPeers, peercnt, frePeer);
 
