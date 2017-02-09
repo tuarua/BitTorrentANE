@@ -1,7 +1,5 @@
 package com.tuarua.jtorrent.settings;
 
-import java.util.Objects;
-
 /**
  * Created by Eoin Landy on 25/07/2016.
  */
