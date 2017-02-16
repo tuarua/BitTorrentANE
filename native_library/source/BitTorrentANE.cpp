@@ -918,14 +918,14 @@ void handleAlert(libtorrent::alert *a) {
                 vector<std::string> aUserData;
                 std::string sUserData = static_cast<char *>(alert12->params.userdata);
                 split(aUserData, sUserData, boost::is_any_of("|"));
-                std::string id = aUserData[0];
-                std::string hash = aUserData[1];
-                std::string uri = aUserData[2];
+	            auto id = aUserData[0];
+				auto hash = aUserData[1];
+				auto uri = aUserData[2];
 
                 addedTorrentHandles.insert(make_pair(th.id(), id));
                 addedMagnetsUriMap.insert(make_pair(id, uri));
             } else {
-                boost::shared_ptr<const torrent_info> ti = th.torrent_file();
+	            auto ti = th.torrent_file();
                 std::string id;
                 std::string hash;
                 hash = boost::lexical_cast<std::string>(ti->info_hash());
@@ -1016,8 +1016,8 @@ FRE_FUNCTION(addTorrent) {
     FREObject FREtorrentInfo = nullptr;
     if (isMagnet) {
         p.storage = disabled_storage_constructor;
-        std::string sUserData = id + "|" + hash + "|" + uri;
-        p.userdata = static_cast<void *>(strdup(sUserData.c_str()));
+	    auto sUserData = id + "|" + hash + "|" + uri;
+        p.userdata = static_cast<void *>(_strdup(sUserData.c_str()));
 
         p.url = uri;
         parse_magnet_uri(uri, p, ec);
