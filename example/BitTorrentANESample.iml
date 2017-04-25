@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="Flex" version="4">
+  <component name="FlexBuildConfigurationManager" active="BitTorrentANESample">
+    <configurations>
+      <configuration name="BitTorrentANESample" target-platform="Desktop" pure-as="true" main-class="BitTorrentANESample" output-file="BitTorrentANESample.swf" output-folder="$MODULE_DIR$/bin-debug">
+        <dependencies>
+          <entries>
+            <entry library-id="cc7d0fee-bf2f-490b-87c6-91e2963db921">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="14b5aa95-be88-48eb-b91f-147752d26764">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="586bdacc-fff3-40aa-8bca-e47e9cd206bf">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="BitTorrentANE" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="SaveAsANE" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="AIRSDK_25" />
+        </dependencies>
+        <compiler-options>
+          <map>
+            <entry key="compiler.locale" value="en_US" />
+          </map>
+        </compiler-options>
+        <packaging-air-desktop use-generated-descriptor="false" custom-descriptor-path="$MODULE_DIR$/src/BitTorrentANESample-app.xml" package-file-name="BitTorrentANESample">
+          <files-to-package>
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/geoip" path-in-package="geoip" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/output" path-in-package="output" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/filters" path-in-package="filters" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/session" path-in-package="session" />
+            <FilePathAndPathInPackage file-path="$MODULE_DIR$/src/torrents" path-in-package="torrents" />
+          </files-to-package>
+          <AirSigningOptions keystore-path="$DOCUMENTS$/tuaruaWin.p12" />
+        </packaging-air-desktop>
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+    </configurations>
+    <compiler-options />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="AIRSDK_25" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="cc7d0fee-bf2f-490b-87c6-91e2963db921" />
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/libs" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/libs" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="14b5aa95-be88-48eb-b91f-147752d26764" />
+        <CLASSES>
+          <root url="jar://$DOCUMENTS$/BitTorrentANE/native_extension/ane/BitTorrentANE.ane!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="586bdacc-fff3-40aa-8bca-e47e9cd206bf" />
+        <CLASSES>
+          <root url="jar://$DOCUMENTS$/BitTorrentANE/native_extension/ane/SaveAsANE.ane!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" exported="" name="BitTorrentANE" level="project" />
+    <orderEntry type="library" exported="" name="SaveAsANE" level="project" />
+  </component>
+</module>
