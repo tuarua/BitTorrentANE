@@ -45,7 +45,7 @@ FREObject ANEHelper::getFREObject(double value) {
 
 FREObject ANEHelper::getFREObject(bool value) {
     FREObject result;
-    auto status = FRENewObjectFromBool(value, &result);
+    auto status = FRENewObjectFromBool((uint32_t) value, &result);
     isFREResultOK(status, "Could not convert bool to FREObject.");
     return result;
 }
