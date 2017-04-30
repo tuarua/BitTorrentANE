@@ -139,7 +139,8 @@ public class StarlingRoot extends Sprite {
             bitTorrentANE.initSession();
 
             if (SettingsLocalStore.settings.filters.enabled)
-                bitTorrentANE.addFilterList(SettingsLocalStore.settings.filters.fileName, SettingsLocalStore.settings.filters.applyToTrackers);
+                bitTorrentANE.addFilterList(SettingsLocalStore.settings.filters.fileName,
+                        SettingsLocalStore.settings.filters.applyToTrackers);
 
         } else {
             trace("This ANE is not supported");
@@ -160,9 +161,12 @@ public class StarlingRoot extends Sprite {
             if (savePath.length == 0) {
                 torrentClientPanel.createTorrentScreen.hide();
             } else {
-                bitTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATION_PROGRESS, torrentClientPanel.createTorrentScreen.onProgress);
-                bitTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATED, torrentClientPanel.createTorrentScreen.onCreateComplete);
-                bitTorrentANE.createTorrent(event.params.file, savePath, event.params.size, event.params.trackers, event.params.webSeeds, event.params.isPrivate, event.params.comments, event.params.seedNow);
+                bitTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATION_PROGRESS,
+                        torrentClientPanel.createTorrentScreen.onProgress);
+                bitTorrentANE.addEventListener(TorrentInfoEvent.TORRENT_CREATED,
+                        torrentClientPanel.createTorrentScreen.onCreateComplete);
+                bitTorrentANE.createTorrent(event.params.file, savePath, event.params.size, event.params.trackers,
+                        event.params.webSeeds, event.params.isPrivate, event.params.comments, event.params.seedNow);
             }
         });
         saveAsTimer.start();
@@ -276,17 +280,29 @@ public class StarlingRoot extends Sprite {
         TorrentSettings.privacy.encryption = SettingsLocalStore.settings.privacy.encryption;
         TorrentSettings.privacy.useAnonymousMode = SettingsLocalStore.settings.privacy.useAnonymousMode;
 
-        TorrentSettings.speed.downloadRateLimit = (SettingsLocalStore.settings.speed.downloadRateEnabled) ? SettingsLocalStore.settings.speed.downloadRateLimit * 1000 : 0;
-        TorrentSettings.speed.uploadRateLimit = (SettingsLocalStore.settings.speed.uploadRateEnabled) ? SettingsLocalStore.settings.speed.uploadRateLimit * 1000 : 0;
+        TorrentSettings.speed.downloadRateLimit = (SettingsLocalStore.settings.speed.downloadRateEnabled)
+                ? SettingsLocalStore.settings.speed.downloadRateLimit * 1000
+                : 0;
+        TorrentSettings.speed.uploadRateLimit = (SettingsLocalStore.settings.speed.uploadRateEnabled)
+                ? SettingsLocalStore.settings.speed.uploadRateLimit * 1000
+                : 0;
         TorrentSettings.speed.ignoreLimitsOnLAN = SettingsLocalStore.settings.speed.ignoreLimitsOnLAN;
         TorrentSettings.speed.isuTPEnabled = SettingsLocalStore.settings.speed.isuTPEnabled;
         TorrentSettings.speed.isuTPRateLimited = SettingsLocalStore.settings.speed.isuTPRateLimited;
         TorrentSettings.speed.rateLimitIpOverhead = SettingsLocalStore.settings.speed.rateLimitIpOverhead;
 
-        TorrentSettings.connections.maxNum = (SettingsLocalStore.settings.connections.useMaxConnections) ? SettingsLocalStore.settings.connections.maxNum : -1;
-        TorrentSettings.connections.maxUploads = (SettingsLocalStore.settings.connections.useMaxUploads) ? SettingsLocalStore.settings.connections.maxUploads : -1;
-        TorrentSettings.connections.maxNumPerTorrent = (SettingsLocalStore.settings.connections.useMaxConnectionsPerTorrent) ? SettingsLocalStore.settings.connections.maxNumPerTorrent : -1;
-        TorrentSettings.connections.maxUploadsPerTorrent = (SettingsLocalStore.settings.connections.useMaxUploadsPerTorrent) ? SettingsLocalStore.settings.connections.maxUploadsPerTorrent : -1;
+        TorrentSettings.connections.maxNum = (SettingsLocalStore.settings.connections.useMaxConnections)
+                ? SettingsLocalStore.settings.connections.maxNum
+                : -1;
+        TorrentSettings.connections.maxUploads = (SettingsLocalStore.settings.connections.useMaxUploads)
+                ? SettingsLocalStore.settings.connections.maxUploads
+                : -1;
+        TorrentSettings.connections.maxNumPerTorrent = (SettingsLocalStore.settings.connections.useMaxConnectionsPerTorrent)
+                ? SettingsLocalStore.settings.connections.maxNumPerTorrent
+                : -1;
+        TorrentSettings.connections.maxUploadsPerTorrent = (SettingsLocalStore.settings.connections.useMaxUploadsPerTorrent)
+                ? SettingsLocalStore.settings.connections.maxUploadsPerTorrent
+                : -1;
 
         TorrentSettings.queueing.enabled = SettingsLocalStore.settings.queueing.enabled;
         TorrentSettings.queueing.maxActiveDownloads = SettingsLocalStore.settings.queueing.maxActiveDownloads;

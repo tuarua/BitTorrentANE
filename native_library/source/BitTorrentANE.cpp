@@ -253,14 +253,13 @@ inline unsigned char from_hex(unsigned char ch) {
 std::string urldecode(const std::string &str) {
     using namespace std;
     string result;
-    string::size_type i;
-    for (i = 0; i < str.size(); ++i) {
+	for (string::size_type i = 0; i < str.size(); ++i) {
         if (str[i] == '+') {
             result += ' ';
         } else if (str[i] == '%' && str.size() > i + 2) {
-            const unsigned char ch1 = from_hex((unsigned char) str[i + 1]);
-            const unsigned char ch2 = from_hex((unsigned char) str[i + 2]);
-            const unsigned char ch = (ch1 << 4) | ch2;
+            const auto ch1 = from_hex(static_cast<unsigned char>(str[i + 1]));
+            const auto ch2 = from_hex(static_cast<unsigned char>(str[i + 2]));
+            const unsigned char ch = ch1 << 4 | ch2;
             result += ch;
             i += 2;
         } else {
@@ -307,7 +306,7 @@ FREObject getFRETorrentInfo(libtorrent::torrent_info ti, std::string filename) {
         aneHelper.setProperty(meta, "firstPiece", first);
         aneHelper.setProperty(meta, "lastPiece", last);
 
-        FRESetArrayElementAt(vecTorrents, (uint32_t) i, meta);
+        FRESetArrayElementAt(vecTorrents, static_cast<uint32_t>(i), meta);
     }
 
     aneHelper.setProperty(torrentMeta, "files", vecTorrents);
@@ -347,14 +346,13 @@ libtorrent::settings_pack getDefaultSessionSettings(std::vector<std::string> dht
     settings.set_bool(settings_pack::announce_to_all_trackers, settingsContext.advanced.announceToAllTrackers);
     settings.set_bool(settings_pack::announce_to_all_tiers, settingsContext.advanced.announceToAllTrackers);
 
-    int cache_size = settingsContext.advanced.diskCacheSize;
+    auto cache_size = settingsContext.advanced.diskCacheSize;
     if (cache_size > 0)
         cache_size = cache_size * 64;  //0 is off, -1 is 1/8 of machine's RAM
 
     settings.set_int(settings_pack::cache_size, cache_size);
     settings.set_int(settings_pack::cache_expiry, settingsContext.advanced.diskCacheTTL);
-    settings_pack::io_buffer_mode_t mode =
-            settingsContext.advanced.enableOsCache ? settings_pack::enable_os_cache : settings_pack::disable_os_cache;
+	auto mode = settingsContext.advanced.enableOsCache ? settings_pack::enable_os_cache : settings_pack::disable_os_cache;
 
     settings.set_int(settings_pack::disk_io_read_mode, mode);
     settings.set_int(settings_pack::disk_io_write_mode, mode);
@@ -1882,7 +1880,8 @@ FRE_FUNCTION(updateSettings) {
     for (unsigned int j = 0; j < numAddresses; ++j) {
         FREObject elemAS = nullptr;
         FREGetArrayElementAt(networkAddresses, j, &elemAS);
-        settingsContext.advanced.networkInterface.push_back(make_pair(aneHelper.getString(aneHelper.getProperty(elemAS, "address")), aneHelper.getString(aneHelper.getProperty(elemAS, "ipVersion"))));
+        settingsContext.advanced.networkInterface.push_back(make_pair(aneHelper.getString(aneHelper.getProperty(elemAS, "address")), 
+			aneHelper.getString(aneHelper.getProperty(elemAS, "ipVersion"))));
     }
 
     if (ltsession && ltsession->is_listening())
@@ -1991,7 +1990,7 @@ void threadAddFilterList(int p) {
             address ipRangeFrom = ipRangeFrom.from_string(ipRangeFromStr, ec);
             if (ec) continue;
 
-            std::string ipRangeToStr = IPList.at(1);
+	        auto ipRangeToStr = IPList.at(1);
             trim(ipRangeToStr);
 
             if (ipRangeToStr.empty()) continue;
@@ -2056,7 +2055,35 @@ FRE_FUNCTION(isSupported) {
 
 void contextInitializer(void *extData, const uint8_t *ctxType, FREContext ctx, uint32_t *numFunctionsToSet, const FRENamedFunction **functionsToSet) {
     static FRENamedFunction extensionFunctions[] = {
-            {reinterpret_cast<const uint8_t *>("isSupported"), nullptr, &isSupported}, {reinterpret_cast<const uint8_t *>("removeTorrent"), nullptr, &removeTorrent}, {reinterpret_cast<const uint8_t *>("addTorrent"), nullptr, &addTorrent}, {reinterpret_cast<const uint8_t *>("initSession"), nullptr, &initSession}, {reinterpret_cast<const uint8_t *>("endSession"), nullptr, &endSession}, {reinterpret_cast<const uint8_t *>("getTorrentInfo"), nullptr, &getTorrentInfo}, {reinterpret_cast<const uint8_t *>("postTorrentUpdates"), nullptr, &postTorrentUpdates}, {reinterpret_cast<const uint8_t *>("getTorrentPeers"), nullptr, &getTorrentPeers}, {reinterpret_cast<const uint8_t *>("getTorrentTrackers"), nullptr, &getTorrentTrackers}, {reinterpret_cast<const uint8_t *>("pauseTorrent"), nullptr, &pauseTorrent}, {reinterpret_cast<const uint8_t *>("resumeTorrent"), nullptr, &resumeTorrent}, {reinterpret_cast<const uint8_t *>("updateSettings"), nullptr, &updateSettings}, {reinterpret_cast<const uint8_t *>("setSequentialDownload"), nullptr, &setSequentialDownload}, {reinterpret_cast<const uint8_t *>("addDHTRouter"), nullptr, &addDHTRouter}, {reinterpret_cast<const uint8_t *>("setQueuePosition"), nullptr, &setQueuePosition}, {reinterpret_cast<const uint8_t *>("addFilterList"), nullptr, &addFilterList}, {reinterpret_cast<const uint8_t *>("createTorrent"), nullptr, &createTorrent}, {reinterpret_cast<const uint8_t *>("saveSessionState"), nullptr, &saveSessionState}, {reinterpret_cast<const uint8_t *>("getMagnetURI"), nullptr, &getMagnetURI}, {reinterpret_cast<const uint8_t *>("setFilePriority"), nullptr, &setFilePriority}, {reinterpret_cast<const uint8_t *>("forceRecheck"), nullptr, &forceRecheck}, {reinterpret_cast<const uint8_t *>("forceAnnounce"), nullptr, &forceAnnounce}, {reinterpret_cast<const uint8_t *>("forceDHTAnnounce"), nullptr, &forceDHTAnnounce}, {reinterpret_cast<const uint8_t *>("setPiecePriority"), nullptr, &setPiecePriority}, {reinterpret_cast<const uint8_t *>("setPieceDeadline"), nullptr, &setPieceDeadline}, {reinterpret_cast<const uint8_t *>("resetPieceDeadline"), nullptr, &resetPieceDeadline}, {reinterpret_cast<const uint8_t *>("addTracker"), nullptr, &addTracker}, {reinterpret_cast<const uint8_t *>("addUrlSeed"), nullptr, &addUrlSeed}, {reinterpret_cast<const uint8_t *>("removeUrlSeed"), nullptr, &removeUrlSeed}
+            {reinterpret_cast<const uint8_t *>("isSupported"), nullptr, &isSupported}
+    	, {reinterpret_cast<const uint8_t *>("removeTorrent"), nullptr, &removeTorrent}
+    	, {reinterpret_cast<const uint8_t *>("addTorrent"), nullptr, &addTorrent}
+    	, {reinterpret_cast<const uint8_t *>("initSession"), nullptr, &initSession}
+    	, {reinterpret_cast<const uint8_t *>("endSession"), nullptr, &endSession}
+    	, {reinterpret_cast<const uint8_t *>("getTorrentInfo"), nullptr, &getTorrentInfo}
+    	, {reinterpret_cast<const uint8_t *>("postTorrentUpdates"), nullptr, &postTorrentUpdates}
+    	, {reinterpret_cast<const uint8_t *>("getTorrentPeers"), nullptr, &getTorrentPeers}
+    	, {reinterpret_cast<const uint8_t *>("getTorrentTrackers"), nullptr, &getTorrentTrackers}
+    	, {reinterpret_cast<const uint8_t *>("pauseTorrent"), nullptr, &pauseTorrent}
+    	, {reinterpret_cast<const uint8_t *>("resumeTorrent"), nullptr, &resumeTorrent}
+    	, {reinterpret_cast<const uint8_t *>("updateSettings"), nullptr, &updateSettings}
+    	, {reinterpret_cast<const uint8_t *>("setSequentialDownload"), nullptr, &setSequentialDownload}
+    	, {reinterpret_cast<const uint8_t *>("addDHTRouter"), nullptr, &addDHTRouter}
+    	, {reinterpret_cast<const uint8_t *>("setQueuePosition"), nullptr, &setQueuePosition}
+    	, {reinterpret_cast<const uint8_t *>("addFilterList"), nullptr, &addFilterList}
+    	, {reinterpret_cast<const uint8_t *>("createTorrent"), nullptr, &createTorrent}
+    	, {reinterpret_cast<const uint8_t *>("saveSessionState"), nullptr, &saveSessionState}
+    	, {reinterpret_cast<const uint8_t *>("getMagnetURI"), nullptr, &getMagnetURI}
+    	, {reinterpret_cast<const uint8_t *>("setFilePriority"), nullptr, &setFilePriority}
+    	, {reinterpret_cast<const uint8_t *>("forceRecheck"), nullptr, &forceRecheck}
+    	, {reinterpret_cast<const uint8_t *>("forceAnnounce"), nullptr, &forceAnnounce}
+    	, {reinterpret_cast<const uint8_t *>("forceDHTAnnounce"), nullptr, &forceDHTAnnounce}
+    	, {reinterpret_cast<const uint8_t *>("setPiecePriority"), nullptr, &setPiecePriority}
+    	, {reinterpret_cast<const uint8_t *>("setPieceDeadline"), nullptr, &setPieceDeadline}
+    	, {reinterpret_cast<const uint8_t *>("resetPieceDeadline"), nullptr, &resetPieceDeadline}
+    	, {reinterpret_cast<const uint8_t *>("addTracker"), nullptr, &addTracker}
+    	, {reinterpret_cast<const uint8_t *>("addUrlSeed"), nullptr, &addUrlSeed}
+    	, {reinterpret_cast<const uint8_t *>("removeUrlSeed"), nullptr, &removeUrlSeed}
     };
 
     *numFunctionsToSet = sizeof(extensionFunctions) / sizeof(FRENamedFunction);
