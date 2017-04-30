@@ -29,7 +29,7 @@ typedef struct {
 TorrentAlertEvent torrentAlertEvent;
 
 
-class EncyptionConstants {
+struct EncyptionConstants {
 public:
     enum Constants {
         DISABLED = 0,

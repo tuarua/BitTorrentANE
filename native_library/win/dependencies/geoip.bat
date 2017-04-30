@@ -30,5 +30,8 @@ DEL /F /S /Q /A %pathtome%GeoIP.dat.gz
 DEL /F /S /Q /A %pathtome%GeoIPASNum.dat.gz
 rd /S /Q %pathtome%geoip-api-c
 
+copy %pathtome%geoip\build\data\GeoIP.dat %pathtome%..\..\..\example\src\geoip\GeoIP.dat
+copy %pathtome%geoip\build\data\GeoIPASNum.dat %pathtome%..\..\..\example\src\geoip\GeoIPASNum.dat
+
 SETX GEOIP_INCLUDEDIR %pathtome%geoip\build\include /m
 SETX GEOIP_LIBRARYDIR %pathtome%geoip\build\lib /m

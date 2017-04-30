@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="BitTorrentANE" type="flex">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../native_extension/ane/BitTorrentANE.ane!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
