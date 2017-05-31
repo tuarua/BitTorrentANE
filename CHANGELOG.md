@@ -2,7 +2,7 @@
 - Win/OSX: updated Libtorrent to 1.1.1, Boost to 1.62, OpenSSL to latest
 - Android: fixed bug with output savePath
 - changed compile version to AIR 19 for better compatability
-- Android: Updated example. Removed HLS code as there are vidoe bugs in AIR.
+- Android: Updated example. Removed HLS code as there are video bugs in AIR.
 - All: Updated Starling to 2.1
 
 ### 1.3.1
