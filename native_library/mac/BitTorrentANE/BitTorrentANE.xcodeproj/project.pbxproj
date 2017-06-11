@@ -12,6 +12,7 @@
 		CE08AC771CB32C88008F933D /* ANEhelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE08AC741CB32C88008F933D /* ANEhelper.cpp */; };
 		CE08AC781CB32C88008F933D /* Constants.hpp in Headers */ = {isa = PBXBuildFile; fileRef = CE08AC751CB32C88008F933D /* Constants.hpp */; };
 		CE08AC791CB32C88008F933D /* Settings.hpp in Headers */ = {isa = PBXBuildFile; fileRef = CE08AC761CB32C88008F933D /* Settings.hpp */; };
+		CE213A461EAFF6D600875652 /* libboost_thread-mt.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CE213A451EAFF6D600875652 /* libboost_thread-mt.a */; };
 		CE2C58601CB45A8B0013A858 /* Adobe AIR_64 in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C585D1CB45A8B0013A858 /* Adobe AIR_64 */; };
 		CE2C58611CB45A8B0013A858 /* Adobe AIR in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2C585E1CB45A8B0013A858 /* Adobe AIR */; };
 		CE2C586E1CB463C20013A858 /* BitTorrentANE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CE2C586D1CB463C20013A858 /* BitTorrentANE.cpp */; };
@@ -27,6 +28,7 @@
 		CE08AC741CB32C88008F933D /* ANEhelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ANEhelper.cpp; path = ../../../source/ANEhelper.cpp; sourceTree = "<group>"; };
 		CE08AC751CB32C88008F933D /* Constants.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Constants.hpp; path = ../../../source/Constants.hpp; sourceTree = "<group>"; };
 		CE08AC761CB32C88008F933D /* Settings.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Settings.hpp; path = ../../../source/Settings.hpp; sourceTree = "<group>"; };
+		CE213A451EAFF6D600875652 /* libboost_thread-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_thread-mt.a"; path = "../../../../../../../usr/local/lib/libboost_thread-mt.a"; sourceTree = "<group>"; };
 		CE2C585D1CB45A8B0013A858 /* Adobe AIR_64 */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "Adobe AIR_64"; path = "/Applications/Adobe Flash Builder 4.7/sdks/4.6.0/runtimes/air/mac/Adobe AIR.framework/Versions/1.0/Adobe AIR_64"; sourceTree = "<absolute>"; };
 		CE2C585E1CB45A8B0013A858 /* Adobe AIR */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "Adobe AIR"; path = "/Applications/Adobe Flash Builder 4.7/sdks/4.6.0/runtimes/air/mac/Adobe AIR.framework/Versions/1.0/Adobe AIR"; sourceTree = "<absolute>"; };
 		CE2C58651CB45BF50013A858 /* libtorrent-rasterbar.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libtorrent-rasterbar.a"; path = "../../../../../../../usr/local/lib/libtorrent-rasterbar.a"; sourceTree = "<group>"; };
@@ -35,7 +37,6 @@
 		CE4153F11D2489AC000F3BBE /* libboost_chrono-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_chrono-mt.a"; path = "../../../../../../../usr/local/lib/libboost_chrono-mt.a"; sourceTree = "<group>"; };
 		CE4153F21D248A45000F3BBE /* libboost_random-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_random-mt.a"; path = "../../../../../../../usr/local/lib/libboost_random-mt.a"; sourceTree = "<group>"; };
 		CE4153F31D248BD1000F3BBE /* libboost_system-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_system-mt.a"; path = "../../../../../../../usr/local/lib/libboost_system-mt.a"; sourceTree = "<group>"; };
-		CE4153F51D248CD7000F3BBE /* libboost_thread-mt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libboost_thread-mt.a"; path = "../../../../../../../usr/local/Cellar/boost/1.60.0_2/lib/libboost_thread-mt.a"; sourceTree = "<group>"; };
 		CE44D2271DBBCBA400A6344C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		CE44D2291DBBCBAF00A6344C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		CED8424F1D287120008AC387 /* BitTorrentANE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BitTorrentANE.h; path = ../../../include/BitTorrentANE.h; sourceTree = "<group>"; };
@@ -48,6 +49,7 @@
 			files = (
 				CE44D2281DBBCBA400A6344C /* Cocoa.framework in Frameworks */,
 				CE2C58611CB45A8B0013A858 /* Adobe AIR in Frameworks */,
+				CE213A461EAFF6D600875652 /* libboost_thread-mt.a in Frameworks */,
 				CE2C58601CB45A8B0013A858 /* Adobe AIR_64 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -62,7 +64,7 @@
 				CE2C585E1CB45A8B0013A858 /* Adobe AIR */,
 				CE4153F21D248A45000F3BBE /* libboost_random-mt.a */,
 				CE4153F11D2489AC000F3BBE /* libboost_chrono-mt.a */,
-				CE4153F51D248CD7000F3BBE /* libboost_thread-mt.a */,
+				CE213A451EAFF6D600875652 /* libboost_thread-mt.a */,
 				CE4153F31D248BD1000F3BBE /* libboost_system-mt.a */,
 				CE2C58651CB45BF50013A858 /* libtorrent-rasterbar.a */,
 				CE44D2291DBBCBAF00A6344C /* Cocoa.framework */,
@@ -187,7 +189,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		CE52C3571CC1C32100D5C52B /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (

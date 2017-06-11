@@ -5,7 +5,7 @@ IF %ERRORLEVEL% EQU 0 (
 	IF NOT DEFINED BOOST_ROOT call boost.bat
 	IF NOT DEFINED GEOIP_LIBRARYDIR call geoip.bat
 	IF NOT DEFINED OPEN_SSL_LIBRARYDIR call openssl.bat
-	IF NOT EXIST %pathtome%libtorrent-rasterbar-1.1.1 call libtorrent.bat
+	IF NOT EXIST %pathtome%libtorrent-rasterbar-1.1.3 call libtorrent.bat
 ) ELSE (
    echo ##########################################################
    echo This script must be run as administrator to work properly!  
