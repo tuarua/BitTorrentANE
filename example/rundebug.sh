@@ -13,7 +13,7 @@ pathtome="${pathtome%/*}"
 echo $pathtome
 
 # set the path to the installed SDK to a handy variable for the script
-AIR_SDK="/Applications/Adobe Flash Builder 4.7/sdks/4.6.0"
+AIR_SDK="/Users/User/sdks/AIR/AIRSDK_25"
 echo $AIR_SDK
 
 echo "Running"
