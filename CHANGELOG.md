@@ -1,3 +1,6 @@
+### 1.3.3
+- Win/OSX: updated Libtorrent to 1.1.3
+
 ### 1.3.2
 - Win/OSX: updated Libtorrent to 1.1.1, Boost to 1.62, OpenSSL to latest
 - Android: fixed bug with output savePath

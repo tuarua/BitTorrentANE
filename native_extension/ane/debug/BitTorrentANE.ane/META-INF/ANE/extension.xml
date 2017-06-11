@@ -3,7 +3,7 @@
 	<id>com.tuarua.BitTorrentANE</id>
 	<name>BitTorrent ANE</name>
 	<copyright>This work is licensed under The MIT License (MIT), Copyright 2016 Tua Rua Ltd.</copyright>
-	<versionNumber>1.3.2</versionNumber>
+	<versionNumber>1.3.3</versionNumber>
 	<platforms>
 	<platform name="Windows-x86">
 		<applicationDeployment>

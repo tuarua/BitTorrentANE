@@ -100,7 +100,7 @@ public class StarlingRoot extends Sprite {
 
         if (bitTorrentANE.isSupported()) {
 
-            TorrentSettings.logLevel = LogLevel.DEBUG;
+            TorrentSettings.logLevel = LogLevel.INFO;
             TorrentSettings.prioritizedFileTypes = new Array("mp4");
             TorrentSettings.clientName = "BitTorrentANE_Example";
             TorrentSettings.storage.torrentPath = File.applicationDirectory.resolvePath("torrents").nativePath;

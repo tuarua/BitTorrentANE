@@ -2,8 +2,8 @@
 <swc xmlns="http://www.adobe.com/flash/swccatalog/9">
     <versions>
         <swc version="1.2"/>
-        <flex version="4.7.0" build="354193" minimumSupportedVersion="3.0.0"/>
-        <compiler name="ActionScript Compiler" version="2.0.0" build="354193"/>
+        <flex version="4.7.0" build="354200" minimumSupportedVersion="3.0.0"/>
+        <compiler name="ActionScript Compiler" version="2.0.0" build="354200"/>
     </versions>
     <features>
         <feature-script-deps/>
@@ -152,8 +152,8 @@
                 <def id="com.tuarua.torrent:TorrentTrackers"/>
                 <dep id="Object" type="i"/>
                 <dep id="String" type="s"/>
-                <dep id="__AS3__.vec:Vector" type="s"/>
-                <dep id="com.tuarua.torrent:TrackerInfo" type="s"/>
+                <dep id="__AS3__.vec:Vector" type="e"/>
+                <dep id="com.tuarua.torrent:TrackerInfo" type="e"/>
             </script>
             <script name="com/tuarua/torrent/TorrentWebSeed" mod="1458429620411">
                 <def id="com.tuarua.torrent:TorrentWebSeed"/>
@@ -321,7 +321,7 @@
                 <dep id="int" type="e"/>
             </script>
             <digests>
-                <digest type="SHA-256" signed="false" value="48a54d21e3b8c73d8e20cd87936213134ba435923c41094e31dff765ac45a2a1"/>
+                <digest type="SHA-256" signed="false" value="77b937ff8ff3147dc81cc2ad1c051e21637febe63d12a80697557daab77e0d82"/>
             </digests>
         </library>
     </libraries>
