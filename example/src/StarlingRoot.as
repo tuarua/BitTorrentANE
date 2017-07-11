@@ -18,6 +18,7 @@ import events.InteractionEvent;
 
 import flash.desktop.Clipboard;
 import flash.desktop.ClipboardFormats;
+import flash.desktop.NativeApplication;
 import flash.events.Event;
 import flash.events.TimerEvent;
 import flash.filesystem.File;
@@ -58,6 +59,7 @@ public class StarlingRoot extends Sprite {
     public function StarlingRoot() {
         super();
         TextField.registerCompositor(Fonts.getFont("fira-sans-semi-bold-13"), "Fira Sans Semi-Bold 13");
+        NativeApplication.nativeApplication.addEventListener(flash.events.Event.EXITING, onExiting);
     }
 
 
@@ -450,9 +452,11 @@ public class StarlingRoot extends Sprite {
         var currentStatus:TorrentStatus = TorrentsLibrary.status[torrentId] as TorrentStatus;
         var currentPieces:TorrentPieces = TorrentsLibrary.pieces[torrentId] as TorrentPieces;
 
-
     }
 
+    private function onExiting(event:flash.events.Event):void {
+        bitTorrentANE.dispose();
+    }
 
 }
 }

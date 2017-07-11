@@ -1,3 +1,6 @@
+### 1.3.4
+- Win: added 64bit
+
 ### 1.3.3
 - Win/OSX: updated Libtorrent to 1.1.3
 

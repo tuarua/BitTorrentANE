@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -28,26 +28,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -79,6 +79,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <CustomBuildAfterTargets>Build</CustomBuildAfterTargets>
+    <OutDir>$(SolutionDir)x86\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -110,7 +112,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;_USRDLL;BLURAYANE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -126,7 +128,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;BITTORRENTANE_EXPORTS;BOOST_EXCEPTION_DISABLE;BOOST_ASIO_ENABLE_CANCELIO;BOOST_ASIO_HASH_MAP_BUCKETS=1021;BOOST_SYSTEM_STATIC_LINK=1;WIN32_LEAN_AND_MEAN;__USE_W32_SOCKETS;_WIN32_WINNT=0x0600;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_FILE_OFFSET_BITS=64;TORRENT_USE_I2P=1;TORRENT_USE_OPENSSL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include;$(OPEN_SSL_INCLUDEDIR);$(BOOST_ROOT);$(GEOIP_INCLUDEDIR);$(LIBTORRENT_INCLUDEDIR);C:\Program Files\Adobe\Adobe Flash Builder 4.7 %2864 Bit%29\sdks\4.6.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include;$(OPEN_SSL_INCLUDEDIR);$(BOOST_ROOT);$(GEOIP_INCLUDEDIR);$(LIBTORRENT_INCLUDEDIR);D:\dev\sdks\AIR\AIRSDK_26_64\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -134,7 +136,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(OPEN_SSL_LIBRARYDIR);$(BOOST_LIBRARYDIR);$(LIBTORRENT_LIBRARYDIR);$(GEOIP_LIBRARYDIR);C:\Program Files\Adobe\Adobe Flash Builder 4.7 %2864 Bit%29\sdks\4.6.0\lib\win</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OPEN_SSL_LIBRARYDIR)\x86;$(BOOST_ROOT)\stage_x86\lib;$(LIBTORRENT_ROOT)\bin\msvc-14.1\release\address-model-32\crypto-openssl\link-static\threading-multi;$(GEOIP_LIBRARYDIR)\x86;D:\dev\sdks\AIR\AIRSDK_26\lib\win</AdditionalLibraryDirectories>
       <AdditionalDependencies>libcrypto.lib;libssl.lib;libtorrent.lib;Iphlpapi.lib;FlashRuntimeExtensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CustomBuildStep>
@@ -153,13 +155,16 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;BLURAYANE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;_USRDLL;BITTORRENTANE_EXPORTS;BOOST_EXCEPTION_DISABLE;BOOST_ASIO_ENABLE_CANCELIO;BOOST_ASIO_HASH_MAP_BUCKETS=1021;BOOST_SYSTEM_STATIC_LINK=1;WIN32_LEAN_AND_MEAN;__USE_W32_SOCKETS;_WIN32_WINNT=0x0600;_SCL_SECURE_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;_FILE_OFFSET_BITS=64;TORRENT_USE_I2P=1;TORRENT_USE_OPENSSL=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\..\..\include;$(OPEN_SSL_INCLUDEDIR);$(BOOST_ROOT);$(GEOIP_INCLUDEDIR);$(LIBTORRENT_INCLUDEDIR);D:\dev\sdks\AIR\AIRSDK_26_64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(OPEN_SSL_LIBRARYDIR)\x64;$(BOOST_ROOT)\stage_x64\lib;$(LIBTORRENT_ROOT)\bin\msvc-14.1\release\address-model-64\crypto-openssl\link-static\threading-multi;$(GEOIP_LIBRARYDIR)\x64;D:\dev\sdks\AIR\AIRSDK_26_64\lib\win;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcrypto.lib;libssl.lib;libtorrent.lib;Iphlpapi.lib;FlashRuntimeExtensions.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

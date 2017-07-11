@@ -16,10 +16,9 @@ mkdir %pathtome%libtorrent-rasterbar-%VERSION%\include\openssl
 copy %pathtome%openssl\include\openssl %pathtome%libtorrent-rasterbar-%VERSION%\include\openssl
 
 cd libtorrent-rasterbar-%VERSION%
-call %pathtome%boost_1_62_0\bjam.exe link=static encryption=on crypto=openssl address-model=32 architecture=x86 variant=release variant=debug 
+call %pathtome%boost_1_64_0\bjam.exe link=static encryption=on crypto=openssl address-model=32,64 variant=release variant=debug 
 REM
 cd ../
 
 SETX LIBTORRENT_ROOT %pathtome%libtorrent-rasterbar-%VERSION% /m
 SETX LIBTORRENT_INCLUDEDIR %pathtome%libtorrent-rasterbar-%VERSION%\include /m
-SETX LIBTORRENT_LIBRARYDIR %pathtome%libtorrent-rasterbar-%VERSION%\bin\msvc-14.0\release\address-model-32\architecture-x86\crypto-openssl\link-static\threading-multi /m
