@@ -5,8 +5,8 @@ SET SZIP="C:\Program Files\7-Zip\7z.exe"
 echo Downloading geoip...
 git clone https://github.com/maxmind/geoip-api-c.git
 mkdir geoip-api-c\data
-call cscript scripts\wget.js http://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz GeoIP.dat.gz
-call cscript scripts\wget.js http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz GeoIPASNum.dat.gz
+call cscript scripts\wget.js https://geolite.maxmind.com/download/geoip/database/GeoLiteCountry/GeoIP.dat.gz GeoIP.dat.gz
+call cscript scripts\wget.js https://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz GeoIPASNum.dat.gz
 
 call %SZIP% e %pathtome%GeoIP.dat.gz -o%pathtome%geoip-api-c\data
 
